@@ -48,8 +48,14 @@
     }
 }
 
--(NSArray *) matchingAdjacentTilesToTileAtPosition:(int) position {
-    return nil;
+-(NSSet *) matchingAdjacentTilesToTileAtPosition:(int) position {
+//    return nil;
+    // method should start recursive method calls
+    NSNumber *iD = [NSNumber numberWithInt:[self iDOfTileAtPosition:position]];
+    int category = [self categoryOfTileAtPosition:position];
+    
+    NSSet *parameterSet = [NSSet setWithObject:iD];
+    return [self surroundedTileOfCategory:category withSet:parameterSet];
 }
 
 -(int) iDOfTileAtPosition:(int)position {
@@ -68,6 +74,10 @@
         return -1;
     }
 
+}
+
+-(NSSet *) surroundedTileOfCategory:(int) category withSet:(NSSet *) set {
+    return nil;
 }
 
 @end

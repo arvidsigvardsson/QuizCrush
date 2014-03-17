@@ -13,7 +13,7 @@
 
 -(id) initWithNumberOfRowsAndColumns:(int) rowsAndCols;
 -(int) categoryOfTileAtPosition:(int) position;
--(NSArray *) matchingAdjacentTilesToTileAtPosition:(int) position;
+-(NSSet *) matchingAdjacentTilesToTileAtPosition:(int) position;
 -(int) categoryOfTileWithID:(int) ID;
 -(int) iDOfTileAtPosition:(int) position;
 
