@@ -18,7 +18,7 @@
 @property NSDictionary *uiSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
-@property int noRowsAndCols;
+@property NSNumber *noRowsAndCols;
 @property NSArray *colorArray;
 
 
@@ -40,8 +40,8 @@
     _colorArray = @[[UIColor orangeColor], [UIColor yellowColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor]];
 
 //    NSInteger noCategories = [_uiSettingsDictionary[@"Number of categories"] integerValue];
-    _noRowsAndCols = [_uiSettingsDictionary[@"Number of rows and columns"] intValue];
-    _lengthOfTile = _containerView.frame.size.height / (float)_noRowsAndCols;
+    _noRowsAndCols = _uiSettingsDictionary[@"Number of rows and columns"];
+    _lengthOfTile = _containerView.frame.size.height / (float)[_noRowsAndCols intValue];
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:_noRowsAndCols];
 //    _viewArray = [[NSMutableArray alloc] init];
@@ -52,16 +52,16 @@
     
     int xIndex, yIndex;
     
-    for (int i = 0; i < _noRowsAndCols * _noRowsAndCols; i++) {
-        xIndex = i % _noRowsAndCols;
-        yIndex = i / _noRowsAndCols;
+    for (int i = 0; i < [_noRowsAndCols intValue] * [_noRowsAndCols intValue]; i++) {
+        xIndex = i % [_noRowsAndCols intValue];
+        yIndex = i / [_noRowsAndCols intValue];
         
         UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
         tile.layer.cornerRadius = 10.0;
         tile.layer.masksToBounds = YES;
-        int category = [_playingFieldModel categoryOfTileAtPosition:i];
+        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
 
-        UIColor *color = _colorArray[category];
+        UIColor *color = _colorArray[[category intValue]];
         
         [tile setBackgroundColor:color];
 //        [_viewArray addObject:tile];
@@ -80,13 +80,13 @@
 //    NSLog(@"Click handler");
     
 //    NSInteger index = [self arrayIndexForX:point.x y:point.y numberOfRows:_numberOfRows lengthOfSides:_lengthOfTile];
-    int index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    if (index == -1) {
+    NSNumber *index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    if ([index intValue] == -1) {
         return;
     }
     
-    NSLog(@"Index klickat: %d", index);
-    NSNumber *key = [NSNumber numberWithInt:[_playingFieldModel iDOfTileAtPosition:index]];
+//    NSLog(@"Index klickat: %d", index);
+    NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
     
     UIView *view = _viewDictionary[key];
     NSLog(@"Vyn: %@", view);
@@ -94,10 +94,10 @@
 }
 
 
--(int)arrayIndexForX: (float)x y:(float)y numberOfRows:(int)numberOfRows lengthOfSides:(float)lengthOfSide {
+-(NSNumber *)arrayIndexForX: (float)x y:(float)y numberOfRows:(NSNumber *)numberOfRows lengthOfSides:(float)lengthOfSide {
     
     if (x < 0.0f || y < 0.0) {
-        return -1;
+        return nil;
     }
     
     int row, column;
@@ -105,11 +105,11 @@
     row = (int) floorf(x / lengthOfSide);
     column = (int) floorf(y / lengthOfSide);
     
-    if (row >= numberOfRows || column >= numberOfRows) {
-        return -1;
+    if (row >= [numberOfRows intValue] || column >= [numberOfRows intValue]) {
+        return nil;
     }
     
-    return row + column * numberOfRows;
+    return [NSNumber numberWithInt:row + column * [numberOfRows intValue]];
 }
 
 
@@ -117,7 +117,8 @@
 
 - (IBAction)resetColorsHandler:(id)sender {
     for (id key in _viewDictionary) {
-        UIColor *color = _colorArray[[_playingFieldModel categoryOfTileWithID:[key intValue]]];
+        int index = [[_playingFieldModel categoryOfTileWithID:key] intValue];
+        UIColor *color = _colorArray[index];
         [[_viewDictionary objectForKey:key] setBackgroundColor:color];
 //        int test = [key intValue];
 //        NSLog(@"test = %d", test);

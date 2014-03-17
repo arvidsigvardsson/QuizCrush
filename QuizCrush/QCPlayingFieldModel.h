@@ -11,11 +11,11 @@
 
 @interface QCPlayingFieldModel : NSObject
 
--(id) initWithNumberOfRowsAndColumns:(int) rowsAndCols;
--(int) categoryOfTileAtPosition:(int) position;
--(NSSet *) matchingAdjacentTilesToTileAtPosition:(int) position;
--(int) categoryOfTileWithID:(int) ID;
--(int) iDOfTileAtPosition:(int) position;
+-(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
+-(NSNumber *) categoryOfTileAtPosition:(NSNumber *) position;
+-(NSSet *) matchingAdjacentTilesToTileAtPosition:(NSNumber *) position;
+-(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
+-(NSNumber *) iDOfTileAtPosition:(NSNumber *) position;
 
 
 @end

@@ -16,7 +16,7 @@
 
 @implementation QCPlayingFieldModel
 
--(id) initWithNumberOfRowsAndColumns:(int)rowsAndCols {
+-(id) initWithNumberOfRowsAndColumns:(NSNumber *)rowsAndCols {
     if(!(self = [super init])){
         return self;
     }
@@ -30,9 +30,9 @@
     _tileGrid = [[NSMutableArray alloc] init];
 
 
-    for (int i = 0; i < rowsAndCols * rowsAndCols; i++) {
-        int randomCategory = arc4random_uniform(noCategories);
-        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory iD:i];
+    for (int i = 0; i < [rowsAndCols intValue] * [rowsAndCols intValue]; i++) {
+        NSNumber *randomCategory = [NSNumber numberWithInt:arc4random_uniform(noCategories)];
+        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory iD:[NSNumber numberWithInt:i]];
         [_tileGrid addObject:tile];
 
     }
@@ -40,43 +40,44 @@
     return self;
 }
 
--(int) categoryOfTileAtPosition:(int)position {
-    if (0 <= position < [_tileGrid count]) {
-        return [_tileGrid[position] category];
+-(NSNumber *) categoryOfTileAtPosition:(NSNumber *)position {
+    if (0 <= [position intValue] < [_tileGrid count]) {
+        return [_tileGrid[[position intValue]] category];
     } else {
-        return -1;
+        return nil;
     }
 }
 
--(NSSet *) matchingAdjacentTilesToTileAtPosition:(int) position {
+-(NSSet *) matchingAdjacentTilesToTileAtPosition:(NSNumber *) position {
 //    return nil;
     // method should start recursive method calls
-    NSNumber *iD = [NSNumber numberWithInt:[self iDOfTileAtPosition:position]];
-    int category = [self categoryOfTileAtPosition:position];
+//    NSNumber *iD = [NSNumber numberWithInt:[self iDOfTileAtPosition:position]];
+    NSNumber *iD = [self iDOfTileAtPosition:position];
+    NSNumber * category = [self categoryOfTileAtPosition:position];
     
     NSSet *parameterSet = [NSSet setWithObject:iD];
     return [self surroundedTileOfCategory:category withSet:parameterSet];
 }
 
--(int) iDOfTileAtPosition:(int)position {
-    if (0 <= position < [_tileGrid count]) {
-        return [_tileGrid[position] iD];
+-(NSNumber *) iDOfTileAtPosition:(NSNumber *)position {
+    if (0 <= [position intValue] < [_tileGrid count]) {
+        return [_tileGrid[[position intValue]] iD];
     } else {
-        return -1;
+        return nil;
     }
 }
 
--(int) categoryOfTileWithID:(int)ID {
+-(NSNumber *) categoryOfTileWithID:(NSNumber *)ID {
     // needs to be modified if switching tileGrid to dictionary
-    if (0 <= ID < [_tileGrid count]) {
-        return [_tileGrid[ID] category];
+    if (0 <= [ID intValue] < [_tileGrid count]) {
+        return [_tileGrid[[ID intValue]] category];
     } else {
-        return -1;
+        return nil;
     }
 
 }
 
--(NSSet *) surroundedTileOfCategory:(int) category withSet:(NSSet *) set {
+-(NSSet *) surroundedTileOfCategory:(NSNumber *) category withSet:(NSSet *) set {
     return nil;
 }
 

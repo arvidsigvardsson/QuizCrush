@@ -13,7 +13,7 @@
 //@synthesize category = _category;
 //@synthesize id = _id;
 
--(id) initWithCategory:(int)category iD:(int)iD {
+-(id) initWithCategory:(NSNumber *)category iD:(NSNumber *)iD {
     if(self = [super init]){
         _category = category;
         _iD = iD;

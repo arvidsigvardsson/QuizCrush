@@ -10,9 +10,9 @@
 
 @interface QCTile : NSObject
 
-@property int category;
-@property int iD;
+@property NSNumber *category;
+@property NSNumber *iD;
 
--(id) initWithCategory:(int) category iD:(int) id;
+-(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) id;
 
 @end
