@@ -12,11 +12,14 @@
 
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 //@property NSMutableArray *viewArray;
+- (IBAction)resetColorsHandler:(id)sender;
+
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
 @property int noRowsAndCols;
+@property NSArray *colorArray;
 
 
 @end
@@ -34,7 +37,7 @@
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     _uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
     
-    NSArray *colorArray = @[[UIColor orangeColor], [UIColor yellowColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor]];
+    _colorArray = @[[UIColor orangeColor], [UIColor yellowColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor]];
 
 //    NSInteger noCategories = [_uiSettingsDictionary[@"Number of categories"] integerValue];
     _noRowsAndCols = [_uiSettingsDictionary[@"Number of rows and columns"] intValue];
@@ -58,7 +61,7 @@
         tile.layer.masksToBounds = YES;
         int category = [_playingFieldModel categoryOfTileAtPosition:i];
 
-        UIColor *color = colorArray[category];
+        UIColor *color = _colorArray[category];
         
         [tile setBackgroundColor:color];
 //        [_viewArray addObject:tile];
@@ -112,4 +115,13 @@
 
 
 
+- (IBAction)resetColorsHandler:(id)sender {
+    for (id key in _viewDictionary) {
+        UIColor *color = _colorArray[[_playingFieldModel categoryOfTileWithID:[key intValue]]];
+        [[_viewDictionary objectForKey:key] setBackgroundColor:color];
+//        int test = [key intValue];
+//        NSLog(@"test = %d", test);
+    
+    }
+}
 @end

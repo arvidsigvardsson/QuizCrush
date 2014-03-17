@@ -56,4 +56,13 @@
     }
 }
 
+-(int) categoryOfTileWithID:(int)ID {
+    // needs to be modified if switching tileGrid to dictionary
+    if (0 <= ID < [_tileGrid count]) {
+        return [_tileGrid[ID] category];
+    } else {
+        return -1;
+    }
+}
+
 @end

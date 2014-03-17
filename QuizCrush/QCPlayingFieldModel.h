@@ -13,6 +13,7 @@
 
 -(id) initWithNumberOfRowsAndColumns:(int) rowsAndCols;
 -(int) categoryOfTileAtPosition:(int) position;
+-(int) categoryOfTileWithID:(int) ID;
 -(int) iDOfTileAtPosition:(int) position;
 
 @end
