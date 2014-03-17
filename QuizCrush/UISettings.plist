@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Number of rows and columns</key>
+	<integer>9</integer>
+	<key>Animation duration</key>
+	<string>0.5</string>
+	<key>Number of categories</key>
+	<integer>6</integer>
+</dict>
+</plist>
