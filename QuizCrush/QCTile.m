@@ -13,10 +13,10 @@
 //@synthesize category = _category;
 //@synthesize id = _id;
 
--(id) initWithCategory:(int)category ID:(int)id {
+-(id) initWithCategory:(int)category iD:(int)iD {
     if(self = [super init]){
         _category = category;
-        _id = id;
+        _iD = iD;
     }
     return self;
 }

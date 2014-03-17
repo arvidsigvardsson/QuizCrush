@@ -11,7 +11,8 @@
 @interface QCLevelViewController ()
 
 @property (weak, nonatomic) IBOutlet UIView *containerView;
-@property NSMutableArray *viewArray;
+//@property NSMutableArray *viewArray;
+@property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
@@ -40,7 +41,8 @@
     _lengthOfTile = _containerView.frame.size.height / (float)_noRowsAndCols;
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:_noRowsAndCols];
-    _viewArray = [[NSMutableArray alloc] init];
+//    _viewArray = [[NSMutableArray alloc] init];
+    _viewDictionary = [[NSMutableDictionary alloc] init];
    
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
     [_containerView addGestureRecognizer:recognizer];
@@ -59,7 +61,9 @@
         UIColor *color = colorArray[category];
         
         [tile setBackgroundColor:color];
-        [_viewArray addObject:tile];
+//        [_viewArray addObject:tile];
+        [_viewDictionary setObject:tile
+                            forKey:[NSNumber numberWithInt:i]];
         [_containerView addSubview:tile];
     }
     
@@ -69,9 +73,6 @@
 
 
 -(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
-    
-    NSLog(@"viewArrayen: %@", _viewArray);
-    
     CGPoint point = [recognizer locationInView:_containerView];
 //    NSLog(@"Click handler");
     
@@ -82,7 +83,9 @@
     }
     
     NSLog(@"Index klickat: %d", index);
-    UIView *view = _viewArray[index];
+    NSNumber *key = [NSNumber numberWithInt:[_playingFieldModel iDOfTileAtPosition:index]];
+    
+    UIView *view = _viewDictionary[key];
     NSLog(@"Vyn: %@", view);
     [view setBackgroundColor:[UIColor blackColor]];
 }

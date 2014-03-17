@@ -32,7 +32,7 @@
     
     for (int i = 0; i < rowsAndCols * rowsAndCols; i++) {
         int randomCategory = arc4random_uniform(noCategories);
-        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory ID:i];
+        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory iD:i];
         [_tileGrid addObject:tile];
     
     }
@@ -43,6 +43,14 @@
 -(int) categoryOfTileAtPosition:(int)position {
     if (0 <= position < [_tileGrid count]) {
         return [_tileGrid[position] category];
+    } else {
+        return -1;
+    }
+}
+
+-(int) iDOfTileAtPosition:(int)position {
+    if (0 <= position < [_tileGrid count]) {
+        return [_tileGrid[position] iD];
     } else {
         return -1;
     }
