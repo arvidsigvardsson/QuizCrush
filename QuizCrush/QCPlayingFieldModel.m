@@ -48,4 +48,8 @@
     }
 }
 
+-(NSArray *) matchingAdjacentTilesToTileAtPosition:(int) position {
+    return nil;
+}
+
 @end

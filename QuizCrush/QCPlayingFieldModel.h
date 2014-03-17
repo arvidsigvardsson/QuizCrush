@@ -13,5 +13,6 @@
 
 -(id) initWithNumberOfRowsAndColumns:(int) rowsAndCols;
 -(int) categoryOfTileAtPosition:(int) position;
+-(NSArray *) matchingAdjacentTilesToTileAtPosition:(int) position;
 
 @end
