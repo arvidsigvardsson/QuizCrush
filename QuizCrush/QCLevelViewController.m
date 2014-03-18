@@ -20,6 +20,7 @@
 @property float lengthOfTile;
 @property NSNumber *noRowsAndCols;
 @property NSArray *colorArray;
+@property NSNumber *tilesRequiredToMatch;
 
 
 @end
@@ -42,6 +43,7 @@
 //    NSInteger noCategories = [_uiSettingsDictionary[@"Number of categories"] integerValue];
     _noRowsAndCols = _uiSettingsDictionary[@"Number of rows and columns"];
     _lengthOfTile = _containerView.frame.size.height / (float)[_noRowsAndCols intValue];
+    _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:_noRowsAndCols];
 //    _viewArray = [[NSMutableArray alloc] init];
@@ -101,10 +103,10 @@
 //    NSLog(@"Index klickat: %d", index);
 //    NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
     
-    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileAtPosition:index];
+    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:index];
 //    NSLog(@"Selection set: %@", selectionSet);
     
-    if ([selectionSet count] < 2) {
+    if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
         return;
     }
     

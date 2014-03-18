@@ -10,7 +10,7 @@
 
 @interface QCPlayingFieldModel ()
 
-@property NSMutableArray *tileGrid;
+@property NSMutableDictionary *tileDict;
 @property NSNumber *noRowsAndCols;
 @end
 
@@ -27,101 +27,60 @@
     int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
     _noRowsAndCols = [NSNumber numberWithInt:[rowsAndCols intValue]];
 
-    _tileGrid = [[NSMutableArray alloc] init];
+    _tileDict = [[NSMutableDictionary alloc] init];
+    
 
 
     for (int i = 0; i < [rowsAndCols intValue] * [rowsAndCols intValue]; i++) {
         NSNumber *randomCategory = [NSNumber numberWithInt:arc4random_uniform(noCategories)];
         NSNumber *x = [NSNumber numberWithInt:i % [rowsAndCols intValue]];
         NSNumber *y = [NSNumber numberWithInt:i / [rowsAndCols intValue]];
-//        NSLog(@"x = %@  y = %@", x, y);
-//        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory iD:[NSNumber numberWithInt:i]];
-        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory iD:[NSNumber numberWithInt:i] x:x y:y];
-        [_tileGrid addObject:tile];
+        
+        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory
+                                                     iD:[NSNumber numberWithInt:i]
+                                                      x:x
+                                                      y:y];
+        [_tileDict setObject:tile forKey:tile.iD];
 
     }
     
     return self;
 }
 
--(NSNumber *) categoryOfTileAtPosition:(NSNumber *)position {
-    if (0 <= [position intValue] < [_tileGrid count]) {
-        return [_tileGrid[[position intValue]] category];
-    } else {
-        return nil;
-    }
-}
 
 
 
--(NSSet *) matchingAdjacentTilesToTileAtPosition:(NSNumber *) position {
-//    return nil;
-    // method should start recursive method calls
-//    NSNumber *iD = [NSNumber numberWithInt:[self iDOfTileAtPosition:position]];
-    NSNumber *iD = [self iDOfTileAtPosition:position];
-    NSNumber * category = [self categoryOfTileAtPosition:position];
+-(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD {
+
+    NSNumber *category = [self categoryOfTileWithID:iD];
     
     NSMutableSet *parameterSet = [[NSMutableSet alloc] init];
     [parameterSet addObject:iD];
     [self recursionSelectionForID:iD category:category withSet:parameterSet];
     
-//    [self recursionSelctionWithCategory:category withSet:parameterSet];
-    
     return parameterSet;
-//    return [self recursionSelctionWithCategory:category withSet:parameterSet];
-}
-
--(NSNumber *) iDOfTileAtPosition:(NSNumber *)position {
-    
-    //test!
-//    NSLog(@"Tile right: %@ tile left: %@ tile above: %@ tile below: %@", [self iDOfTileRightOfTile:position], [self iDOfTileLeftOfTile:position], [self iDOfTileAboveTile:position], [self iDOfTileBelowfTile:position]);
-//    NSLog(@"Tile right: %@", [self iDOfTileRightOfTile:position]);
-    
-    if (0 <= [position intValue] < [_tileGrid count]) {
-        return [_tileGrid[[position intValue]] iD];
-    } else {
-        return nil;
-    }
 }
 
 -(NSNumber *) categoryOfTileWithID:(NSNumber *)ID {
-    // needs to be modified if switching tileGrid to dictionary
-    if (0 <= [ID intValue] < [_tileGrid count]) {
-        return [_tileGrid[[ID intValue]] category];
-    } else {
-        return nil;
-    }
-
+    return [[_tileDict objectForKey:ID] category];
 }
 
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y {
-    // TODO change this method when _tileGrid becomes dict
-    int xp = [x intValue];
-    int yp = [y intValue];
-    int rows = [_noRowsAndCols intValue];
-    
-//    if (0 <= xp < rows && 0 <= yp < rows)
-    if (xp >= 0 && xp < rows && yp >= 0 && yp < rows) {
-        int index = xp + yp * rows;
-        return [_tileGrid[index] iD];
-    } else {
-        return nil;
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile.x isEqualToNumber:x] && [tile.y isEqualToNumber:y]) {
+            return tile.iD;
+        }
     }
+    
+    return nil;
 }
 
 -(QCTile *) tileWithID:(NSNumber *) iD {
-    // TODO change this method when _tileGrid becomes dict
-    int index = [iD intValue];
-    if (index >= 0 && index < [_tileGrid count]) {
-        return _tileGrid[index];
-    } else {
-        return nil;
-    }
+    return _tileDict[iD];
 }
 
 
-//-(void) recursionSelectionWithCategory:(NSNumber *) category withSet:(NSMutableSet *) set {
-//}
 -(NSNumber *) iDOfTileRightOfTile:(NSNumber *) iD {
     QCTile *tile = [self tileWithID:iD];
     int x = [[tile x] intValue] + 1;

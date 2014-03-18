@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
 		71E0C4E918D6E39800B5FFC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4E818D6E39800B5FFC7 /* Foundation.framework */; };
 		71E0C4EB18D6E39800B5FFC7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4EA18D6E39800B5FFC7 /* CoreGraphics.framework */; };
 		71E0C4ED18D6E39800B5FFC7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4EC18D6E39800B5FFC7 /* UIKit.framework */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		71DD0AF618D859AF00E9247A /* QCModelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCModelTestCase.m; sourceTree = "<group>"; };
 		71E0C4E518D6E39800B5FFC7 /* QuizCrush.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizCrush.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E0C4E818D6E39800B5FFC7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		71E0C4EA18D6E39800B5FFC7 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -152,6 +154,7 @@
 			children = (
 				71E0C51318D6E39900B5FFC7 /* QuizCrushTests.m */,
 				71E0C50E18D6E39900B5FFC7 /* Supporting Files */,
+				71DD0AF618D859AF00E9247A /* QCModelTestCase.m */,
 			);
 			path = QuizCrushTests;
 			sourceTree = "<group>";
@@ -277,6 +280,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71E0C51418D6E39900B5FFC7 /* QuizCrushTests.m in Sources */,
+				71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +477,7 @@
 				71E0C51918D6E39900B5FFC7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		71E0C51A18D6E39900B5FFC7 /* Build configuration list for PBXNativeTarget "QuizCrushTests" */ = {
 			isa = XCConfigurationList;
@@ -481,6 +486,7 @@
 				71E0C51C18D6E39900B5FFC7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
