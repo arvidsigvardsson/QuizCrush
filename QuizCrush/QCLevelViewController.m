@@ -74,16 +74,8 @@
                             forKey:iD];
         [_containerView addSubview:tile];
     }
- 
-//    // test
-//    NSNumber *t1 = [_playingFieldModel iDOfTileAtX:@0 Y:@0];
-//    NSNumber *t2 = [_playingFieldModel iDOfTileAtX:@8 Y:@8];
-//    NSNumber *t3 = [_playingFieldModel iDOfTileAtX:@9 Y:@0];
-//    NSNumber *t4 = [_playingFieldModel iDOfTileAtX:@0 Y:@9];
-//    
-//    NSLog(@"Giltig... %@    giltig... %@   ogiltig... %@   ogiltig... %@", t1, t2, t3, t4);
-//    
-//    
+    
+    
     
 }
 

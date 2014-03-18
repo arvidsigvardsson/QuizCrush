@@ -154,10 +154,19 @@
     if (!removeSet) {
         return nil;
     }
-    return @{@"key" : @7};
+    
+    // removeTiles
+//    for (NSNumber *key in removeSet) {
+//        [_tileDict removeObjectForKey:key];
+//    }
+    
+    NSMutableDictionary *transDict = [[NSMutableDictionary alloc] init];
+    // TODO fortsätt här!!!
+    return nil;
 }
 
 -(NSSet *) findTilesAboveID:(NSNumber *) ID {
+    // also returns id of start tile
     QCTile *tile = _tileDict[ID];
     if (!tile) {
         return nil;
@@ -167,13 +176,26 @@
     NSMutableSet *set = [[NSMutableSet alloc] init];
     
     while (y >= -1) {
-        y -= 1;
         QCTile *newTile = [self tileAtX:tile.x Y:[NSNumber numberWithInt:y]];
         if (newTile) {
             [set addObject:newTile.iD];
         }
+        y -= 1;
     }
 //    NSLog(@"Above set: %@", set);
     return set;
 }
+
+-(void) shiftTilesDown:(NSSet *) set {
+    if (!set) {
+        return;
+    }
+    
+    for (NSNumber *key in set){
+        QCTile *tile = _tileDict[key];
+        int newY = [tile.y intValue] + 1;
+        tile.y = [NSNumber numberWithInt:newY];
+    }
+}
+
 @end
