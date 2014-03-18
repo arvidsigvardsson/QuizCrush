@@ -92,31 +92,22 @@
 
 -(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
     CGPoint point = [recognizer locationInView:_containerView];
-//    NSLog(@"Click handler");
-    
-//    NSInteger index = [self arrayIndexForX:point.x y:point.y numberOfRows:_numberOfRows lengthOfSides:_lengthOfTile];
     NSNumber *index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
     if ([index intValue] == -1) {
         return;
     }
-    
-//    NSLog(@"Index klickat: %d", index);
-//    NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
-    
+  
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:index];
-//    NSLog(@"Selection set: %@", selectionSet);
-    
     if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
         return;
     }
     
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
-        [view setBackgroundColor:[UIColor blackColor]];
+//        [view setBackgroundColor:[UIColor blackColor]];
+        [view removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
     }
-//    UIView *view = _viewDictionary[key];
-////    NSLog(@"Vyn: %@", view);
-//    [view setBackgroundColor:[UIColor blackColor]];
 }
 
 

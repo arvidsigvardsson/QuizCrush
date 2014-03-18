@@ -51,7 +51,6 @@
 
 
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD {
-
     NSNumber *category = [self categoryOfTileWithID:iD];
     
     NSMutableSet *parameterSet = [[NSMutableSet alloc] init];
@@ -74,6 +73,10 @@
     }
     
     return nil;
+}
+
+-(QCTile *) tileAtX:(NSNumber *) x Y:(NSNumber *) y {
+    return _tileDict[[self iDOfTileAtX:x Y:y]];
 }
 
 -(QCTile *) tileWithID:(NSNumber *) iD {
@@ -147,4 +150,30 @@
     
 }
 
+-(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet {
+    if (!removeSet) {
+        return nil;
+    }
+    return @{@"key" : @7};
+}
+
+-(NSSet *) findTilesAboveID:(NSNumber *) ID {
+    QCTile *tile = _tileDict[ID];
+    if (!tile) {
+        return nil;
+    }
+    
+    int y = [tile.y intValue];
+    NSMutableSet *set = [[NSMutableSet alloc] init];
+    
+    while (y >= -1) {
+        y -= 1;
+        QCTile *newTile = [self tileAtX:tile.x Y:[NSNumber numberWithInt:y]];
+        if (newTile) {
+            [set addObject:newTile.iD];
+        }
+    }
+//    NSLog(@"Above set: %@", set);
+    return set;
+}
 @end

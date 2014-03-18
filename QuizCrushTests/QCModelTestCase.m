@@ -45,4 +45,20 @@
 
     
 }
+
+-(void) testOfRemoveAndReturnVerticalTranslations {
+    QCPlayingFieldModel *model = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:@9];
+//    NSSet *set = [[NSSet alloc] initWithObjects:@3, @5, nil];
+    XCTAssertNil([model removeAndReturnVerticalTranslations:nil], @"Assert returns nil when passed nil");
+}
+
+//-(void) testOfFindTilesAboveID {
+//    QCPlayingFieldModel *model = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:@9];
+//    NSNumber *ID = @18;
+//    [model findTilesAboveID:ID];
+//}
+
 @end
+
+
+

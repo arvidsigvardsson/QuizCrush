@@ -16,6 +16,6 @@
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(QCTile *) tileWithID:(NSNumber *) iD;
-
+-(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
 
 @end

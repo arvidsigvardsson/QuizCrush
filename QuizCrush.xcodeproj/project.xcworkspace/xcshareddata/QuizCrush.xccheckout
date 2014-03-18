@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FCF46B1E-1CCE-4DDA-9770-8040C1E6FA31</string>
+	<key>IDESourceControlProjectName</key>
+	<string>QuizCrush</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>E2946740-FAC8-4284-BE19-240E4CE7594A</key>
+		<string>https://github.com/arvidsigvardsson/QuizCrush.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>QuizCrush.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>E2946740-FAC8-4284-BE19-240E4CE7594A</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/arvidsigvardsson/QuizCrush.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>E2946740-FAC8-4284-BE19-240E4CE7594A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>E2946740-FAC8-4284-BE19-240E4CE7594A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>QuizCrush</string>
+		</dict>
+	</array>
+</dict>
+</plist>
