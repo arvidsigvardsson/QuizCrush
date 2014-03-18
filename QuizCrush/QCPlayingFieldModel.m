@@ -63,7 +63,9 @@
     
     NSMutableSet *parameterSet = [[NSMutableSet alloc] init];
     [parameterSet addObject:iD];
-    [self recursionSelctionWithCategory:category withSet:parameterSet];
+    [self recursionSelectionForID:iD category:category withSet:parameterSet];
+    
+//    [self recursionSelctionWithCategory:category withSet:parameterSet];
     
     return parameterSet;
 //    return [self recursionSelctionWithCategory:category withSet:parameterSet];
@@ -72,7 +74,7 @@
 -(NSNumber *) iDOfTileAtPosition:(NSNumber *)position {
     
     //test!
-    NSLog(@"Tile right: %@ tile left: %@ tile above: %@ tile below: %@", [self iDOfTileRightOfTile:position], [self iDOfTileLeftOfTile:position], [self iDOfTileAboveTile:position], [self iDOfTileBelowfTile:position]);
+//    NSLog(@"Tile right: %@ tile left: %@ tile above: %@ tile below: %@", [self iDOfTileRightOfTile:position], [self iDOfTileLeftOfTile:position], [self iDOfTileAboveTile:position], [self iDOfTileBelowfTile:position]);
 //    NSLog(@"Tile right: %@", [self iDOfTileRightOfTile:position]);
     
     if (0 <= [position intValue] < [_tileGrid count]) {
@@ -118,9 +120,8 @@
 }
 
 
--(void) recursionSelctionWithCategory:(NSNumber *) category withSet:(NSMutableSet *) set {
-}
-
+//-(void) recursionSelectionWithCategory:(NSNumber *) category withSet:(NSMutableSet *) set {
+//}
 -(NSNumber *) iDOfTileRightOfTile:(NSNumber *) iD {
     QCTile *tile = [self tileWithID:iD];
     int x = [[tile x] intValue] + 1;
@@ -144,4 +145,47 @@
     int y = [[tile y] intValue] + 1;
     return [self iDOfTileAtX:[tile x] Y:[NSNumber numberWithInt:y]];
 }
+
+-(void) recursionSelectionForID:(NSNumber *) iD category:(NSNumber *) category withSet:(NSMutableSet *) set {
+    // look right
+    NSNumber *iDRight = [self iDOfTileRightOfTile:iD];
+    if (![set member:iDRight] && iDRight) {
+        NSNumber *catRight = [self categoryOfTileWithID:iDRight];
+        if ([category isEqual:catRight]) {
+            [set addObject:iDRight];
+            [self recursionSelectionForID:iDRight category:category withSet:set];
+        }
+    }
+    
+    // look left
+    NSNumber *iDLeft = [self iDOfTileLeftOfTile:iD];
+    if (![set member:iDLeft] && iDLeft) {
+        NSNumber *catLeft = [self categoryOfTileWithID:iDLeft];
+        if ([category isEqual:catLeft]) {
+            [set addObject:iDLeft];
+            [self recursionSelectionForID:iDLeft category:category withSet:set];
+        }
+    }
+    // look above
+    NSNumber *iDAbove = [self iDOfTileAboveTile:iD];
+    if (![set member:iDAbove] && iDAbove) {
+        NSNumber *catAbove = [self categoryOfTileWithID:iDAbove];
+        if ([category isEqual:catAbove]) {
+            [set addObject:iDAbove];
+            [self recursionSelectionForID:iDAbove category:category withSet:set];
+        }
+    }
+    
+    // look below
+    NSNumber *iDBelow = [self iDOfTileBelowfTile:iD];
+    if (![set member:iDBelow] && iDBelow) {
+        NSNumber *catBelow = [self categoryOfTileWithID:iDBelow];
+        if ([category isEqual:catBelow]) {
+            [set addObject:iDBelow];
+            [self recursionSelectionForID:iDBelow category:category withSet:set];
+        }
+    }
+    
+}
+
 @end

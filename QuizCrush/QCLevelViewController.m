@@ -96,11 +96,22 @@
     }
     
 //    NSLog(@"Index klickat: %d", index);
-    NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
+//    NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
     
-    UIView *view = _viewDictionary[key];
-//    NSLog(@"Vyn: %@", view);
-    [view setBackgroundColor:[UIColor blackColor]];
+    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileAtPosition:index];
+//    NSLog(@"Selection set: %@", selectionSet);
+    
+    if ([selectionSet count] < 3) {
+        return;
+    }
+    
+    for (NSNumber *key in selectionSet) {
+        UIView * view = _viewDictionary[key];
+        [view setBackgroundColor:[UIColor blackColor]];
+    }
+//    UIView *view = _viewDictionary[key];
+////    NSLog(@"Vyn: %@", view);
+//    [view setBackgroundColor:[UIColor blackColor]];
 }
 
 
