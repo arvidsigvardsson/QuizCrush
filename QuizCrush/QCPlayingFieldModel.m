@@ -72,8 +72,8 @@
 -(NSNumber *) iDOfTileAtPosition:(NSNumber *)position {
     
     //test!
-//    NSLog(@"Tile right: %@ tile left: %@ tile above: %@ tile below: %@", [self iDOfTileRightOfTile:position], [self iDOfTileLeftOfTile:position], [self iDOfTileAboveTile:position], [self iDOfTileBelowfTile:position]);
-    
+    NSLog(@"Tile right: %@ tile left: %@ tile above: %@ tile below: %@", [self iDOfTileRightOfTile:position], [self iDOfTileLeftOfTile:position], [self iDOfTileAboveTile:position], [self iDOfTileBelowfTile:position]);
+//    NSLog(@"Tile right: %@", [self iDOfTileRightOfTile:position]);
     
     if (0 <= [position intValue] < [_tileGrid count]) {
         return [_tileGrid[[position intValue]] iD];
@@ -107,42 +107,41 @@
     }
 }
 
+-(QCTile *) tileWithID:(NSNumber *) iD {
+    // TODO change this method when _tileGrid becomes dict
+    int index = [iD intValue];
+    if (index >= 0 && index < [_tileGrid count]) {
+        return _tileGrid[index];
+    } else {
+        return nil;
+    }
+}
+
+
 -(void) recursionSelctionWithCategory:(NSNumber *) category withSet:(NSMutableSet *) set {
 }
 
 -(NSNumber *) iDOfTileRightOfTile:(NSNumber *) iD {
-    int column = ([iD intValue] + 1) % [_noRowsAndCols intValue];
-    if ([iD intValue] < 0 || [iD intValue] >= [_tileGrid count] || column >= [_noRowsAndCols intValue]) {
-        return nil;
-    } else {
-        return [_tileGrid[[iD intValue] + 1] iD];
-    }
+    QCTile *tile = [self tileWithID:iD];
+    int x = [[tile x] intValue] + 1;
+    return [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[tile y]];
 }
 
 -(NSNumber *) iDOfTileLeftOfTile:(NSNumber *) iD {
-    int column = ([iD intValue] + 1) % [_noRowsAndCols intValue];
-    if ([iD intValue] < 0 || [iD intValue] >= [_tileGrid count] || column <= 0) {
-        return nil;
-    } else {
-        return [_tileGrid[[iD intValue] - 1] iD];
-    }
+    QCTile *tile = [self tileWithID:iD];
+    int x = [[tile x] intValue] - 1;
+    return [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[tile y]];
 }
 
 -(NSNumber *) iDOfTileAboveTile:(NSNumber *) iD {
-    int row = [iD intValue] % [_noRowsAndCols intValue];
-    if ([iD intValue] < 0 || [iD intValue] >= [_tileGrid count] || row <= 0) {
-        return nil;
-    } else {
-        return [_tileGrid[[iD intValue] - [_noRowsAndCols intValue]] iD];
-    }
+    QCTile *tile = [self tileWithID:iD];
+    int y = [[tile y] intValue] - 1;
+    return [self iDOfTileAtX:[tile x] Y:[NSNumber numberWithInt:y]];
 }
 
 -(NSNumber *) iDOfTileBelowfTile:(NSNumber *) iD {
-    int row = [iD intValue] % [_noRowsAndCols intValue];
-    if ([iD intValue] < 0 || [iD intValue] >= [_tileGrid count] || row >= ([_noRowsAndCols intValue] - 1)) {
-        return nil;
-    } else {
-        return [_tileGrid[[iD intValue] + [_noRowsAndCols intValue]] iD];
-    }
+    QCTile *tile = [self tileWithID:iD];
+    int y = [[tile y] intValue] + 1;
+    return [self iDOfTileAtX:[tile x] Y:[NSNumber numberWithInt:y]];
 }
 @end

@@ -17,6 +17,7 @@
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtPosition:(NSNumber *) position;
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;
+-(QCTile *) tileWithID:(NSNumber *) iD;
 
 
 @end

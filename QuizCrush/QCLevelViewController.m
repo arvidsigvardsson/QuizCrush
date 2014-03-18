@@ -99,7 +99,7 @@
     NSNumber *key = [_playingFieldModel iDOfTileAtPosition:index];
     
     UIView *view = _viewDictionary[key];
-    NSLog(@"Vyn: %@", view);
+//    NSLog(@"Vyn: %@", view);
     [view setBackgroundColor:[UIColor blackColor]];
 }
 
