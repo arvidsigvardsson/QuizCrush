@@ -56,17 +56,20 @@
         xIndex = i % [_noRowsAndCols intValue];
         yIndex = i / [_noRowsAndCols intValue];
         
+        NSNumber *iD = [NSNumber numberWithInt:i];
+        
         UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
         tile.layer.cornerRadius = 10.0;
         tile.layer.masksToBounds = YES;
-        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
-
+//        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
+        NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
+        
         UIColor *color = _colorArray[[category intValue]];
         
         [tile setBackgroundColor:color];
 //        [_viewArray addObject:tile];
         [_viewDictionary setObject:tile
-                            forKey:[NSNumber numberWithInt:i]];
+                            forKey:iD];
         [_containerView addSubview:tile];
     }
  
@@ -101,7 +104,7 @@
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileAtPosition:index];
 //    NSLog(@"Selection set: %@", selectionSet);
     
-    if ([selectionSet count] < 3) {
+    if ([selectionSet count] < 2) {
         return;
     }
     
