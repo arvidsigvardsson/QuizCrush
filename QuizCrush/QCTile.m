@@ -21,4 +21,16 @@
     return self;
 }
 
+-(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) iD x:(NSNumber *) x y:(NSNumber *) y {
+    if(self = [super init]){
+        _category = category;
+        _iD = iD;
+        _x = x;
+        _y = y;
+    }
+    return self;
+
+}
+
+
 @end

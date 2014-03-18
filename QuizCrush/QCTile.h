@@ -12,7 +12,10 @@
 
 @property NSNumber *category;
 @property NSNumber *iD;
+@property NSNumber *x;
+@property NSNumber *y;
 
--(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) id;
+-(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) iD;
+-(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) iD x:(NSNumber *) x y:(NSNumber *) y;
 
 @end

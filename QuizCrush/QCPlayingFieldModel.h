@@ -16,6 +16,7 @@
 -(NSSet *) matchingAdjacentTilesToTileAtPosition:(NSNumber *) position;
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtPosition:(NSNumber *) position;
+-(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;
 
 
 @end
