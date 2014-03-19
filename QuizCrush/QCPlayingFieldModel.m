@@ -12,6 +12,7 @@
 
 @property NSMutableDictionary *tileDict;
 @property NSNumber *noRowsAndCols;
+@property int currentID;
 @end
 
 @implementation QCPlayingFieldModel
@@ -22,6 +23,7 @@
     }
 
     //initialization
+    _currentID = 0;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
     int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
@@ -37,17 +39,20 @@
         NSNumber *y = [NSNumber numberWithInt:i / [rowsAndCols intValue]];
         
         QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory
-                                                     iD:[NSNumber numberWithInt:i]
+                                                     iD:[self nextID]
                                                       x:x
                                                       y:y];
         [_tileDict setObject:tile forKey:tile.iD];
-
-    }
-    
+        
+        
+            }
     return self;
 }
 
-
+-(NSNumber *) nextID {
+    _currentID += 1;
+    return [NSNumber numberWithInt:_currentID - 1];
+}
 
 
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD {
