@@ -55,8 +55,7 @@
 ////-(void) testOfFindTilesAboveID {
 ////    QCPlayingFieldModel *model = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:@9];
 ////    NSNumber *ID = @18;
-////    [model findTilesAboveID:ID];
-////}
+////    ////}
 
 @end
 
