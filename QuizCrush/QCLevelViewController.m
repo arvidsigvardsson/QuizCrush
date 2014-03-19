@@ -12,7 +12,6 @@
 
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 //@property NSMutableArray *viewArray;
-- (IBAction)resetColorsHandler:(id)sender;
 
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
@@ -127,15 +126,4 @@
 
 
 
-
-- (IBAction)resetColorsHandler:(id)sender {
-    for (id key in _viewDictionary) {
-        int index = [[_playingFieldModel categoryOfTileWithID:key] intValue];
-        UIColor *color = _colorArray[index];
-        [[_viewDictionary objectForKey:key] setBackgroundColor:color];
-//        int test = [key intValue];
-//        NSLog(@"test = %d", test);
-    
-    }
-}
 @end
