@@ -95,7 +95,7 @@
     }
     
     NSDictionary *testDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
-    
+    // TODO identify if new tiles have been created and give them a view etc
     NSLog(@"Translation dict: %@", testDict);
     
     for (NSNumber *key in selectionSet) {

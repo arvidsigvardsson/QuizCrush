@@ -24,9 +24,9 @@
 
     //initialization
     _currentID = 0;
-    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
-    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
-    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
+//    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
+//    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+//    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
     _noRowsAndCols = [NSNumber numberWithInt:[rowsAndCols intValue]];
 
     _tileDict = [[NSMutableDictionary alloc] init];
@@ -34,11 +34,11 @@
 
 
     for (int i = 0; i < [rowsAndCols intValue] * [rowsAndCols intValue]; i++) {
-        NSNumber *randomCategory = [NSNumber numberWithInt:arc4random_uniform(noCategories)];
+//        NSNumber *randomCategory = [NSNumber numberWithInt:arc4random_uniform(noCategories)];
         NSNumber *x = [NSNumber numberWithInt:i % [rowsAndCols intValue]];
         NSNumber *y = [NSNumber numberWithInt:i / [rowsAndCols intValue]];
         
-        QCTile *tile = [[QCTile alloc] initWithCategory:randomCategory
+        QCTile *tile = [[QCTile alloc] initWithCategory:[self nextCategory]
                                                      iD:[self nextID]
                                                       x:x
                                                       y:y];
@@ -52,6 +52,15 @@
 -(NSNumber *) nextID {
     _currentID += 1;
     return [NSNumber numberWithInt:_currentID - 1];
+}
+
+-(NSNumber *) nextCategory {
+    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
+    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+
+    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
+
+    return [NSNumber numberWithInt:arc4random_uniform(noCategories)];
 }
 
 
@@ -201,21 +210,23 @@
         return nil;
     }
     
-    // removeTiles
-    //    for (NSNumber *key in removeSet) {
-    //        [_tileDict removeObjectForKey:key];
-    //    }
-    
     // key in transdict is ID for tile, value is number of steps down the tile makes
     NSMutableDictionary *transDict = [[NSMutableDictionary alloc] init];
     
     for (NSNumber *key in removeSet) {
+        // add new tile to tileDict, make sure it ends up in shiftSet
+        NSNumber *currentX = [self tileWithID:key].x;
+        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                        iD:[self nextID]
+                                                         x:currentX
+                                                         y:@-1];
+        [_tileDict setObject:newTile forKey:newTile.iD];
         NSSet *shiftSet = [self findTilesAboveID:key];
         [self shiftTilesDown:shiftSet];
         
         for (NSNumber *IDFromSet in shiftSet) {
             if (transDict[IDFromSet]) {
-                // increment the value of steps to take
+                // increment the value of steps to take, or adds the ID to the dict
                 int steps = [transDict[IDFromSet] intValue] + 1;
                 [transDict setObject:[NSNumber numberWithInt:steps] forKey:IDFromSet];
             } else {
