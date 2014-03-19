@@ -73,9 +73,6 @@
                             forKey:iD];
         [_containerView addSubview:tile];
     }
-    
-    
-    
 }
 
 
@@ -93,9 +90,28 @@
         return;
     }
     
-    NSDictionary *testDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
-    // TODO identify if new tiles have been created and give them a view etc
-    NSLog(@"Translation dict: %@", testDict);
+    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    // identify if new tiles have been created and give them a view etc
+    for (NSNumber *newKey in animateDict) {
+        if (!_viewDictionary[newKey]) {
+            QCTile *newTile = [_playingFieldModel tileWithID:newKey];
+            int x = [newTile.x intValue];
+            int y = [newTile.y intValue] - 1; // tile has been moved in the model
+            
+            UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+            newView.layer.cornerRadius = 10.0;
+            newView.layer.masksToBounds = YES;
+            NSNumber *category = [_playingFieldModel categoryOfTileWithID:newKey];
+            
+            UIColor *color = _colorArray[[category intValue]];
+            
+            [newView setBackgroundColor:color];
+            [_viewDictionary setObject:newView
+                                forKey:newKey];
+            [_containerView addSubview:newView];
+
+        }
+    }
     
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
@@ -103,6 +119,8 @@
         [view removeFromSuperview];
         [_viewDictionary removeObjectForKey:key];
     }
+    
+    
 }
 
 
