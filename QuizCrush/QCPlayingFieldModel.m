@@ -57,6 +57,14 @@
     [parameterSet addObject:iD];
     [self recursionSelectionForID:iD category:category withSet:parameterSet];
     
+    // test
+//    QCTile *tile = [[QCTile alloc] initWithCategory:@1 iD:@10010 x:@0 y:@-1];
+//    [_tileDict setObject:tile forKey:tile.iD];
+//    NSSet *set = [self findTilesAboveID:iD];
+//
+//    NSLog(@"Hela dicten: %@", _tileDict);
+//    NSLog(@"Set above: %@", set);
+    
     return parameterSet;
 }
 
@@ -150,21 +158,6 @@
     
 }
 
--(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet {
-    if (!removeSet) {
-        return nil;
-    }
-    
-    // removeTiles
-//    for (NSNumber *key in removeSet) {
-//        [_tileDict removeObjectForKey:key];
-//    }
-    
-    NSMutableDictionary *transDict = [[NSMutableDictionary alloc] init];
-    // TODO fortsätt här!!!
-    return nil;
-}
-
 -(NSSet *) findTilesAboveID:(NSNumber *) ID {
     // also returns id of start tile
     QCTile *tile = _tileDict[ID];
@@ -174,13 +167,13 @@
     
     int y = [tile.y intValue];
     NSMutableSet *set = [[NSMutableSet alloc] init];
-    
+    [set addObject:tile.iD];
     while (y >= -1) {
+        y -= 1;
         QCTile *newTile = [self tileAtX:tile.x Y:[NSNumber numberWithInt:y]];
         if (newTile) {
             [set addObject:newTile.iD];
         }
-        y -= 1;
     }
 //    NSLog(@"Above set: %@", set);
     return set;
@@ -198,4 +191,43 @@
     }
 }
 
+-(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet {
+    if (!removeSet) {
+        return nil;
+    }
+    
+    // removeTiles
+    //    for (NSNumber *key in removeSet) {
+    //        [_tileDict removeObjectForKey:key];
+    //    }
+    
+    // key in transdict is ID for tile, value is number of steps down the tile makes
+    NSMutableDictionary *transDict = [[NSMutableDictionary alloc] init];
+    
+    for (NSNumber *key in removeSet) {
+        NSSet *shiftSet = [self findTilesAboveID:key];
+        [self shiftTilesDown:shiftSet];
+        
+        for (NSNumber *IDFromSet in shiftSet) {
+            if (transDict[IDFromSet]) {
+                // increment the value of steps to take
+                int steps = [transDict[IDFromSet] intValue] + 1;
+                [transDict setObject:[NSNumber numberWithInt:steps] forKey:IDFromSet];
+            } else {
+                [transDict setObject:@1 forKey:IDFromSet];
+            }
+        }
+    }
+    
+    
+    
+    // removeTiles
+    for (NSNumber *thirdKey in removeSet) {
+        [_tileDict removeObjectForKey:thirdKey];
+    }
+    
+    return  transDict;
+}
+
+    
 @end

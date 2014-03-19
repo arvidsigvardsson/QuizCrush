@@ -94,6 +94,10 @@
         return;
     }
     
+    NSDictionary *testDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    
+    NSLog(@"Translation dict: %@", testDict);
+    
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
 //        [view setBackgroundColor:[UIColor blackColor]];
