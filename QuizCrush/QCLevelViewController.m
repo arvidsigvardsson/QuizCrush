@@ -64,7 +64,7 @@
         NSNumber *iD = [NSNumber numberWithInt:i];
         
         UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        tile.layer.cornerRadius = 10.0;
+        tile.layer.cornerRadius = 17.0;
         tile.layer.masksToBounds = YES;
 //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
         NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
@@ -97,7 +97,7 @@
         int y = [newTile.y intValue];
         //
         UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        newView.layer.cornerRadius = 10.0;
+        newView.layer.cornerRadius = 17.0;
         newView.layer.masksToBounds = YES;
         NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
         
