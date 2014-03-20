@@ -55,6 +55,7 @@
 }
 
 -(NSNumber *) nextCategory {
+//    return @4;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 

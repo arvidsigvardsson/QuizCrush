@@ -23,6 +23,7 @@
 @property BOOL animating;
 
 
+
 @end
 
 @implementation QCLevelViewController
@@ -81,103 +82,47 @@
 
 
 
--(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
-    NSLog(@"Click detected");
-    
-    if (_animating) {
-        return;
-    }
-    
-    CGPoint point = [recognizer locationInView:_containerView];
-//    NSNumber *index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-//    if ([index intValue] == -1) {
-//        return;
-//    }
-  
-    NSDictionary *posDict = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSNumber *IDTileClicked = [_playingFieldModel iDOfTileAtX:posDict[@"x"] Y:posDict[@"y"]];
-    
+- (void)deleteTiles:(NSNumber *)IDTileClicked {
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
     if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
         return;
     }
     
-    NSLog(@"Selection set: %@", selectionSet);
-    
     // identify if new tiles have been created and give them a view etc
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
     
-        
-    
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
-                    int x = [newTile.x intValue];
-                    int y = [newTile.y intValue];
+        int x = [newTile.x intValue];
+        int y = [newTile.y intValue];
         //
-                    UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-                    newView.layer.cornerRadius = 10.0;
-                    newView.layer.masksToBounds = YES;
-                    NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
+        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+        newView.layer.cornerRadius = 10.0;
+        newView.layer.masksToBounds = YES;
+        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
         
-                    UIColor *color = _colorArray[[category intValue]];
+        UIColor *color = _colorArray[[category intValue]];
         
-                    [newView setBackgroundColor:color];
-                    [_viewDictionary setObject:newView
-                                        forKey:addNewKey];
-                    [_containerView addSubview:newView];
-        
-//                    NSLog(@"Ny vy skapad");
-
+        [newView setBackgroundColor:color];
+        [_viewDictionary setObject:newView
+                            forKey:addNewKey];
+        [_containerView addSubview:newView];
     }
-
+    
     
     // dict with ids of tiles to move, with their corresponding moves
     NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
     
-//    NSLog(@"AnimateDict: %@", animateDict);
-//    return;
-    
-    
-    // test
-//    for (NSNumber *nyckel in animateDict) {
-//        QCTile *ruta = [_playingFieldModel tileWithID:nyckel];
-//        NSLog(@"Id för ruta: %@, x: %@, y: %@, shift: %@", ruta.iD, ruta.x, ruta.y, animateDict[nyckel]);
-//    }
-//    return;
-    
-    
-    // identify if new tiles have been created and give them a view etc
-//    for (NSNumber *newKey in animateDict) {
-//        if (!_viewDictionary[newKey]) {
-//            QCTile *newTile = [_playingFieldModel tileWithID:newKey];
-//            int x = [newTile.x intValue];
-//            int y = [newTile.y intValue] - 1; // tile has been moved in the model
-//            
-//            UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-//            newView.layer.cornerRadius = 10.0;
-//            newView.layer.masksToBounds = YES;
-//            NSNumber *category = [_playingFieldModel categoryOfTileWithID:newKey];
-//            
-//            UIColor *color = _colorArray[[category intValue]];
-//            
-//            [newView setBackgroundColor:color];
-//            [_viewDictionary setObject:newView
-//                                forKey:newKey];
-//            [_containerView addSubview:newView];
-//
-////            NSLog(@"Ny vy skapad");
-//        }
-//    }
-   
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
-//        [view setBackgroundColor:[UIColor blackColor]];
+        //        [view setBackgroundColor:[UIColor blackColor]];
         [view removeFromSuperview];
         [_viewDictionary removeObjectForKey:key];
     }
-   
-    _animating = YES;
-    [UIView animateWithDuration:1.0 animations:^{
+    
+       _animating = YES;
+
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue] animations:^{
         for (NSNumber *aniKey in animateDict) {
             UIView *aniView = _viewDictionary[aniKey];
             CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
@@ -186,10 +131,19 @@
     }completion:^(BOOL finished) {
         _animating = NO;
     }];
+}
+
+-(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
     
+    if (_animating) {
+        return;
+    }
     
-    // test
-//    NSLog(<#NSString *format, ...#>)
+    CGPoint point = [recognizer locationInView:_containerView];
+    NSDictionary *posDict = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSNumber *IDTileClicked = [_playingFieldModel iDOfTileAtX:posDict[@"x"] Y:posDict[@"y"]];
+    
+    [self deleteTiles:IDTileClicked];
     
 }
 
