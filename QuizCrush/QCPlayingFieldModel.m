@@ -55,6 +55,7 @@
 }
 
 -(NSNumber *) nextCategory {
+    return @2;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -89,6 +90,9 @@
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y {
     for (NSNumber *key in _tileDict) {
         QCTile *tile = _tileDict[key];
+        if (!tile || !x || !y) {
+            return nil;
+        }
         if ([tile.x isEqualToNumber:x] && [tile.y isEqualToNumber:y]) {
             return tile.iD;
         }
@@ -179,16 +183,24 @@
         return nil;
     }
     
+    NSNumber *x = tile.x;
     int y = [tile.y intValue];
     NSMutableSet *set = [[NSMutableSet alloc] init];
-    [set addObject:tile.iD];
-    while (y >= -1) {
+//    [set addObject:tile.iD];
+    
+//    while (y >= -1) {
+//        y -= 1;
+//        QCTile *newTile = [self tileAtX:tile.x Y:[NSNumber numberWithInt:y]];
+//        if (newTile) {
+//            [set addObject:newTile.iD];
+//        }
+//    }
+    
+    while ([self tileAtX:x Y:[NSNumber numberWithInt:y]]) {
+        [set addObject:[self iDOfTileAtX:x Y:[NSNumber numberWithInt:y]]];
         y -= 1;
-        QCTile *newTile = [self tileAtX:tile.x Y:[NSNumber numberWithInt:y]];
-        if (newTile) {
-            [set addObject:newTile.iD];
-        }
     }
+    
 //    NSLog(@"Above set: %@", set);
     return set;
 }
@@ -205,6 +217,31 @@
     }
 }
 
+-(NSSet *) getNewTilesReplacing:(NSSet *) set{
+    if (!set) {
+        return nil;
+    }
+    
+    NSMutableSet *returnSet = [[NSMutableSet alloc] init];
+    
+    for (NSNumber *key in set) {
+        NSNumber *x = [[self tileWithID:key] x];
+        int y = [[[self tileWithID:key] y] intValue];
+        // move upwards until there is no tile left
+        while ([self tileAtX:x Y:[NSNumber numberWithInt:y]]) {
+            y -= 1;
+        }
+        // add new tile at top of stack
+        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                        iD:[self nextID]
+                                                         x:x
+                                                         y:[NSNumber numberWithInt:y]];
+        [_tileDict setObject:newTile forKey:newTile.iD];
+        [returnSet addObject:newTile.iD];
+    }
+    return returnSet;
+}
+
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet {
     if (!removeSet) {
         return nil;
@@ -213,15 +250,19 @@
     // key in transdict is ID for tile, value is number of steps down the tile makes
     NSMutableDictionary *transDict = [[NSMutableDictionary alloc] init];
     
+    
     for (NSNumber *key in removeSet) {
-        // add new tile to tileDict, make sure it ends up in shiftSet
-        NSNumber *currentX = [self tileWithID:key].x;
-        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
-                                                        iD:[self nextID]
-                                                         x:currentX
-                                                         y:@-1];
-        [_tileDict setObject:newTile forKey:newTile.iD];
+//        // add new tile to tileDict, make sure it ends up in shiftSet
+//        NSNumber *currentX = [self tileWithID:key].x;
+//        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+//                                                        iD:[self nextID]
+//                                                         x:currentX
+//                                                         y:@-1];
+//        [_tileDict setObject:newTile forKey:newTile.iD];
+        
         NSSet *shiftSet = [self findTilesAboveID:key];
+        
+        
         [self shiftTilesDown:shiftSet];
         
         for (NSNumber *IDFromSet in shiftSet) {
@@ -242,6 +283,10 @@
         [_tileDict removeObjectForKey:thirdKey];
     }
     
+    
+    
+    // remove id of removed tiles from return dict
+    [transDict removeObjectsForKeys:[removeSet allObjects]];
     return  transDict;
 }
 
