@@ -21,6 +21,7 @@
 @property NSArray *colorArray;
 @property NSNumber *tilesRequiredToMatch;
 @property BOOL animating;
+@property BOOL vaildSwipe;
 
 
 
@@ -52,8 +53,15 @@
     
     _animating = NO;
     
-    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
-    [_containerView addGestureRecognizer:recognizer];
+//    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
+//    [_containerView addGestureRecognizer:recognizer];
+    
+    // testing pan action
+    
+    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panHandler:)];
+    panRecognizer.maximumNumberOfTouches = 1;
+    [_containerView addGestureRecognizer:panRecognizer];
+    
     
     int xIndex, yIndex;
     
@@ -180,5 +188,44 @@
     
     return dict;
 }
+
+-(void) panHandler:(UITapGestureRecognizer *)recognizer {
+//    NSLog(@"Pan handler");
+    CGPoint point = [recognizer locationInView:_containerView];
+    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSNumber *x = touchPoint[@"x"];
+    NSNumber *y = touchPoint[@"y"];
+    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+    
+    NSSet *matchingTiles;
+    
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        _vaildSwipe = YES;
+        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+        matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:firstTile];
+    }
+    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+        if (!_vaildSwipe) {
+            return;
+        }
+        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        if ([matchingTiles member:newTileTouched]) {
+            [tilesTouched addObject:newTileTouched];
+        } else {
+            _vaildSwipe = NO;
+            return;
+        }
+    }
+    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        if (!_vaildSwipe) {
+            NSLog(@"Invalid swipe");
+            return;
+        }
+        NSLog(@"Valid swipe, tiles touched: %@", tilesTouched);
+    }
+    
+}
+
+
 
 @end

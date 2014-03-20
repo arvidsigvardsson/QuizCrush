@@ -5,7 +5,7 @@
 	<key>Number of tiles required to match</key>
 	<integer>2</integer>
 	<key>Number of rows and columns</key>
-	<integer>9</integer>
+	<integer>6</integer>
 	<key>Animation duration</key>
 	<string>0.5</string>
 	<key>Falling animation duration</key>
