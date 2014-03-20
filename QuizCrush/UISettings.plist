@@ -9,7 +9,7 @@
 	<key>Animation duration</key>
 	<string>0.5</string>
 	<key>Falling animation duration</key>
-	<real>0.2</real>
+	<real>0.4</real>
 	<key>Number of categories</key>
 	<integer>6</integer>
 </dict>
