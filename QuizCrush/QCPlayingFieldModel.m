@@ -55,7 +55,6 @@
 }
 
 -(NSNumber *) nextCategory {
-    return @2;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -263,7 +262,7 @@
         NSSet *shiftSet = [self findTilesAboveID:key];
         
         
-        [self shiftTilesDown:shiftSet];
+//        [self shiftTilesDown:shiftSet];
         
         for (NSNumber *IDFromSet in shiftSet) {
             if (transDict[IDFromSet]) {
@@ -276,7 +275,12 @@
         }
     }
     
-    
+    // move tiles in model
+    for (NSNumber *transKey in transDict) {
+        QCTile *transTile = _tileDict[transKey];
+        int newY = [transTile.y intValue] + [transDict[transKey] intValue];
+        transTile.y = [NSNumber numberWithInt:newY];
+    }
     
     // removeTiles
     for (NSNumber *thirdKey in removeSet) {
@@ -287,6 +291,14 @@
     
     // remove id of removed tiles from return dict
     [transDict removeObjectsForKeys:[removeSet allObjects]];
+    
+    // test
+//    for (NSNumber *makeSureKey in _tileDict) {
+//        QCTile *makeSureTile = [self tileWithID:makeSureKey];
+//        NSLog(@"Tile with ID: %@, x: %@, y: %@, category: %@", makeSureTile.iD, makeSureTile.x, makeSureTile.y, makeSureTile.category);
+//    }
+//    
+    
     return  transDict;
 }
 

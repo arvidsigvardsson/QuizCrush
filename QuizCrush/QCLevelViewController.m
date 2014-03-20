@@ -82,20 +82,27 @@
 
 
 -(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
+    NSLog(@"Click detected");
+    
     if (_animating) {
         return;
     }
     
     CGPoint point = [recognizer locationInView:_containerView];
-    NSNumber *index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    if ([index intValue] == -1) {
-        return;
-    }
+//    NSNumber *index = [self arrayIndexForX:point.x y:point.y numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    if ([index intValue] == -1) {
+//        return;
+//    }
   
-    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:index];
+    NSDictionary *posDict = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSNumber *IDTileClicked = [_playingFieldModel iDOfTileAtX:posDict[@"x"] Y:posDict[@"y"]];
+    
+    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
     if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
         return;
     }
+    
+    NSLog(@"Selection set: %@", selectionSet);
     
     // identify if new tiles have been created and give them a view etc
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
@@ -127,7 +134,7 @@
     // dict with ids of tiles to move, with their corresponding moves
     NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
     
-    NSLog(@"AnimateDict: %@", animateDict);
+//    NSLog(@"AnimateDict: %@", animateDict);
 //    return;
     
     
@@ -179,6 +186,11 @@
     }completion:^(BOOL finished) {
         _animating = NO;
     }];
+    
+    
+    // test
+//    NSLog(<#NSString *format, ...#>)
+    
 }
 
 
@@ -200,6 +212,19 @@
     return [NSNumber numberWithInt:row + column * [numberOfRows intValue]];
 }
 
+-(NSDictionary *) gridPositionOfPoint: (CGPoint)point numberOfRows:(NSNumber *)numberOfRows lengthOfSides:(float)lengthOfSide {
+    int row, column;
+    
+    row = (int) floorf(point.x / lengthOfSide);
+    column = (int) floorf(point.y / lengthOfSide);
+    
+    if (row >= [numberOfRows intValue] || column >= [numberOfRows intValue]) {
+        return nil;
+    }
 
+    NSDictionary *dict = @{@"x" : [NSNumber numberWithInt:row], @"y" : [NSNumber numberWithInt:column]};
+    
+    return dict;
+}
 
 @end
