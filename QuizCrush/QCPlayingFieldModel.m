@@ -311,5 +311,31 @@
     return  transDict;
 }
 
+-(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction {
+    QCTile *tile = [self tileWithID:ID];
+    int x = [tile.x intValue];
+    int y = [tile.y intValue];
+    
+    if ([direction isEqualToString:@"up"]) {
+        y -= 1;
+    } else if ([direction isEqualToString:@"right"]) {
+        x += 1;
+    } else if ([direction isEqualToString:@"down"]) {
+        y += 1;
+    } else if ([direction isEqualToString:@"left"]) {
+        x -= 1;
+    } else {
+        return nil;
+    }
+    
+    NSDictionary *dict = [[NSDictionary alloc] initWithObjects:@[[NSNumber numberWithInt:x], [NSNumber numberWithInt:y]] forKeys:@[@"x", @"y"]];
+    return dict;
+}
+
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tile InDirection:(NSString *) direction {
+    return nil;
+}
+
+
     
 @end
