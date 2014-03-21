@@ -203,6 +203,8 @@
 
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
+        [self unMarkTiles:_tilesTouched];
+        [_tilesTouched removeAllObjects];
         _vaildSwipe = YES;
 //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
@@ -244,13 +246,36 @@
             [_tilesTouched removeAllObjects];
             return;
         }
+        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+            NSLog(@"Invalid swipe, not enough tiles swiped!");
+            [_tilesTouched removeAllObjects];
+            return;
+        }
         NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
-        [_tilesTouched removeAllObjects];
+        [self markTiles:_tilesTouched];
+//        [_tilesTouched removeAllObjects];
     }
 
 //    NSLog(@"Tiles touched: %@", _tilesTouched);
 }
 
+-(void) markTiles:(NSSet *) set  {
+    if (!set) {
+        return;
+    }
+    for (NSNumber *key in set) {
+        [_viewDictionary[key] setBackgroundColor:[UIColor blackColor]];
+    }
+}
 
+-(void) unMarkTiles:(NSSet *) set {
+    if (!set) {
+        return;
+    }
+    for (NSNumber *key in set) {
+        int color = [[_playingFieldModel categoryOfTileWithID:key] intValue];
+        [_viewDictionary[key] setBackgroundColor:_colorArray[color]];
+    }
 
+}
 @end
