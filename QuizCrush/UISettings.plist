@@ -14,5 +14,7 @@
 	<integer>6</integer>
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
+	<key>Alpha of selected tile</key>
+	<real>0.5</real>
 </dict>
 </plist>

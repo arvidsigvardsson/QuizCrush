@@ -268,7 +268,7 @@
         return;
     }
     for (NSNumber *key in set) {
-        [_viewDictionary[key] setAlpha:0.5];
+        [_viewDictionary[key] setAlpha:[_uiSettingsDictionary[@"Alpha of selected tile"] floatValue]];
     }
 }
 
