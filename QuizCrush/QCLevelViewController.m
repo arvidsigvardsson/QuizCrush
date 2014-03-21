@@ -204,6 +204,7 @@
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
+        NSLog(@"Unmarking tiles: %@", _tilesTouched);
         [_tilesTouched removeAllObjects];
         _vaildSwipe = YES;
 //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
@@ -236,6 +237,7 @@
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
         _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
+        [self markTiles:_tilesTouched];
         // TODO store the move, figure out how to deal with if user backtracks on valid tiles
         
         
@@ -264,7 +266,7 @@
         return;
     }
     for (NSNumber *key in set) {
-        [_viewDictionary[key] setBackgroundColor:[UIColor blackColor]];
+        [_viewDictionary[key] setAlpha:0.5];
     }
 }
 
@@ -273,8 +275,9 @@
         return;
     }
     for (NSNumber *key in set) {
-        int color = [[_playingFieldModel categoryOfTileWithID:key] intValue];
-        [_viewDictionary[key] setBackgroundColor:_colorArray[color]];
+//        int color = [[_playingFieldModel categoryOfTileWithID:key] intValue];
+//        [_viewDictionary[key] setBackgroundColor:_colorArray[color]];
+        [_viewDictionary[key] setAlpha:1.0];
     }
 
 }
