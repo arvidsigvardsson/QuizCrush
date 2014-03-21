@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "QCTile.h"
+#import "QCMoveDescription.h"
+
 
 @interface QCPlayingFieldModel : NSObject
 

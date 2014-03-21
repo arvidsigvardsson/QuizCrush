@@ -242,16 +242,16 @@
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (!_vaildSwipe) {
-            NSLog(@"Invalid swipe");
+//            NSLog(@"Invalid swipe");
             [_tilesTouched removeAllObjects];
             return;
         }
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
-            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//            NSLog(@"Invalid swipe, not enough tiles swiped!");
             [_tilesTouched removeAllObjects];
             return;
         }
-        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+//        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
         [self markTiles:_tilesTouched];
 //        [_tilesTouched removeAllObjects];
     }
