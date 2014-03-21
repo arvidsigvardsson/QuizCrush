@@ -22,8 +22,9 @@
 @property NSNumber *tilesRequiredToMatch;
 @property BOOL animating;
 @property BOOL vaildSwipe;
-
-
+@property NSMutableSet *tilesTouched;
+@property NSSet *matchingTiles;
+@property NSNumber *currentTileTouched;
 
 @end
 
@@ -51,7 +52,9 @@
 //    _viewArray = [[NSMutableArray alloc] init];
     _viewDictionary = [[NSMutableDictionary alloc] init];
     
+    // swipe handling properties
     _animating = NO;
+    _tilesTouched = [[NSMutableSet alloc] init];
     
 //    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
 //    [_containerView addGestureRecognizer:recognizer];
@@ -195,35 +198,57 @@
     NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
     NSNumber *x = touchPoint[@"x"];
     NSNumber *y = touchPoint[@"y"];
-    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+//    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
     
-    NSSet *matchingTiles;
+
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         _vaildSwipe = YES;
-        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
-        matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:firstTile];
+//        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        [_tilesTouched addObject:_currentTileTouched];
+        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+//        NSLog(@"State began, possible matches: %@", _matchingTiles);
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
         if (!_vaildSwipe) {
             return;
         }
         NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        if ([matchingTiles member:newTileTouched]) {
-            [tilesTouched addObject:newTileTouched];
-        } else {
+        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+            return;
+        }
+        if (![_matchingTiles member:newTileTouched]) {
             _vaildSwipe = NO;
             return;
         }
+        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+            _vaildSwipe = NO;
+            return;
+        }
+        // prevent player from moving backwards, ie retouch an already touched tile
+        if ([_tilesTouched member:newTileTouched]) {
+            _vaildSwipe = NO;
+            return;
+        }
+        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
+        _currentTileTouched = newTileTouched;
+        [_tilesTouched addObject:newTileTouched];
+        // TODO store the move, figure out how to deal with if user backtracks on valid tiles
+        
+        
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (!_vaildSwipe) {
             NSLog(@"Invalid swipe");
+            [_tilesTouched removeAllObjects];
             return;
         }
-        NSLog(@"Valid swipe, tiles touched: %@", tilesTouched);
+        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+        [_tilesTouched removeAllObjects];
     }
-    
+
+//    NSLog(@"Tiles touched: %@", _tilesTouched);
 }
 
 

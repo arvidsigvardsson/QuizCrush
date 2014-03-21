@@ -57,6 +57,18 @@
 ////    NSNumber *ID = @18;
 ////    ////}
 
+-(void) testOfTilesAreAdjacentID1ID2 {
+    QCPlayingFieldModel *model = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:@5];
+    XCTAssertTrue([model tilesAreAdjacentID1:@0 ID2:@1], @"Tiles 0 and 1 are adjacent");
+    XCTAssertTrue([model tilesAreAdjacentID1:@3 ID2:@8], @"Tiles 3 and 8 are adjacent");
+    XCTAssertTrue([model tilesAreAdjacentID1:@12 ID2:@11], @"Tiles 12 and 11 are adjacent");
+    XCTAssertTrue([model tilesAreAdjacentID1:@14 ID2:@9], @"Tiles 14 and 9 are adjacent");
+    XCTAssertFalse([model tilesAreAdjacentID1:@0 ID2:@6], @"Tiles 0 and 6 are not adjacent");
+    XCTAssertFalse([model tilesAreAdjacentID1:@4 ID2:@5], @"Tiles 4 and 5 are not adjacent");
+}
+
+
+
 @end
 
 

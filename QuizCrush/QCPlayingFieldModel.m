@@ -128,10 +128,18 @@
     return [self iDOfTileAtX:[tile x] Y:[NSNumber numberWithInt:y]];
 }
 
--(NSNumber *) iDOfTileBelowfTile:(NSNumber *) iD {
+-(NSNumber *) iDOfTileBelowOfTile:(NSNumber *) iD {
     QCTile *tile = [self tileWithID:iD];
     int y = [[tile y] intValue] + 1;
     return [self iDOfTileAtX:[tile x] Y:[NSNumber numberWithInt:y]];
+}
+
+-(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID {
+    if ([[self iDOfTileRightOfTile:tile1ID] isEqualToNumber:tile2ID] || [[self iDOfTileLeftOfTile:tile1ID] isEqualToNumber:tile2ID] || [[self iDOfTileAboveTile:tile1ID] isEqualToNumber:tile2ID] || [[self iDOfTileBelowOfTile:tile1ID] isEqualToNumber:tile2ID]) {
+        return YES;
+    } else {
+        return NO;
+    }
 }
 
 -(void) recursionSelectionForID:(NSNumber *) iD category:(NSNumber *) category withSet:(NSMutableSet *) set {
@@ -165,7 +173,7 @@
     }
     
     // look below
-    NSNumber *iDBelow = [self iDOfTileBelowfTile:iD];
+    NSNumber *iDBelow = [self iDOfTileBelowOfTile:iD];
     if (![set member:iDBelow] && iDBelow) {
         NSNumber *catBelow = [self categoryOfTileWithID:iDBelow];
         if ([category isEqual:catBelow]) {

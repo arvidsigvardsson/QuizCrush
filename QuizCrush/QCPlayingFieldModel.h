@@ -18,5 +18,6 @@
 -(QCTile *) tileWithID:(NSNumber *) iD;
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
 -(NSSet *) getNewTilesReplacing:(NSSet *) set;
+-(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
 
 @end
