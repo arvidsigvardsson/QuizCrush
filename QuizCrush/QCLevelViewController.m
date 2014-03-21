@@ -245,11 +245,13 @@
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (!_vaildSwipe) {
             NSLog(@"Invalid swipe");
+            [self unMarkTiles:_tilesTouched];
             [_tilesTouched removeAllObjects];
             return;
         }
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
+            [self unMarkTiles:_tilesTouched];
             [_tilesTouched removeAllObjects];
             return;
         }
