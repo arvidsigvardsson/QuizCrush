@@ -22,5 +22,6 @@
 -(NSSet *) getNewTilesReplacing:(NSSet *) set;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
 -(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tile InDirection:(NSString *) direction;
+-(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
 
 @end

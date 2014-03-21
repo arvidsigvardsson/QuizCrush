@@ -13,7 +13,7 @@
 @interface QCMoveDescription : NSObject
 
 @property NSMutableDictionary *moveDict;
-@property NSNumber *newTile;
+@property NSNumber *createdTile;
 @property NSNumber *tileToDelete;
 
 @end

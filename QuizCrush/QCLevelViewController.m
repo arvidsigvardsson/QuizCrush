@@ -200,7 +200,15 @@
     NSNumber *y = touchPoint[@"y"];
 //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
     
-
+    // test
+    NSNumber *testID = [_playingFieldModel iDOfTileAtX:x Y:y];
+    NSArray *testArray = @[@"up", @"right", @"below", @"left"];
+    for (NSDictionary *testDict in testArray) {
+        NSLog(@"Position above: %@", testDict);
+    }
+    
+    
+    
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
