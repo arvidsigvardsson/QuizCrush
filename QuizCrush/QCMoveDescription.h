@@ -11,9 +11,9 @@
 #import <Foundation/Foundation.h>
 
 @interface QCMoveDescription : NSObject
-
+-(id) init;
 @property NSMutableDictionary *moveDict;
-@property NSNumber *createdTile;
+@property NSNumber *createdTileID;
 @property NSNumber *tileToDelete;
 
 @end

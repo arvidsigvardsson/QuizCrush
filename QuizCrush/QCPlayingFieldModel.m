@@ -332,8 +332,86 @@
     return dict;
 }
 
--(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tile InDirection:(NSString *) direction {
-    return nil;
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction {
+    if (!tileID || !direction) {
+        return nil;
+    }
+    
+    // xMove and yMove are reverse of direction
+    int xMove, yMove;
+    if ([direction isEqualToString:@"up"]) {
+        xMove = 0;
+        yMove = 1;
+    } else if ([direction isEqualToString:@"right"]) {
+        xMove = -1;
+        yMove = 0;
+    } else if ([direction isEqualToString:@"down"]) {
+        xMove = 0;
+        yMove = -1;
+    } else if ([direction isEqualToString:@"left"]) {
+        xMove = 1;
+        yMove = 0;
+    } else {
+        return nil;
+    }
+    
+    QCMoveDescription *move = [[QCMoveDescription alloc] init];
+    move.tileToDelete = tileID;
+    
+    
+    QCTile *startTile = _tileDict[tileID];
+    int x = [startTile.x intValue];
+    int y = [startTile.y intValue];
+    NSNumber *iterID;
+    
+    while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
+        iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
+        [move.moveDict setObject:direction forKey:iterID];
+        x += xMove;
+        y += yMove;
+    }
+    
+    // create new tile at (x,y) and add to move and model and createdTile
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory] iD:[self nextID] x:[NSNumber numberWithInt:x] y:[NSNumber numberWithInt:y]];
+    [_tileDict setObject:newTile forKey:newTile.iD];
+    
+    [move.moveDict setObject:direction forKey:newTile.iD];
+    move.createdTileID = newTile.iD;
+    return move;
+    
+}
+
+-(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd {
+    QCTile *startTile = [self tileWithID:IDStart];
+    QCTile *endTile = [self tileWithID:IDEnd];
+    if(!startTile || !endTile || [IDStart isEqualToNumber:IDEnd]) {
+        return nil;
+    }
+    
+    int startX = [startTile.x intValue];
+    int startY = [startTile.y intValue];
+    int endX = [endTile.x intValue];
+    int endY = [endTile.y intValue];
+    
+    if (startX == endX) {
+        if (startY > endY) {
+            return @"up";
+        } else if (startY < endY) {
+            return @"down";
+        } else {
+            return nil;
+        }
+    } else if (startY == endY) {
+        if (startX < endX) {
+            return @"right";
+        } else if (startX > endX) {
+            return @"left";
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
 }
 
 

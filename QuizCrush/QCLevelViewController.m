@@ -25,6 +25,8 @@
 @property NSMutableSet *tilesTouched;
 @property NSSet *matchingTiles;
 @property NSNumber *currentTileTouched;
+@property NSMutableArray *moveArray;
+@property NSString *moveDirection;
 
 @end
 
@@ -55,15 +57,21 @@
     // swipe handling properties
     _animating = NO;
     _tilesTouched = [[NSMutableSet alloc] init];
+    _moveArray = [[NSMutableArray alloc] init];
+    _moveDirection = [[NSString alloc] init];
     
 //    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
 //    [_containerView addGestureRecognizer:recognizer];
     
-    // testing pan action
+    // pan action
     
     UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panHandler:)];
     panRecognizer.maximumNumberOfTouches = 1;
     [_containerView addGestureRecognizer:panRecognizer];
+    
+    // tap gesture for testing
+//    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTestingHandler:)];
+//    [_containerView addGestureRecognizer:tapRec];
     
     
     int xIndex, yIndex;
@@ -200,12 +208,6 @@
     NSNumber *y = touchPoint[@"y"];
 //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
     
-    // test
-    NSNumber *testID = [_playingFieldModel iDOfTileAtX:x Y:y];
-    NSArray *testArray = @[@"up", @"right", @"below", @"left"];
-    for (NSDictionary *testDict in testArray) {
-        NSLog(@"Position above: %@", testDict);
-    }
     
     
     
@@ -213,6 +215,8 @@
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
         [_tilesTouched removeAllObjects];
+        [_moveArray removeAllObjects];
+        
         _vaildSwipe = YES;
 //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
@@ -242,6 +246,19 @@
             return;
         }
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
+        
+        // test
+//        NSLog(@"Direction swiped: %@", [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched]);
+//        _vaildSwipe = NO;
+//        return;
+        
+        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
+        
+        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+        if (move) {
+            [_moveArray addObject:move];
+        }
+        
         _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
         // TODO store the move, figure out how to deal with if user backtracks on valid tiles
@@ -252,16 +269,31 @@
         if (!_vaildSwipe) {
 //            NSLog(@"Invalid swipe");
             [_tilesTouched removeAllObjects];
+            [_moveArray removeAllObjects];
             return;
         }
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
 //            NSLog(@"Invalid swipe, not enough tiles swiped!");
             [_tilesTouched removeAllObjects];
+            [_moveArray removeAllObjects];
             return;
         }
 //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
         [self markTiles:_tilesTouched];
+        
+        // make final move
+        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+        [_moveArray addObject:finalMove];
+        
+        
 //        [_tilesTouched removeAllObjects];
+//        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
+        for (QCMoveDescription *moveInspect in _moveArray) {
+            NSLog(@"%@", moveInspect);
+        }
+        
+        [self performAndAnimateMoves:_moveArray];
+        
     }
 
 //    NSLog(@"Tiles touched: %@", _tilesTouched);
@@ -286,4 +318,41 @@
     }
 
 }
+
+-(void) performAndAnimateMoves:(NSArray *) moves {
+    // remove deleted tiles
+    for (QCMoveDescription *deleteMove in moves) {
+        NSNumber *deleteID = deleteMove.tileToDelete;
+        [_viewDictionary[deleteID] removeFromSuperview];
+        [_viewDictionary removeObjectForKey:deleteID];
+    }
+    
+    // animation, one move at a time
+//    for (QCMoveDescription *move in moves) {
+//    
+//        
+//        
+//        
+//        
+//    }
+}
+
+
+
+
+//-(void) tapTestingHandler:(UITapGestureRecognizer *) recognizer {
+//    CGPoint point = [recognizer locationInView:_containerView];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSNumber *x = touchPoint[@"x"];
+//    NSNumber *y = touchPoint[@"y"];
+//    
+//    NSNumber *testID = [_playingFieldModel iDOfTileAtX:x Y:y];
+//    NSArray *testArray = @[@"up", @"right", @"down", @"left"];
+//    NSLog(@"Point is %@, %@", x, y);
+//    for (NSString *testString in testArray) {
+//        NSDictionary *testPoint = [_playingFieldModel positionOneStepFromID:testID inDirection:testString];
+//        NSLog(@"Position %@ is %@", testString, testPoint);
+//    }
+//
+//}
 @end

@@ -21,7 +21,8 @@
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
 -(NSSet *) getNewTilesReplacing:(NSSet *) set;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
--(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tile InDirection:(NSString *) direction;
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
 -(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
+-(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
 
 @end
