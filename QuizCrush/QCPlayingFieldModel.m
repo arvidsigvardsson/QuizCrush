@@ -366,16 +366,26 @@
     int rows = [_noRowsAndCols intValue];
     int columns = [_noRowsAndCols intValue];
     
-    //while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
-    while (x >= 0 && x < columns && y >= 0 && y < rows) {
+    
+    // TODO HÄR LIGGER PROBLEMET JUST NU
+//    while (x >= 0 && x < columns && y >= 0 && y < rows) {
+    while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
         iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
         [move.moveDict setObject:direction forKey:iterID];
         x += xMove;
         y += yMove;
     }
     
-    // create new tile at (x,y) and add to move and model and createdTile
-    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory] iD:[self nextID] x:[NSNumber numberWithInt:x] y:[NSNumber numberWithInt:y]];
+    // create new tile at (xCreate,yCreate) and add to move and model and createdTile
+    int xCreate = [startTile.x intValue];
+    int yCreate = [startTile.y intValue];
+
+    while (xCreate >= 0 && xCreate < columns && yCreate >= 0 && yCreate < rows) {
+        x += xMove;
+        y += yMove;
+    }
+    
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory] iD:[self nextID] x:[NSNumber numberWithInt:xCreate] y:[NSNumber numberWithInt:yCreate]];
     [_tileDict setObject:newTile forKey:newTile.iD];
     
     [move.moveDict setObject:direction forKey:newTile.iD];

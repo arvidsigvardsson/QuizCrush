@@ -5,7 +5,7 @@
 	<key>Number of tiles required to match</key>
 	<integer>2</integer>
 	<key>Number of rows and columns</key>
-	<integer>9</integer>
+	<integer>5</integer>
 	<key>Animation duration</key>
 	<string>0.5</string>
 	<key>Falling animation duration</key>
@@ -15,6 +15,6 @@
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
 	<key>Tile animation duration</key>
-	<real>0.4</real>
+	<real>0.2</real>
 </dict>
 </plist>
