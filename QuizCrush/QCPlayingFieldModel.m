@@ -357,14 +357,17 @@
     
     QCMoveDescription *move = [[QCMoveDescription alloc] init];
     move.tileToDelete = tileID;
-    
+    move.direction = direction;
     
     QCTile *startTile = _tileDict[tileID];
     int x = [startTile.x intValue];
     int y = [startTile.y intValue];
     NSNumber *iterID;
+    int rows = [_noRowsAndCols intValue];
+    int columns = [_noRowsAndCols intValue];
     
-    while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
+    //while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
+    while (x >= 0 && x < columns && y >= 0 && y < rows) {
         iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
         [move.moveDict setObject:direction forKey:iterID];
         x += xMove;

@@ -15,5 +15,6 @@
 @property NSMutableDictionary *moveDict;
 @property NSNumber *createdTileID;
 @property NSNumber *tileToDelete;
+@property NSString *direction;
 
 @end

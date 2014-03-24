@@ -34,6 +34,20 @@
 
 
 
+- (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
+{
+    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+    tile.layer.cornerRadius = 17.0;
+    tile.layer.masksToBounds = YES;
+    //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
+    NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
+    
+    UIColor *color = _colorArray[[category intValue]];
+    
+    [tile setBackgroundColor:color];
+    return tile;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -75,22 +89,17 @@
     
     
     int xIndex, yIndex;
+    NSNumber *iD;
     
     for (int i = 0; i < [_noRowsAndCols intValue] * [_noRowsAndCols intValue]; i++) {
         xIndex = i % [_noRowsAndCols intValue];
         yIndex = i / [_noRowsAndCols intValue];
         
-        NSNumber *iD = [NSNumber numberWithInt:i];
+        iD = [NSNumber numberWithInt:i];
         
-        UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        tile.layer.cornerRadius = 17.0;
-        tile.layer.masksToBounds = YES;
-//        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
-        NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
-        
-        UIColor *color = _colorArray[[category intValue]];
-        
-        [tile setBackgroundColor:color];
+        UIView *tile;
+//        tile = [self tileViewCreator:yIndex xIndex:xIndex iD:iD];
+        tile = [self tileViewCreatorXIndex:xIndex yIndex:yIndex iD:iD];
 //        [_viewArray addObject:tile];
         [_viewDictionary setObject:tile
                             forKey:iD];
@@ -327,17 +336,100 @@
         [_viewDictionary removeObjectForKey:deleteID];
     }
     
-    // animation, one move at a time
+    // create new views
+    for (QCMoveDescription *createNew in moves) {
+        QCTile *newTile = [_playingFieldModel tileWithID:createNew.createdTileID];
+        UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue]
+                                                   yIndex:[newTile.y intValue]
+                                                       iD:newTile.iD];
+        [_containerView addSubview:newTileView];
+        [_viewDictionary setObject:newTileView forKey:newTile.iD];
+    }
+    
+    [self recursionAnimation:moves index:0];
+    
+//    // animation, one move at a time
 //    for (QCMoveDescription *move in moves) {
-//    
+//        // first create new view
+//        QCTile *newTile = [_playingFieldModel tileWithID:move.createdTileID];
+//        UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue] yIndex:[newTile.y intValue] iD:newTile.iD];
+//        [_containerView addSubview:newTileView];
+//        [_viewDictionary setObject:newTileView forKey:newTile.iD];
 //        
+//        float xCenterDisplacement;
+//        float yCenterDisplacement;
+//        if ([move.direction isEqualToString:@"up"]) {
+//            xCenterDisplacement = 0;
+//            yCenterDisplacement = -_lengthOfTile;
+//        } else if ([move.direction isEqualToString:@"right"]) {
+//            xCenterDisplacement = _lengthOfTile;
+//            yCenterDisplacement = 0;
+//        } else if ([move.direction isEqualToString:@"down"]) {
+//            xCenterDisplacement = 0;
+//            yCenterDisplacement = _lengthOfTile;
+//        } else if ([move.direction isEqualToString:@"left"]) {
+//            xCenterDisplacement = -_lengthOfTile;
+//            yCenterDisplacement = 0;
+//        }
+//
 //        
-//        
+//        [UIView animateWithDuration:[_uiSettingsDictionary[@"Tile animation duration"] floatValue]
+//                         animations:^{
+//                             for (NSNumber *moveKey in move.moveDict) {
+//                                 UIView *aniView = _viewDictionary[moveKey];
+//                                 CGPoint newCenter = CGPointMake(aniView.center.x + xCenterDisplacement, aniView.center.y + yCenterDisplacement);
+//                                 [aniView setCenter:newCenter];                             }
+//
+//        }
+//                         completion:^(BOOL finished) {
+//            
+//        }];
+////        for (NSNumber *moveKey in move.moveDict) {
+////            
+////        }
 //        
 //    }
+    
+//    NSLog(@"Antal subviews: %lu", (unsigned long)[[_containerView subviews] count]);
 }
 
+-(void) recursionAnimation:(NSArray *)moves index:(int) index {
+    if (!(index < [moves count])) {
+        return;
+    }
+    
+    QCMoveDescription *move = moves[index];
+    
+    float xCenterDisplacement;
+    float yCenterDisplacement;
+    if ([move.direction isEqualToString:@"up"]) {
+        xCenterDisplacement = 0;
+        yCenterDisplacement = -_lengthOfTile;
+    } else if ([move.direction isEqualToString:@"right"]) {
+        xCenterDisplacement = _lengthOfTile;
+        yCenterDisplacement = 0;
+    } else if ([move.direction isEqualToString:@"down"]) {
+        xCenterDisplacement = 0;
+        yCenterDisplacement = _lengthOfTile;
+    } else if ([move.direction isEqualToString:@"left"]) {
+        xCenterDisplacement = -_lengthOfTile;
+        yCenterDisplacement = 0;
+    }
 
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Tile animation duration"] floatValue]
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         for (NSNumber *moveKey in move.moveDict) {
+                             UIView *aniView = _viewDictionary[moveKey];
+                             CGPoint newCenter = CGPointMake(aniView.center.x + xCenterDisplacement, aniView.center.y + yCenterDisplacement);
+                             [aniView setCenter:newCenter];                             }
+                         
+    }
+                     completion:^(BOOL finished) {
+        [self recursionAnimation:moves index:index + 1];
+    }];
+}
 
 
 //-(void) tapTestingHandler:(UITapGestureRecognizer *) recognizer {

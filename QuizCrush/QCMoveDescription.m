@@ -18,11 +18,12 @@
     _moveDict = [[NSMutableDictionary alloc] init];
     _createdTileID = [[NSNumber alloc] init];
     _tileToDelete = [[NSNumber alloc] init];
+    _direction = [[NSString alloc] init];
     
     return self;
 }
 
 -(NSString *) description {
-    return [NSString stringWithFormat:@"Move object, moveDict: %@, new item: %@, deleted item: %@", _moveDict, _createdTileID, _tileToDelete];
+    return [NSString stringWithFormat:@"Move object, direction of movement: %@ moveDict: %@, new item: %@, deleted item: %@", _direction, _moveDict, _createdTileID, _tileToDelete];
 }
 @end
