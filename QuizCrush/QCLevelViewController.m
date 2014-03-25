@@ -244,21 +244,21 @@
         if (![_matchingTiles member:newTileTouched]) {
             _vaildSwipe = NO;
             if (_moveArray) {
-                [self deleteTilesAtAbortedSwipe:_moveArray];
+                [self abortSwipeWithMoves:_moveArray];
             }
             return;
         }
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
             _vaildSwipe = NO;
             if (_moveArray) {
-                [self deleteTilesAtAbortedSwipe:_moveArray];
+                [self abortSwipeWithMoves:_moveArray];
             }
             return;
         }
         // prevent player from moving backwards, ie retouch an already touched tile
         if ([_tilesTouched member:newTileTouched]) {
             if (_moveArray) {
-                [self deleteTilesAtAbortedSwipe:_moveArray];
+                [self abortSwipeWithMoves:_moveArray];
             }
             _vaildSwipe = NO;
             return;
@@ -279,7 +279,6 @@
         
         _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
-        // TODO store the move, figure out how to deal with if user backtracks on valid tiles
         
         
     }
@@ -295,7 +294,7 @@
             [_tilesTouched removeAllObjects];
             [_moveArray removeAllObjects];
             if (_moveArray) {
-                [self deleteTilesAtAbortedSwipe:_moveArray];
+                [self abortSwipeWithMoves:_moveArray];
             }
             return;
         }
@@ -315,22 +314,24 @@
         
 //        NSLog(@"moveArray: %@", _moveArray);
         [self performAndAnimateMoves:_moveArray];
+        [_playingFieldModel updateModelWithMoves:_moveArray];
         
-           }
+    }
+    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
+        [self abortSwipeWithMoves:_moveArray];
+    }
+    else if (recognizer.state == UIGestureRecognizerStateFailed) {
+        [self abortSwipeWithMoves:_moveArray];        
+    }
 
 //    NSLog(@"Tiles touched: %@", _tilesTouched);
 }
 
--(void) deleteTilesAtAbortedSwipe:(NSArray *) arrayOfMoves {
-    NSLog(@"About to delete tiles, model first: %@", _playingFieldModel);
-    
-    NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
-    for (QCMoveDescription *iterator in arrayOfMoves) {
-        [deleteSet addObject:iterator.createdTileID];
+-(void) abortSwipeWithMoves:(NSArray *) arrayOfMoves {
+    if (!arrayOfMoves) {
+        return;
     }
-    
-    [_playingFieldModel deleteTiles:deleteSet];
-    NSLog(@"Model afetr deletion: %@", _playingFieldModel);
+    [_playingFieldModel swipeWasAbortedWithMoves:arrayOfMoves];
 }
 
 

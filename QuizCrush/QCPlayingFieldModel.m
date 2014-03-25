@@ -18,7 +18,18 @@
 @implementation QCPlayingFieldModel
 
 -(NSString *) description {
-    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
+    NSMutableString *string = [[NSMutableString alloc] init];
+    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
+        [string appendString:str];
+    }
+    return string;
+    
+    
+    
+//    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
 }
 
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *)rowsAndCols {
@@ -59,7 +70,7 @@
 }
 
 -(NSNumber *) nextCategory {
-//    return @4;
+//    return @3;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -412,7 +423,14 @@
         yCreate += yMove;
     }
     
-    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory] iD:[self nextID] x:[NSNumber numberWithInt:xCreate] y:[NSNumber numberWithInt:yCreate]];
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                    iD:[self nextID]
+                                                     x:[NSNumber numberWithInt:xCreate]
+                                                     y:[NSNumber numberWithInt:yCreate]];
+    newTile.xDuringMotion = [NSNumber numberWithInt:[newTile.xDuringMotion intValue] - xMove];
+    newTile.yDuringMotion = [NSNumber numberWithInt:[newTile.yDuringMotion intValue] - yMove];
+
+    newTile.hasBeenMoved = YES;
     [_tileDict setObject:newTile forKey:newTile.iD];
     
     [move.moveDict setObject:direction forKey:newTile.iD];
@@ -470,10 +488,12 @@
     }
     
     // update moved tiles
-    for (QCTile *tile in _tileDict) {
-        if (tile.hasBeenMoved) {
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile hasBeenMoved]) {
             tile.x = tile.xDuringMotion;
             tile.y = tile.yDuringMotion;
+            tile.hasBeenMoved = NO;
         }
     }
     // remove deleted tiles
@@ -483,6 +503,26 @@
         }
     }
     
+}
+
+-(void) swipeWasAbortedWithMoves:(NSArray *) moveArray {
+    if (!moveArray) {
+        return;
+    }
+    NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
+    for (QCMoveDescription *move in moveArray) {
+        [deleteSet addObject:move.tileToDelete];
+    }
+    [self deleteTiles:deleteSet];
+    
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if (tile.hasBeenMoved) {
+            tile.xDuringMotion = tile.x;
+            tile.yDuringMotion = tile.y;
+            tile.hasBeenMoved = NO;
+        }
+    }
 }
 
 @end

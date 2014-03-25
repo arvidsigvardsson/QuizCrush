@@ -26,5 +26,6 @@
 -(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
 -(void) deleteTiles:(NSSet *) IDsToDelete;
 -(void) updateModelWithMoves:(NSArray *) moveArray;
+-(void) swipeWasAbortedWithMoves:(NSArray *) moveArray;
 
 @end
