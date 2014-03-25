@@ -29,6 +29,7 @@
         _y = y;
         _xDuringMotion = x;
         _yDuringMotion = y;
+        _hasBeenMoved = NO;
     }
     return self;
 

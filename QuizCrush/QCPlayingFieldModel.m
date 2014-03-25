@@ -59,7 +59,7 @@
 }
 
 -(NSNumber *) nextCategory {
-    return @4;
+//    return @4;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -105,14 +105,14 @@
     return nil;
 }
 
--(NSSet *) IDsAtX:(NSNumber *) x AtY:(NSNumber *) y {
+-(NSSet *) IDsDuringMoveAtX:(NSNumber *) x AtY:(NSNumber *) y {
     if (!x || !y) {
         return nil;
     }
     NSMutableSet *returnSet = [[NSMutableSet alloc] init];
     for (NSNumber *key in _tileDict) {
         QCTile *tile = _tileDict[key];
-        if ([tile.x isEqualToNumber:x] && [tile.y isEqualToNumber:y]) {
+        if ([tile.xDuringMotion isEqualToNumber:x] && [tile.yDuringMotion isEqualToNumber:y]) {
             [returnSet addObject:key];
         }
     }
@@ -387,14 +387,17 @@
     int columns = [_noRowsAndCols intValue];
     
     
-    // TODO HÄR LIGGER PROBLEMET JUST NU
-//    while (x >= 0 && x < columns && y >= 0 && y < rows) {
     while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
 //        iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
 //        [move.moveDict setObject:direction forKey:iterID];
-        iterSet = [self IDsAtX:[NSNumber numberWithInt:x] AtY:[NSNumber numberWithInt:y]];
+        iterSet = [self IDsDuringMoveAtX:[NSNumber numberWithInt:x] AtY:[NSNumber numberWithInt:y]];
         for (NSNumber *iterKey in iterSet) {
+            QCTile *moveTile = _tileDict[iterKey];
+            moveTile.hasBeenMoved = YES;
+            moveTile.xDuringMotion = [NSNumber numberWithInt:[moveTile.xDuringMotion intValue] - xMove];
+            moveTile.yDuringMotion = [NSNumber numberWithInt:[moveTile.yDuringMotion intValue] - yMove];
             [move.moveDict setObject:direction forKey:iterKey];
+            
         }
         x += xMove;
         y += yMove;
@@ -466,9 +469,20 @@
         return;
     }
     
-    for (QCMoveDescription *move in moveArray) {
-        
+    // update moved tiles
+    for (QCTile *tile in _tileDict) {
+        if (tile.hasBeenMoved) {
+            tile.x = tile.xDuringMotion;
+            tile.y = tile.yDuringMotion;
+        }
     }
+    // remove deleted tiles
+    for (QCMoveDescription *move in moveArray) {
+        if (move.tileToDelete) {
+            [_tileDict removeObjectForKey:move.tileToDelete];
+        }
+    }
+    
 }
 
 @end
