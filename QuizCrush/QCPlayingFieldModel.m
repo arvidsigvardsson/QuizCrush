@@ -17,6 +17,10 @@
 
 @implementation QCPlayingFieldModel
 
+-(NSString *) description {
+    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
+}
+
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *)rowsAndCols {
     if(!(self = [super init])){
         return self;
@@ -55,7 +59,7 @@
 }
 
 -(NSNumber *) nextCategory {
-//    return @4;
+    return @4;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -100,6 +104,21 @@
     
     return nil;
 }
+
+-(NSSet *) IDsAtX:(NSNumber *) x AtY:(NSNumber *) y {
+    if (!x || !y) {
+        return nil;
+    }
+    NSMutableSet *returnSet = [[NSMutableSet alloc] init];
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile.x isEqualToNumber:x] && [tile.y isEqualToNumber:y]) {
+            [returnSet addObject:key];
+        }
+    }
+    return returnSet;
+}
+
 
 -(QCTile *) tileAtX:(NSNumber *) x Y:(NSNumber *) y {
     return _tileDict[[self iDOfTileAtX:x Y:y]];
@@ -362,7 +381,8 @@
     QCTile *startTile = _tileDict[tileID];
     int x = [startTile.x intValue];
     int y = [startTile.y intValue];
-    NSNumber *iterID;
+//    NSNumber *iterID;
+    NSSet *iterSet;
     int rows = [_noRowsAndCols intValue];
     int columns = [_noRowsAndCols intValue];
     
@@ -370,8 +390,12 @@
     // TODO HÄR LIGGER PROBLEMET JUST NU
 //    while (x >= 0 && x < columns && y >= 0 && y < rows) {
     while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
-        iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
-        [move.moveDict setObject:direction forKey:iterID];
+//        iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
+//        [move.moveDict setObject:direction forKey:iterID];
+        iterSet = [self IDsAtX:[NSNumber numberWithInt:x] AtY:[NSNumber numberWithInt:y]];
+        for (NSNumber *iterKey in iterSet) {
+            [move.moveDict setObject:direction forKey:iterKey];
+        }
         x += xMove;
         y += yMove;
     }
@@ -427,6 +451,24 @@
     }
 }
 
-
+-(void) deleteTiles:(NSSet *) IDsToDelete {
+    if (!IDsToDelete) {
+        return;
+    }
     
+    for (NSNumber *key in IDsToDelete) {
+        [_tileDict removeObjectForKey:key];
+    }
+}
+
+-(void) updateModelWithMoves:(NSArray *) moveArray {
+    if (!moveArray) {
+        return;
+    }
+    
+    for (QCMoveDescription *move in moveArray) {
+        
+    }
+}
+
 @end

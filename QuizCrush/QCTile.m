@@ -27,6 +27,8 @@
         _iD = iD;
         _x = x;
         _y = y;
+        _xDuringMotion = x;
+        _yDuringMotion = y;
     }
     return self;
 

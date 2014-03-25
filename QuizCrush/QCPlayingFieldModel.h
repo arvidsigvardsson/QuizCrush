@@ -24,5 +24,7 @@
 -(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
 -(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
 -(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
+-(void) deleteTiles:(NSSet *) IDsToDelete;
+-(void) updateModelWithMoves:(NSArray *) moveArray;
 
 @end

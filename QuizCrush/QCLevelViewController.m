@@ -216,7 +216,7 @@
     NSNumber *x = touchPoint[@"x"];
     NSNumber *y = touchPoint[@"y"];
 //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-    NSLog(@"Touchpoint: %@", touchPoint);
+//    NSLog(@"Touchpoint: %@", touchPoint);
     
     
     
@@ -243,14 +243,23 @@
         }
         if (![_matchingTiles member:newTileTouched]) {
             _vaildSwipe = NO;
+            if (_moveArray) {
+                [self deleteTilesAtAbortedSwipe:_moveArray];
+            }
             return;
         }
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
             _vaildSwipe = NO;
+            if (_moveArray) {
+                [self deleteTilesAtAbortedSwipe:_moveArray];
+            }
             return;
         }
         // prevent player from moving backwards, ie retouch an already touched tile
         if ([_tilesTouched member:newTileTouched]) {
+            if (_moveArray) {
+                [self deleteTilesAtAbortedSwipe:_moveArray];
+            }
             _vaildSwipe = NO;
             return;
         }
@@ -285,6 +294,9 @@
 //            NSLog(@"Invalid swipe, not enough tiles swiped!");
             [_tilesTouched removeAllObjects];
             [_moveArray removeAllObjects];
+            if (_moveArray) {
+                [self deleteTilesAtAbortedSwipe:_moveArray];
+            }
             return;
         }
 //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
@@ -297,17 +309,30 @@
         
 //        [_tilesTouched removeAllObjects];
 //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
-//        for (QCMoveDescription *moveInspect in _moveArray) {
-//            NSLog(@"%@", moveInspect);
-//        }
+        for (QCMoveDescription *moveInspect in _moveArray) {
+            NSLog(@"%@", moveInspect);
+        }
         
-        NSLog(@"moveArray: %@", _moveArray);
+//        NSLog(@"moveArray: %@", _moveArray);
         [self performAndAnimateMoves:_moveArray];
         
-    }
+           }
 
 //    NSLog(@"Tiles touched: %@", _tilesTouched);
 }
+
+-(void) deleteTilesAtAbortedSwipe:(NSArray *) arrayOfMoves {
+    NSLog(@"About to delete tiles, model first: %@", _playingFieldModel);
+    
+    NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
+    for (QCMoveDescription *iterator in arrayOfMoves) {
+        [deleteSet addObject:iterator.createdTileID];
+    }
+    
+    [_playingFieldModel deleteTiles:deleteSet];
+    NSLog(@"Model afetr deletion: %@", _playingFieldModel);
+}
+
 
 -(void) markTiles:(NSSet *) set  {
     if (!set) {
