@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import "QCTile.h"
+#import "QCMoveDescription.h"
+
 
 @interface QCPlayingFieldModel : NSObject
 
@@ -19,5 +21,11 @@
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
 -(NSSet *) getNewTilesReplacing:(NSSet *) set;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
+-(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
+-(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
+-(void) deleteTiles:(NSSet *) IDsToDelete;
+-(void) updateModelWithMoves:(NSArray *) moveArray;
+-(void) swipeWasAbortedWithMoves:(NSArray *) moveArray;
 
 @end

@@ -14,6 +14,9 @@
 @property NSNumber *iD;
 @property NSNumber *x;
 @property NSNumber *y;
+@property NSNumber *xDuringMotion;
+@property NSNumber *yDuringMotion;
+@property BOOL hasBeenMoved;
 
 -(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) iD;
 -(id) initWithCategory:(NSNumber *) category iD:(NSNumber *) iD x:(NSNumber *) x y:(NSNumber *) y;

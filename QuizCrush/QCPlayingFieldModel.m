@@ -17,6 +17,23 @@
 
 @implementation QCPlayingFieldModel
 
+-(NSString *) description {
+    NSMutableString *string = [[NSMutableString alloc] init];
+    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+//        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
+//        [string appendString:str];
+        [string appendFormat:@"x = %@, y = %@,\n", tile.x, tile.y];
+        
+    }
+    return string;
+    
+    
+    
+//    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
+}
+
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *)rowsAndCols {
     if(!(self = [super init])){
         return self;
@@ -55,7 +72,7 @@
 }
 
 -(NSNumber *) nextCategory {
-//    return @4;
+//    return @3;
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
@@ -100,6 +117,21 @@
     
     return nil;
 }
+
+-(NSSet *) IDsDuringMoveAtX:(NSNumber *) x AtY:(NSNumber *) y {
+    if (!x || !y) {
+        return nil;
+    }
+    NSMutableSet *returnSet = [[NSMutableSet alloc] init];
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile.xDuringMotion isEqualToNumber:x] && [tile.yDuringMotion isEqualToNumber:y]) {
+            [returnSet addObject:key];
+        }
+    }
+    return returnSet;
+}
+
 
 -(QCTile *) tileAtX:(NSNumber *) x Y:(NSNumber *) y {
     return _tileDict[[self iDOfTileAtX:x Y:y]];
@@ -311,5 +343,190 @@
     return  transDict;
 }
 
+-(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction {
+    QCTile *tile = [self tileWithID:ID];
+    int x = [tile.x intValue];
+    int y = [tile.y intValue];
     
+    if ([direction isEqualToString:@"up"]) {
+        y -= 1;
+    } else if ([direction isEqualToString:@"right"]) {
+        x += 1;
+    } else if ([direction isEqualToString:@"down"]) {
+        y += 1;
+    } else if ([direction isEqualToString:@"left"]) {
+        x -= 1;
+    } else {
+        return nil;
+    }
+    
+    NSDictionary *dict = [[NSDictionary alloc] initWithObjects:@[[NSNumber numberWithInt:x], [NSNumber numberWithInt:y]] forKeys:@[@"x", @"y"]];
+    return dict;
+}
+
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction {
+    if (!tileID || !direction) {
+        return nil;
+    }
+    
+    // xMove and yMove are reverse of direction
+    int xMove, yMove;
+    if ([direction isEqualToString:@"up"]) {
+        xMove = 0;
+        yMove = 1;
+    } else if ([direction isEqualToString:@"right"]) {
+        xMove = -1;
+        yMove = 0;
+    } else if ([direction isEqualToString:@"down"]) {
+        xMove = 0;
+        yMove = -1;
+    } else if ([direction isEqualToString:@"left"]) {
+        xMove = 1;
+        yMove = 0;
+    } else {
+        return nil;
+    }
+    
+    QCMoveDescription *move = [[QCMoveDescription alloc] init];
+    move.tileToDelete = tileID;
+    move.direction = direction;
+    
+    QCTile *startTile = _tileDict[tileID];
+    int x = [startTile.x intValue];
+    int y = [startTile.y intValue];
+//    NSNumber *iterID;
+    NSSet *iterSet;
+    int rows = [_noRowsAndCols intValue];
+    int columns = [_noRowsAndCols intValue];
+    
+    
+    while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
+//        iterID = [self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
+//        [move.moveDict setObject:direction forKey:iterID];
+        iterSet = [self IDsDuringMoveAtX:[NSNumber numberWithInt:x] AtY:[NSNumber numberWithInt:y]];
+        for (NSNumber *iterKey in iterSet) {
+            QCTile *moveTile = _tileDict[iterKey];
+            moveTile.hasBeenMoved = YES;
+            moveTile.xDuringMotion = [NSNumber numberWithInt:[moveTile.xDuringMotion intValue] - xMove];
+            moveTile.yDuringMotion = [NSNumber numberWithInt:[moveTile.yDuringMotion intValue] - yMove];
+            [move.moveDict setObject:direction forKey:iterKey];
+            
+        }
+        x += xMove;
+        y += yMove;
+    }
+    
+    // create new tile at (xCreate,yCreate) and add to move and model and createdTile
+    int xCreate = [startTile.x intValue];
+    int yCreate = [startTile.y intValue];
+
+    while (xCreate >= 0 && xCreate < columns && yCreate >= 0 && yCreate < rows) {
+        xCreate += xMove;
+        yCreate += yMove;
+    }
+    
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                    iD:[self nextID]
+                                                     x:[NSNumber numberWithInt:xCreate]
+                                                     y:[NSNumber numberWithInt:yCreate]];
+    newTile.xDuringMotion = [NSNumber numberWithInt:[newTile.xDuringMotion intValue] - xMove];
+    newTile.yDuringMotion = [NSNumber numberWithInt:[newTile.yDuringMotion intValue] - yMove];
+
+    newTile.hasBeenMoved = YES;
+    [_tileDict setObject:newTile forKey:newTile.iD];
+    
+    [move.moveDict setObject:direction forKey:newTile.iD];
+    move.createdTileID = newTile.iD;
+    return move;
+    
+}
+
+-(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd {
+    QCTile *startTile = [self tileWithID:IDStart];
+    QCTile *endTile = [self tileWithID:IDEnd];
+    if(!startTile || !endTile || [IDStart isEqualToNumber:IDEnd]) {
+        return nil;
+    }
+    
+    int startX = [startTile.x intValue];
+    int startY = [startTile.y intValue];
+    int endX = [endTile.x intValue];
+    int endY = [endTile.y intValue];
+    
+    if (startX == endX) {
+        if (startY > endY) {
+            return @"up";
+        } else if (startY < endY) {
+            return @"down";
+        } else {
+            return nil;
+        }
+    } else if (startY == endY) {
+        if (startX < endX) {
+            return @"right";
+        } else if (startX > endX) {
+            return @"left";
+        } else {
+            return nil;
+        }
+    } else {
+        return nil;
+    }
+}
+
+-(void) deleteTiles:(NSSet *) IDsToDelete {
+    if (!IDsToDelete) {
+        return;
+    }
+    
+    for (NSNumber *key in IDsToDelete) {
+        [_tileDict removeObjectForKey:key];
+    }
+}
+
+-(void) updateModelWithMoves:(NSArray *) moveArray {
+    if (!moveArray) {
+        return;
+    }
+    
+    // update moved tiles
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile hasBeenMoved]) {
+            tile.x = tile.xDuringMotion;
+            tile.y = tile.yDuringMotion;
+            tile.hasBeenMoved = NO;
+        }
+    }
+    // remove deleted tiles
+    for (QCMoveDescription *move in moveArray) {
+        if (move.tileToDelete) {
+            [_tileDict removeObjectForKey:move.tileToDelete];
+        }
+    }
+    
+}
+
+-(void) swipeWasAbortedWithMoves:(NSArray *) moveArray {
+    if (!moveArray) {
+        return;
+    }
+    
+    // delete created tiles
+    NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
+    for (QCMoveDescription *move in moveArray) {
+        [deleteSet addObject:move.createdTileID];
+    }
+    [self deleteTiles:deleteSet];
+    
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if (tile.hasBeenMoved) {
+            tile.xDuringMotion = tile.x;
+            tile.yDuringMotion = tile.y;
+            tile.hasBeenMoved = NO;
+        }
+    }
+}
+
 @end

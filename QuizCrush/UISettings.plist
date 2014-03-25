@@ -16,5 +16,7 @@
 	<integer>2</integer>
 	<key>Alpha of selected tile</key>
 	<real>0.5</real>
+	<key>Tile animation duration</key>
+	<real>0.15</real>
 </dict>
 </plist>
