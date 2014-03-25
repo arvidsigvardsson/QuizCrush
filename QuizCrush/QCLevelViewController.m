@@ -229,6 +229,14 @@
         _vaildSwipe = YES;
 //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+
+        // test, skall nog inte vara så här
+//        if (!_currentTileTouched) {
+//            return;
+//        }
+        // debug
+        NSLog(@"Hela planen: %@", _playingFieldModel);
+        
         [_tilesTouched addObject:_currentTileTouched];
         _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
 //        NSLog(@"State began, possible matches: %@", _matchingTiles);
@@ -331,6 +339,7 @@
     if (!arrayOfMoves) {
         return;
     }
+    NSLog(@"Aborted swipe");
     [_playingFieldModel swipeWasAbortedWithMoves:arrayOfMoves];
 }
 

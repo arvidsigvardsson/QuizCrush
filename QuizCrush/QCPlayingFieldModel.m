@@ -22,8 +22,10 @@
     [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
     for (NSNumber *key in _tileDict) {
         QCTile *tile = _tileDict[key];
-        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
-        [string appendString:str];
+//        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
+//        [string appendString:str];
+        [string appendFormat:@"x = %@, y = %@,\n", tile.x, tile.y];
+        
     }
     return string;
     
@@ -509,9 +511,11 @@
     if (!moveArray) {
         return;
     }
+    
+    // delete created tiles
     NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
     for (QCMoveDescription *move in moveArray) {
-        [deleteSet addObject:move.tileToDelete];
+        [deleteSet addObject:move.createdTileID];
     }
     [self deleteTiles:deleteSet];
     
