@@ -216,7 +216,7 @@
     NSNumber *x = touchPoint[@"x"];
     NSNumber *y = touchPoint[@"y"];
 //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-    
+    NSLog(@"Touchpoint: %@", touchPoint);
     
     
     
@@ -301,6 +301,7 @@
 //            NSLog(@"%@", moveInspect);
 //        }
         
+        NSLog(@"moveArray: %@", _moveArray);
         [self performAndAnimateMoves:_moveArray];
         
     }
@@ -330,6 +331,7 @@
 
 -(void) performAndAnimateMoves:(NSArray *) moves {
     // remove deleted tiles
+//    return;
     for (QCMoveDescription *deleteMove in moves) {
         NSNumber *deleteID = deleteMove.tileToDelete;
         [_viewDictionary[deleteID] removeFromSuperview];

@@ -381,8 +381,8 @@
     int yCreate = [startTile.y intValue];
 
     while (xCreate >= 0 && xCreate < columns && yCreate >= 0 && yCreate < rows) {
-        x += xMove;
-        y += yMove;
+        xCreate += xMove;
+        yCreate += yMove;
     }
     
     QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory] iD:[self nextID] x:[NSNumber numberWithInt:xCreate] y:[NSNumber numberWithInt:yCreate]];
