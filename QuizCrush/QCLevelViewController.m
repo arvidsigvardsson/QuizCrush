@@ -209,7 +209,7 @@
     return dict;
 }
 
--(void) panHandler:(UITapGestureRecognizer *)recognizer {
+-(void) panHandler:(UIPanGestureRecognizer *)recognizer {
 //    NSLog(@"Pan handler");
     CGPoint point = [recognizer locationInView:_containerView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
@@ -297,9 +297,9 @@
         
 //        [_tilesTouched removeAllObjects];
 //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
-        for (QCMoveDescription *moveInspect in _moveArray) {
-            NSLog(@"%@", moveInspect);
-        }
+//        for (QCMoveDescription *moveInspect in _moveArray) {
+//            NSLog(@"%@", moveInspect);
+//        }
         
         [self performAndAnimateMoves:_moveArray];
         
