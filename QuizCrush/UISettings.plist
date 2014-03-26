@@ -11,12 +11,12 @@
 	<key>Falling animation duration</key>
 	<real>0.4</real>
 	<key>Number of categories</key>
-	<integer>4</integer>
+	<integer>5</integer>
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
 	<key>Alpha of selected tile</key>
 	<real>0.5</real>
 	<key>Tile animation duration</key>
-	<real>0.15</real>
+	<real>0.1</real>
 </dict>
 </plist>
