@@ -5,13 +5,13 @@
 	<key>Number of tiles required to match</key>
 	<integer>2</integer>
 	<key>Number of rows and columns</key>
-	<integer>7</integer>
+	<integer>6</integer>
 	<key>Animation duration</key>
 	<string>0.5</string>
 	<key>Falling animation duration</key>
 	<real>0.4</real>
 	<key>Number of categories</key>
-	<integer>6</integer>
+	<integer>4</integer>
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
 	<key>Alpha of selected tile</key>

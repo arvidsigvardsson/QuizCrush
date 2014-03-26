@@ -27,6 +27,9 @@
 @property NSNumber *currentTileTouched;
 @property NSMutableArray *moveArray;
 @property NSString *moveDirection;
+@property (weak, nonatomic) IBOutlet UILabel *movesLabel;
+@property int numberOfMoves;
+@property (weak, nonatomic) IBOutlet UILabel *noMoreMovesLabel;
 
 @end
 
@@ -105,6 +108,8 @@
                             forKey:iD];
         [_containerView addSubview:tile];
     }
+    
+    _numberOfMoves = 0;
 }
 
 
@@ -333,7 +338,24 @@
 //        NSLog(@"moveArray: %@", _moveArray);
         [self performAndAnimateMoves:_moveArray];
         [_playingFieldModel updateModelWithMoves:_moveArray];
-
+        
+        // for simple order game
+        _numberOfMoves += 1;
+        [_movesLabel setText:[NSString stringWithFormat:@"%d", _numberOfMoves]];
+        NSLog(@"Number of moves: %d", _numberOfMoves);
+        BOOL finishFlag = YES;
+        for (NSNumber *finishKey in _viewDictionary) {
+            NSSet *finishSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:finishKey];
+            if ([finishSet count] > 1) {
+                finishFlag = NO;
+                break;
+            }
+        }
+        if (finishFlag) {
+            [_noMoreMovesLabel setHidden:NO];
+        }
+        
+        
     }
     else if (recognizer.state == UIGestureRecognizerStateCancelled) {
         [self abortSwipeWithMoves:_moveArray];
