@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "QCTile.h"
 #import "QCMoveDescription.h"
-
+#import "QCSuctionMove.h"
 
 @interface QCPlayingFieldModel : NSObject
 
@@ -27,5 +27,7 @@
 -(void) deleteTiles:(NSSet *) IDsToDelete;
 -(void) updateModelWithMoves:(NSArray *) moveArray;
 -(void) swipeWasAbortedWithMoves:(NSArray *) moveArray;
+-(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction;
+-(QCSuctionMove *) takeNewSuctionStepWithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction;
 
 @end

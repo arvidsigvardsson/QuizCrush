@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */; };
+		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
 		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
 		71E0C4E918D6E39800B5FFC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4E818D6E39800B5FFC7 /* Foundation.framework */; };
 		71E0C4EB18D6E39800B5FFC7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4EA18D6E39800B5FFC7 /* CoreGraphics.framework */; };
@@ -41,6 +42,8 @@
 /* Begin PBXFileReference section */
 		71107AAC18DC5B83000AEF57 /* QCMoveDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCMoveDescription.h; sourceTree = "<group>"; };
 		71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCMoveDescription.m; sourceTree = "<group>"; };
+		7147829618E2DF7E00A1A08A /* QCSuctionMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSuctionMove.h; sourceTree = "<group>"; };
+		7147829718E2DF7E00A1A08A /* QCSuctionMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSuctionMove.m; sourceTree = "<group>"; };
 		71DD0AF618D859AF00E9247A /* QCModelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCModelTestCase.m; sourceTree = "<group>"; };
 		71E0C4E518D6E39800B5FFC7 /* QuizCrush.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizCrush.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E0C4E818D6E39800B5FFC7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -135,6 +138,8 @@
 				71E0C52118D6E80400B5FFC7 /* QCTile.m */,
 				71E0C51D18D6E44300B5FFC7 /* QCLevelViewController.h */,
 				71E0C51E18D6E44300B5FFC7 /* QCLevelViewController.m */,
+				7147829618E2DF7E00A1A08A /* QCSuctionMove.h */,
+				7147829718E2DF7E00A1A08A /* QCSuctionMove.m */,
 				71107AAC18DC5B83000AEF57 /* QCMoveDescription.h */,
 				71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */,
 				71E0C50018D6E39800B5FFC7 /* Images.xcassets */,
@@ -272,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
 				71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */,
 				71E0C52218D6E80400B5FFC7 /* QCTile.m in Sources */,

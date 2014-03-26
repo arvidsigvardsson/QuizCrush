@@ -529,4 +529,12 @@
     }
 }
 
+-(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction {
+    return nil;
+}
+
+-(QCSuctionMove *) takeNewSuctionStepWithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction {
+    return nil;
+}
+
 @end
