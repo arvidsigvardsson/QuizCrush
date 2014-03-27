@@ -256,9 +256,6 @@
         _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
     }
     
-    // Fortsätt här!
-    
-    
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
         if (!_vaildSwipe) {
             return;
@@ -277,25 +274,30 @@
         }
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
             _vaildSwipe = NO;
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
         // prevent player from moving backwards, ie retouch an already touched tile
         if ([_tilesTouched member:newTileTouched]) {
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             _vaildSwipe = NO;
             return;
         }
+        
+        // TODO make sure the swipe won't touch "tail"
+        
+        
+        
+        
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
         
-        // test
-        //        NSLog(@"Direction swiped: %@", [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched]);
-        //        _vaildSwipe = NO;
-        //        return;
+       
         
         _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
         
@@ -306,7 +308,7 @@
         
         // check if first step has been taken
         QCSuctionMove *suctionMove;
-        if ([_suctionMoveArray count] > 0) {
+        if (![_suctionMoveArray count] > 0) {
             suctionMove = [_playingFieldModel takeFirstSuctionStepFrom:_currentTileTouched
                                                                           inDirection:_moveDirection];
         } else {
@@ -328,7 +330,8 @@
             
             //            NSLog(@"Invalid swipe");
             [_tilesTouched removeAllObjects];
-            [_moveArray removeAllObjects];
+//            [_moveArray removeAllObjects];
+//            [_suctionMoveArray removeAllObjects];
             return;
         }
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
@@ -338,29 +341,45 @@
             //            NSLog(@"Invalid swipe, not enough tiles swiped!");
             
             [_tilesTouched removeAllObjects];
-            [_moveArray removeAllObjects];
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
+//            [_moveArray removeAllObjects];
+//            [_suctionMoveArray removeAllObjects];
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+
+            // abort suctionSwipe
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
         //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
         [self markTiles:_tilesTouched];
         
         // make final move
-        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-        [_moveArray addObject:finalMove];
-        
+//        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+//        [_moveArray addObject:finalMove];
+
+        // final suction move
+        QCSuctionMove *finalSuctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched
+                                                                              WithMove:[_suctionMoveArray lastObject]
+                                                                           inDirection:_moveDirection];
+        [_suctionMoveArray addObject:finalSuctionMove];
         
         //        [_tilesTouched removeAllObjects];
         //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
-        for (QCMoveDescription *moveInspect in _moveArray) {
-            NSLog(@"%@", moveInspect);
-        }
+//        for (QCMoveDescription *moveInspect in _moveArray) {
+//            NSLog(@"%@", moveInspect);
+//        }
         
         //        NSLog(@"moveArray: %@", _moveArray);
-        [self performAndAnimateMoves:_moveArray];
-        [_playingFieldModel updateModelWithMoves:_moveArray];
+//        [self performAndAnimateMoves:_moveArray];
+//        [_playingFieldModel updateModelWithMoves:_moveArray];
+
+        // perform animations and update model
+        for (QCSuctionMove *move in _suctionMoveArray) {
+            NSLog(@"Suction move: %@", move);
+        }
+        [self performAndAnimateSuctionMoves:_suctionMoveArray];
+        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
         
     }
     else if (recognizer.state == UIGestureRecognizerStateCancelled) {
@@ -520,6 +539,9 @@
     [_playingFieldModel swipeWasAbortedWithMoves:arrayOfMoves];
 }
 
+-(void) abortSuctionSwipeWithMoves:(NSArray *) arrayOfSuctionMoves {
+    [_playingFieldModel suctionSwipeWasAbortedWithMoves:arrayOfSuctionMoves];
+}
 
 -(void) markTiles:(NSSet *) set  {
     if (!set) {
@@ -563,49 +585,29 @@
 
     [self recursionAnimation:moves index:0];
 
-//    // animation, one move at a time
-//    for (QCMoveDescription *move in moves) {
-//        // first create new view
-//        QCTile *newTile = [_playingFieldModel tileWithID:move.createdTileID];
-//        UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue] yIndex:[newTile.y intValue] iD:newTile.iD];
-//        [_containerView addSubview:newTileView];
-//        [_viewDictionary setObject:newTileView forKey:newTile.iD];
-//
-//        float xCenterDisplacement;
-//        float yCenterDisplacement;
-//        if ([move.direction isEqualToString:@"up"]) {
-//            xCenterDisplacement = 0;
-//            yCenterDisplacement = -_lengthOfTile;
-//        } else if ([move.direction isEqualToString:@"right"]) {
-//            xCenterDisplacement = _lengthOfTile;
-//            yCenterDisplacement = 0;
-//        } else if ([move.direction isEqualToString:@"down"]) {
-//            xCenterDisplacement = 0;
-//            yCenterDisplacement = _lengthOfTile;
-//        } else if ([move.direction isEqualToString:@"left"]) {
-//            xCenterDisplacement = -_lengthOfTile;
-//            yCenterDisplacement = 0;
-//        }
-//
-//
-//        [UIView animateWithDuration:[_uiSettingsDictionary[@"Tile animation duration"] floatValue]
-//                         animations:^{
-//                             for (NSNumber *moveKey in move.moveDict) {
-//                                 UIView *aniView = _viewDictionary[moveKey];
-//                                 CGPoint newCenter = CGPointMake(aniView.center.x + xCenterDisplacement, aniView.center.y + yCenterDisplacement);
-//                                 [aniView setCenter:newCenter];                             }
-//
-//        }
-//                         completion:^(BOOL finished) {
-//
-//        }];
-////        for (NSNumber *moveKey in move.moveDict) {
-////
-////        }
-//
-//    }
+}
 
-//    NSLog(@"Antal subviews: %lu", (unsigned long)[[_containerView subviews] count]);
+-(void) performAndAnimateSuctionMoves:(NSArray *) moves {
+    // remove deleted tiles
+    for (QCSuctionMove *deleteMove in moves) {
+        NSNumber *deleteID = deleteMove.deletedTile;
+        [_viewDictionary[deleteID] removeFromSuperview];
+        [_viewDictionary removeObjectForKey:deleteID];
+    }
+    
+    // create new views
+    for (QCSuctionMove *createNew in moves) {
+        QCTile *newTile = [_playingFieldModel tileWithID:createNew.createdTile];
+        UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue]
+                                                   yIndex:[newTile.y intValue]
+                                                       iD:newTile.iD];
+        [_containerView addSubview:newTileView];
+        [_viewDictionary setObject:newTileView forKey:newTile.iD];
+    }
+    
+    // start recursion animation
+    [self recursionSuctionAnimation:moves index:0];
+    
 }
 
 -(void) recursionAnimation:(NSArray *)moves index:(int) index {
@@ -646,20 +648,43 @@
     }];
 }
 
+-(void) recursionSuctionAnimation:(NSArray *) moves index:(int) index{
+    if (!(index < [moves count])) {
+        return;
+    }
+    QCSuctionMove *move = moves[index];
 
-//-(void) tapTestingHandler:(UITapGestureRecognizer *) recognizer {
-//    CGPoint point = [recognizer locationInView:_containerView];
-//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-//    NSNumber *x = touchPoint[@"x"];
-//    NSNumber *y = touchPoint[@"y"];
-//
-//    NSNumber *testID = [_playingFieldModel iDOfTileAtX:x Y:y];
-//    NSArray *testArray = @[@"up", @"right", @"down", @"left"];
-//    NSLog(@"Point is %@, %@", x, y);
-//    for (NSString *testString in testArray) {
-//        NSDictionary *testPoint = [_playingFieldModel positionOneStepFromID:testID inDirection:testString];
-//        NSLog(@"Position %@ is %@", testString, testPoint);
-//    }
-//
-//}
+    
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Suction animation duration"] floatValue]
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         for (NSNumber *moveKey in move.movementDict) {
+                             UIView *aniView = _viewDictionary[moveKey];
+                             if (aniView) {
+                                 float xCenterDisplacement;
+                                 float yCenterDisplacement;
+                                 if ([move.movementDict[moveKey] isEqualToString:@"up"]) {
+                                     xCenterDisplacement = 0;
+                                     yCenterDisplacement = -_lengthOfTile;
+                                 } else if ([move.movementDict[moveKey] isEqualToString:@"right"]) {
+                                     xCenterDisplacement = _lengthOfTile;
+                                     yCenterDisplacement = 0;
+                                 } else if ([move.movementDict[moveKey] isEqualToString:@"down"]) {
+                                     xCenterDisplacement = 0;
+                                     yCenterDisplacement = _lengthOfTile;
+                                 } else if ([move.movementDict[moveKey] isEqualToString:@"left"]) {
+                                     xCenterDisplacement = -_lengthOfTile;
+                                     yCenterDisplacement = 0;
+                                 }
+                                 CGPoint newCenter = CGPointMake(aniView.center.x + xCenterDisplacement, aniView.center.y + yCenterDisplacement);
+                                 [aniView setCenter:newCenter];
+                             }
+                         }
+                     }
+                     completion:^(BOOL finished) {
+                         [self recursionSuctionAnimation:moves index:index + 1];
+                     }];
+}
+
 @end

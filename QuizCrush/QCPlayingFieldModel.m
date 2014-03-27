@@ -507,6 +507,23 @@
     
 }
 
+-(void) updateModelWithSuctionMoves:(NSArray *) moves{
+    // update moved tiles
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile hasBeenMoved]) {
+            tile.x = tile.xDuringMotion;
+            tile.y = tile.yDuringMotion;
+            tile.hasBeenMoved = NO;
+        }
+    }
+    // remove deleted tile
+    for (QCSuctionMove *move in moves) {
+        [_tileDict removeObjectForKey:move.deletedTile];
+    }
+
+}
+
 -(void) swipeWasAbortedWithMoves:(NSArray *) moveArray {
     if (!moveArray) {
         return;
@@ -519,6 +536,7 @@
     }
     [self deleteTiles:deleteSet];
     
+    // reset moved tiles
     for (NSNumber *key in _tileDict) {
         QCTile *tile = _tileDict[key];
         if (tile.hasBeenMoved) {
@@ -527,6 +545,26 @@
             tile.hasBeenMoved = NO;
         }
     }
+}
+
+-(void) suctionSwipeWasAbortedWithMoves:(NSArray *) moveArray {
+    // delete created tiles from dictionary
+    NSMutableSet *deleteSet = [[NSMutableSet alloc] init];
+    for (QCSuctionMove *move in moveArray) {
+        [deleteSet addObject:move.createdTile];
+    }
+    [self deleteTiles:deleteSet];
+    
+    // reset moved tiles
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if (tile.hasBeenMoved) {
+            tile.xDuringMotion = tile.x;
+            tile.yDuringMotion = tile.y;
+            tile.hasBeenMoved = NO;
+        }
+    }
+
 }
 
 -(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction {
@@ -552,6 +590,7 @@
     move.deletedTile = startID;
     
     QCTile *startTile = _tileDict[startID];
+    startTile.hasBeenMoved = YES;
     int x = [startTile.x intValue];
     int y = [startTile.y intValue];
     
@@ -606,6 +645,7 @@
         QCTile *destTile = _tileDict[nextMove.tailArray[i - 1]];
         moveTile.xDuringMotion = destTile.xDuringMotion;
         moveTile.yDuringMotion = destTile.yDuringMotion;
+        moveTile.hasBeenMoved = YES;
         [nextMove.movementDict setObject:suctionMove.movementDict[destTile.iD] forKey:moveTile.iD];
     }
     
@@ -615,6 +655,7 @@
     QCTile *firstTile = _tileDict[nextMove.tailArray[0]];
     firstTile.xDuringMotion = destination[@"x"];
     firstTile.yDuringMotion = destination[@"y"];
+    firstTile.hasBeenMoved = YES;
 //    [nextMove.tailArray[0] setXDuringMotion:destination[@"x"]];
 //    [nextMove.tailArray[0] setYDuringMotion:destination[@"y"]];
     [nextMove.movementDict setObject:direction forKey:firstTile.iD];
@@ -622,5 +663,6 @@
 
     return nextMove;
 }
+
 
 @end
