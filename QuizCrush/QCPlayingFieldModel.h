@@ -17,6 +17,7 @@
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD;
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;
+-(NSNumber *) IDOfTileDuringMotionAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(QCTile *) tileWithID:(NSNumber *) iD;
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
 -(NSSet *) getNewTilesReplacing:(NSSet *) set;

@@ -118,6 +118,16 @@
     return nil;
 }
 
+-(NSNumber *) IDOfTileDuringMotionAtX:(NSNumber *) x Y:(NSNumber *) y {
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        if ([tile.xDuringMotion isEqualToNumber:x] && [tile.yDuringMotion isEqualToNumber:y]) {
+            return tile.iD;
+        }
+    }
+    return nil;
+}
+
 -(NSSet *) IDsDuringMoveAtX:(NSNumber *) x AtY:(NSNumber *) y {
     if (!x || !y) {
         return nil;

@@ -230,6 +230,10 @@
 }
 
 -(void) suctionPanHandler:(UIPanGestureRecognizer *) recognizer {
+    if (_animating) {
+        return;
+    }
+    
     CGPoint point = [recognizer locationInView:_containerView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
     NSNumber *x = touchPoint[@"x"];
@@ -290,8 +294,9 @@
             _vaildSwipe = NO;
             return;
         }
-        
-        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:_currentTileTouched]) {
+        // prevent stepping on tail
+        NSNumber *testOnTailID = [_playingFieldModel IDOfTileDuringMotionAtX:x Y:y];
+        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:testOnTailID]) {
             NSLog(@"Can't hit your own tail!");
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             _vaildSwipe = NO;
@@ -378,6 +383,7 @@
         for (QCSuctionMove *move in _suctionMoveArray) {
             NSLog(@"Suction move: %@", move);
         }
+        _animating = YES;
         [self performAndAnimateSuctionMoves:_suctionMoveArray];
         [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
         
@@ -650,6 +656,7 @@
 
 -(void) recursionSuctionAnimation:(NSArray *) moves index:(int) index{
     if (!(index < [moves count])) {
+        _animating = NO;
         return;
     }
     QCSuctionMove *move = moves[index];
