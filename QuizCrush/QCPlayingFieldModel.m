@@ -530,11 +530,97 @@
 }
 
 -(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction {
-    return nil;
+    // xMove and yMove are reverse of direction
+    int xMove, yMove;
+    if ([direction isEqualToString:@"up"]) {
+        xMove = 0;
+        yMove = 1;
+    } else if ([direction isEqualToString:@"right"]) {
+        xMove = -1;
+        yMove = 0;
+    } else if ([direction isEqualToString:@"down"]) {
+        xMove = 0;
+        yMove = -1;
+    } else if ([direction isEqualToString:@"left"]) {
+        xMove = 1;
+        yMove = 0;
+    } else {
+        return nil;
+    }
+
+    QCSuctionMove *move = [[QCSuctionMove alloc] init];
+    move.deletedTile = startID;
+    
+    QCTile *startTile = _tileDict[startID];
+    int x = [startTile.x intValue];
+    int y = [startTile.y intValue];
+    
+    while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
+        QCTile *moveTile = [self tileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]];
+        moveTile.hasBeenMoved = YES;
+        moveTile.xDuringMotion = [NSNumber numberWithInt:[moveTile.xDuringMotion intValue] - xMove];
+        moveTile.yDuringMotion = [NSNumber numberWithInt:[moveTile.yDuringMotion intValue] - yMove];
+        [move.tailArray addObject:moveTile.iD];
+        [move.movementDict setObject:direction forKey:moveTile.iD];
+        x += xMove;
+        y += yMove;
+    }
+    
+    // create new tile
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                    iD:[self nextID]
+                                                     x:[NSNumber numberWithInt:x]
+                                                     y:[NSNumber numberWithInt:y]];
+    newTile.xDuringMotion = [NSNumber numberWithInt:[newTile.xDuringMotion intValue] - xMove];
+    newTile.yDuringMotion = [NSNumber numberWithInt:[newTile.yDuringMotion intValue] - yMove];
+    newTile.hasBeenMoved = YES;
+    [_tileDict setObject:newTile forKey:newTile.iD];
+    [move.tailArray addObject:newTile.iD];
+    [move.movementDict setObject:direction forKey:newTile.iD];
+    move.createdTile = newTile.iD;
+    move.creationSiteX = [NSNumber numberWithInt:x];
+    move.creationSiteY = [NSNumber numberWithInt:y];
+    return move;
 }
 
--(QCSuctionMove *) takeNewSuctionStepWithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction {
-    return nil;
+-(QCSuctionMove *) takeNewSuctionStepFromID:(NSNumber *) startID WithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction {
+    // create new tile
+    QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                    iD:[self nextID]
+                                                     x:suctionMove.creationSiteX
+                                                     y:suctionMove.creationSiteY];
+    [_tileDict setObject:newTile forKey:newTile.iD];
+    
+    QCSuctionMove *nextMove = [[QCSuctionMove alloc] init];
+    nextMove.creationSiteX = suctionMove.creationSiteX;
+    nextMove.creationSiteY = suctionMove.creationSiteY;
+    
+    nextMove.createdTile = newTile.iD;
+    nextMove.deletedTile = startID;
+    nextMove.tailArray = [NSMutableArray arrayWithArray:suctionMove.tailArray];
+    [nextMove.tailArray addObject:newTile.iD];
+    
+    // go backwards through the tail to update positions and directions, ending on second tile
+    for (long i = [nextMove.tailArray count] - 1; i > 0; i--) {
+        QCTile *moveTile = _tileDict[nextMove.tailArray[i]];
+        QCTile *destTile = _tileDict[nextMove.tailArray[i - 1]];
+        moveTile.xDuringMotion = destTile.xDuringMotion;
+        moveTile.yDuringMotion = destTile.yDuringMotion;
+        [nextMove.movementDict setObject:suctionMove.movementDict[destTile.iD] forKey:moveTile.iD];
+    }
+    
+    
+    // find position for the first tile in array to move to
+    NSDictionary *destination = [self positionOneStepFromID:startID inDirection:direction];
+    QCTile *firstTile = _tileDict[nextMove.tailArray[0]];
+    firstTile.xDuringMotion = destination[@"x"];
+    firstTile.yDuringMotion = destination[@"y"];
+//    [nextMove.tailArray[0] setXDuringMotion:destination[@"x"]];
+//    [nextMove.tailArray[0] setYDuringMotion:destination[@"y"]];
+    [nextMove.movementDict setObject:direction forKey:firstTile.iD];
+    
+
+    return nextMove;
 }
 
 @end

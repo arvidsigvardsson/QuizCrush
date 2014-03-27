@@ -28,6 +28,6 @@
 -(void) updateModelWithMoves:(NSArray *) moveArray;
 -(void) swipeWasAbortedWithMoves:(NSArray *) moveArray;
 -(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction;
--(QCSuctionMove *) takeNewSuctionStepWithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction;
+-(QCSuctionMove *) takeNewSuctionStepFromID:(NSNumber *) startID WithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction;
 
 @end

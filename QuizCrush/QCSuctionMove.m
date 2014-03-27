@@ -19,12 +19,14 @@
     _movementDict = [[NSMutableDictionary alloc] init];
     _deletedTile = [[NSNumber alloc] init];
     _createdTile = [[NSNumber alloc] init];
+    _creationSiteX = [[NSNumber alloc] init];
+    _creationSiteY = [[NSNumber alloc] init];
     
     return self;
 }
 
 -(NSString *) description {
-    return [NSString stringWithFormat:@"SuctionMoveObject, tailArray: %@, movementDict: %@, deletedTile: %@, createdTile: %@", _tailArray, _movementDict, _deletedTile, _createdTile];
+    return [NSString stringWithFormat:@"SuctionMoveObject, tailArray: %@, movementDict: %@, deletedTile: %@, createdTile: %@, creationSite (x,y): (%@,%@)", _tailArray, _movementDict, _deletedTile, _createdTile, _creationSiteX, _creationSiteY];
 }
 
 @end

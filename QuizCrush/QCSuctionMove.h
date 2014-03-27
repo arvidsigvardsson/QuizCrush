@@ -14,4 +14,7 @@
 @property NSMutableDictionary *movementDict;
 @property NSNumber *deletedTile;
 @property NSNumber *createdTile;
+@property NSNumber *creationSiteX;
+@property NSNumber *creationSiteY;
+
 @end
