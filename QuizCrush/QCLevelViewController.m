@@ -267,9 +267,10 @@
         }
         if (![_matchingTiles member:newTileTouched]) {
             _vaildSwipe = NO;
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
@@ -290,15 +291,14 @@
             return;
         }
         
-        // TODO make sure the swipe won't touch "tail"
-        
-        
-        
+        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:_currentTileTouched]) {
+            NSLog(@"Can't hit your own tail!");
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            _vaildSwipe = NO;
+            return;
+        }
         
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
-        
-       
-        
         _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
         
 //        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
@@ -654,10 +654,21 @@
     }
     QCSuctionMove *move = moves[index];
 
+    // slows down last move to ease in
+    NSUInteger animationStyle;
+    float duration;
+    if (index == [moves count] - 1) {
+        animationStyle = UIViewAnimationOptionCurveEaseOut;
+        duration = [_uiSettingsDictionary[@"Suction animation duration"] floatValue] + 0.12;
+    } else {
+        animationStyle = UIViewAnimationOptionCurveLinear;
+        duration = [_uiSettingsDictionary[@"Suction animation duration"] floatValue];
+    }
     
-    [UIView animateWithDuration:[_uiSettingsDictionary[@"Suction animation duration"] floatValue]
+    
+    [UIView animateWithDuration:duration
                           delay:0
-                        options:UIViewAnimationOptionCurveLinear
+                        options:animationStyle
                      animations:^{
                          for (NSNumber *moveKey in move.movementDict) {
                              UIView *aniView = _viewDictionary[moveKey];
