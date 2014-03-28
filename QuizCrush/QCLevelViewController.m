@@ -10,14 +10,16 @@
 
 @interface QCLevelViewController ()
 
-@property (weak, nonatomic) IBOutlet UIView *containerView;
+@property (weak, nonatomic) IBOutlet UIView *holderView;
 //@property NSMutableArray *viewArray;
 
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
-@property NSNumber *noRowsAndCols;
+//@property NSNumber *noRowsAndCols;
+@property NSNumber *numberOfRows;
+@property NSNumber *numberOfColumns;
 @property NSArray *colorArray;
 @property NSNumber *tilesRequiredToMatch;
 @property BOOL animating;
@@ -60,12 +62,24 @@
 
     _colorArray = @[[UIColor orangeColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor], [UIColor yellowColor]];
 
+    // set up holder views dimensions
+    _lengthOfTile = self.view.frame.size.width / [_uiSettingsDictionary[@"Number of columns"] floatValue];
+    float frameHeight = [_uiSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
+    CGRect holderFrame = CGRectMake(0, self.view.frame.size.height / 2.0f - frameHeight / 2.0f, self.view.frame.size.width, frameHeight);
+    _holderView.frame = holderFrame;
+    
+    
+    
 //    NSInteger noCategories = [_uiSettingsDictionary[@"Number of categories"] integerValue];
-    _noRowsAndCols = _uiSettingsDictionary[@"Number of rows and columns"];
-    _lengthOfTile = _containerView.frame.size.height / (float)[_noRowsAndCols intValue];
+//    _noRowsAndCols = _uiSettingsDictionary[@"Number of rows and columns"];
+    _numberOfRows = _uiSettingsDictionary[@"Number of rows"];
+    _numberOfColumns = _uiSettingsDictionary[@"Number of columns"];
+    
+//    _lengthOfTile = _holderView.frame.size.height / (float)[_noRowsAndCols intValue];
     _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
-
-    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:_noRowsAndCols];
+    
+//    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:_noRowsAndCols];
+    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
 //    _viewArray = [[NSMutableArray alloc] init];
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
@@ -78,32 +92,17 @@
     // suction action
     _suctionMoveArray = [[NSMutableArray alloc] init];
 
-//    UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(onViewClickedHandler:)];
-//    [_containerView addGestureRecognizer:recognizer];
-
-    // pan action
-
-//    UIPanGestureRecognizer *panRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panHandler:)];
-//    panRecognizer.maximumNumberOfTouches = 1;
-//    [_containerView addGestureRecognizer:panRecognizer];
-
     // pan action for suction
     UIPanGestureRecognizer *suctionPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(suctionPanHandler:)];
     suctionPanRecognizer.maximumNumberOfTouches = 1;
-    [_containerView addGestureRecognizer:suctionPanRecognizer];
+    [_holderView addGestureRecognizer:suctionPanRecognizer];
     
-    
-    // tap gesture for testing
-//    UITapGestureRecognizer *tapRec = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTestingHandler:)];
-//    [_containerView addGestureRecognizer:tapRec];
-
-
     int xIndex, yIndex;
     NSNumber *iD;
 
-    for (int i = 0; i < [_noRowsAndCols intValue] * [_noRowsAndCols intValue]; i++) {
-        xIndex = i % [_noRowsAndCols intValue];
-        yIndex = i / [_noRowsAndCols intValue];
+    for (int i = 0; i < [_numberOfRows intValue] * [_numberOfColumns intValue]; i++) {
+        xIndex = i % [_numberOfColumns intValue];
+        yIndex = i / [_numberOfColumns intValue];
 
         iD = [NSNumber numberWithInt:i];
 
@@ -113,8 +112,13 @@
 //        [_viewArray addObject:tile];
         [_viewDictionary setObject:tile
                             forKey:iD];
-        [_containerView addSubview:tile];
+        [_holderView addSubview:tile];
     }
+    
+//    // test
+//    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithRows:@2 Columns:@3];
+//    NSLog(@"Testmodell: %@", testModel);
+    
     
     
     // test
@@ -154,7 +158,7 @@
         [newView setBackgroundColor:color];
         [_viewDictionary setObject:newView
                             forKey:addNewKey];
-        [_containerView addSubview:newView];
+        [_holderView addSubview:newView];
     }
 
 
@@ -183,15 +187,15 @@
 
 -(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
 
-    if (_animating) {
-        return;
-    }
-
-    CGPoint point = [recognizer locationInView:_containerView];
-    NSDictionary *posDict = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSNumber *IDTileClicked = [_playingFieldModel iDOfTileAtX:posDict[@"x"] Y:posDict[@"y"]];
-
-    [self deleteTiles:IDTileClicked];
+//    if (_animating) {
+//        return;
+//    }
+//
+//    CGPoint point = [recognizer locationInView:_holderView];
+//    NSDictionary *posDict = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSNumber *IDTileClicked = [_playingFieldModel iDOfTileAtX:posDict[@"x"] Y:posDict[@"y"]];
+//
+//    [self deleteTiles:IDTileClicked];
 
 }
 
@@ -214,18 +218,22 @@
     return [NSNumber numberWithInt:row + column * [numberOfRows intValue]];
 }
 
--(NSDictionary *) gridPositionOfPoint: (CGPoint)point numberOfRows:(NSNumber *)numberOfRows lengthOfSides:(float)lengthOfSide {
+-(NSDictionary *) gridPositionOfPoint: (CGPoint)point numberOfRows:(NSNumber *)numberOfRows
+                      numberOfColumns:(NSNumber *)numberOfColumns
+                        lengthOfSides:(float)lengthOfSide {
     int row, column;
 
-    row = (int) floorf(point.x / lengthOfSide);
-    column = (int) floorf(point.y / lengthOfSide);
+    column = (int) floorf(point.x / lengthOfSide);
+    row = (int) floorf(point.y / lengthOfSide);
 
-    if (row >= [numberOfRows intValue] || column >= [numberOfRows intValue]) {
+    if (row >= [numberOfRows intValue] || column >= [numberOfColumns intValue]) {
         return nil;
     }
 
-    NSDictionary *dict = @{@"x" : [NSNumber numberWithInt:row], @"y" : [NSNumber numberWithInt:column]};
+    NSDictionary *dict = @{@"x" : [NSNumber numberWithInt:column], @"y" : [NSNumber numberWithInt:row]};
 
+    // test
+    NSLog(@"Grid position, row: %d, column %d", row, column);
     return dict;
 }
 
@@ -234,8 +242,12 @@
         return;
     }
     
-    CGPoint point = [recognizer locationInView:_containerView];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    CGPoint point = [recognizer locationInView:_holderView];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+                                            numberOfRows:_numberOfRows
+                                         numberOfColumns:_numberOfColumns
+                                           lengthOfSides:_lengthOfTile];
     NSNumber *x = touchPoint[@"x"];
     NSNumber *y = touchPoint[@"y"];
     //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
@@ -403,8 +415,13 @@
 
 -(void) panHandler:(UIPanGestureRecognizer *) recognizer {
 //    NSLog(@"Pan handler");
-    CGPoint point = [recognizer locationInView:_containerView];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    CGPoint point = [recognizer locationInView:_holderView];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+                                            numberOfRows:_numberOfRows
+                                         numberOfColumns:_numberOfColumns
+                                           lengthOfSides:_lengthOfTile];
+
     NSNumber *x = touchPoint[@"x"];
     NSNumber *y = touchPoint[@"y"];
 //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
@@ -585,7 +602,7 @@
         UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue]
                                                    yIndex:[newTile.y intValue]
                                                        iD:newTile.iD];
-        [_containerView addSubview:newTileView];
+        [_holderView addSubview:newTileView];
         [_viewDictionary setObject:newTileView forKey:newTile.iD];
     }
 
@@ -607,7 +624,7 @@
         UIView *newTileView = [self tileViewCreatorXIndex:[newTile.x intValue]
                                                    yIndex:[newTile.y intValue]
                                                        iD:newTile.iD];
-        [_containerView addSubview:newTileView];
+        [_holderView addSubview:newTileView];
         [_viewDictionary setObject:newTileView forKey:newTile.iD];
     }
     

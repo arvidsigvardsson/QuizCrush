@@ -20,5 +20,9 @@
 	<real>0.1</real>
 	<key>Suction animation duration</key>
 	<real>0.13</real>
+	<key>Number of rows</key>
+	<integer>9</integer>
+	<key>Number of columns</key>
+	<integer>7</integer>
 </dict>
 </plist>

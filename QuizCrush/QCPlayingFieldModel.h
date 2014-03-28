@@ -14,6 +14,7 @@
 @interface QCPlayingFieldModel : NSObject
 
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
+-(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD;
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;

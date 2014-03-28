@@ -12,6 +12,8 @@
 
 @property NSMutableDictionary *tileDict;
 @property NSNumber *noRowsAndCols;
+@property NSNumber *numberOfRows;
+@property NSNumber *numberOfColumns;
 @property int currentID;
 @end
 
@@ -24,7 +26,7 @@
         QCTile *tile = _tileDict[key];
 //        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
 //        [string appendString:str];
-        [string appendFormat:@"x = %@, y = %@,\n", tile.x, tile.y];
+        [string appendFormat:@"ID: %@, x = %@, y = %@,\n", key, tile.x, tile.y];
         
     }
     return string;
@@ -41,9 +43,6 @@
 
     //initialization
     _currentID = 0;
-//    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
-//    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
-//    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
     _noRowsAndCols = [NSNumber numberWithInt:[rowsAndCols intValue]];
 
     _tileDict = [[NSMutableDictionary alloc] init];
@@ -51,7 +50,6 @@
 
 
     for (int i = 0; i < [rowsAndCols intValue] * [rowsAndCols intValue]; i++) {
-//        NSNumber *randomCategory = [NSNumber numberWithInt:arc4random_uniform(noCategories)];
         NSNumber *x = [NSNumber numberWithInt:i % [rowsAndCols intValue]];
         NSNumber *y = [NSNumber numberWithInt:i / [rowsAndCols intValue]];
         
@@ -60,9 +58,32 @@
                                                       x:x
                                                       y:y];
         [_tileDict setObject:tile forKey:tile.iD];
+    }
+    
+    return self;
+}
+
+-(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns {
+    if(!(self = [super init])){
+        return self;
+    }
+    _currentID = 0;
+    _numberOfRows = numberOfRows;
+    _numberOfColumns = numberOfColumns;
+    _tileDict = [[NSMutableDictionary alloc] init];
+
+    for (int i = 0; i < [numberOfRows intValue] * [numberOfColumns intValue]; i++) {
+        NSNumber *x = [NSNumber numberWithInt:i % [numberOfColumns intValue]];
+        NSNumber *y = [NSNumber numberWithInt:i / [numberOfColumns intValue]];
         
-        
-            }
+        QCTile *tile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                     iD:[self nextID]
+                                                      x:x
+                                                      y:y];
+        [_tileDict setObject:tile forKey:tile.iD];
+
+    }
+    
     return self;
 }
 
@@ -406,8 +427,8 @@
     int y = [startTile.y intValue];
 //    NSNumber *iterID;
     NSSet *iterSet;
-    int rows = [_noRowsAndCols intValue];
-    int columns = [_noRowsAndCols intValue];
+    int rows = [_numberOfRows intValue];
+    int columns = [_numberOfColumns intValue];
     
     
     while ([self iDOfTileAtX:[NSNumber numberWithInt:x] Y:[NSNumber numberWithInt:y]]) {
