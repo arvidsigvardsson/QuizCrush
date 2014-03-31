@@ -125,28 +125,37 @@
 
     // for popup dialogue
     _popOverIsActive = NO;
-    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 100, 290, 300)];
+    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
     [_popOver setBackgroundColor:[UIColor whiteColor]];
     _popOver.layer.cornerRadius = 25;
     _popOver.layer.masksToBounds = YES;
     _popOver.hidden = YES;
     
     UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
-    button1.frame = CGRectMake(140, 45, 20, 20);
-    [button1 setTitle:@"1" forState:UIControlStateNormal];
+    button1.frame = CGRectMake(70, 70, 150, 40);
+    [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
     [button1 setTintColor:[UIColor blackColor]];
+    button1.backgroundColor = [UIColor greenColor];
+    button1.layer.masksToBounds = YES;
+    button1.layer.cornerRadius = 15;
     button1.tag = 1001;
     
     UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
-    buttonX.frame = CGRectMake(140, 120, 20, 20);
-    [buttonX setTitle:@"X" forState:UIControlStateNormal];
+    buttonX.frame = CGRectMake(70, 140, 150, 40);
+    [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
     [buttonX setTintColor:[UIColor blackColor]];
+    buttonX.backgroundColor = [UIColor purpleColor];
+    buttonX.layer.masksToBounds = YES;
+    buttonX.layer.cornerRadius = 15;
     buttonX.tag = 2002;
     
     UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
-    button2.frame = CGRectMake(140, 200, 20, 20);
-    [button2 setTitle:@"2" forState:UIControlStateNormal];
+    button2.frame = CGRectMake(70, 210, 150, 40);
+    [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
     [button2 setTintColor:[UIColor blackColor]];
+    button2.backgroundColor = [UIColor blueColor];
+    button2.layer.masksToBounds = YES;
+    button2.layer.cornerRadius = 15;
     button2.tag = 3003;
     
     [_popOver addSubview:button1];
@@ -776,32 +785,10 @@
     popOverAnimatingView.layer.cornerRadius = 25;
     popOverAnimatingView.layer.masksToBounds = YES;
     [_holderView addSubview:popOverAnimatingView];
-//
-//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
-//    button1.frame = CGRectMake(140, 45, 20, 20);
-//    [button1 setTitle:@"1" forState:UIControlStateNormal];
-//    [button1 setTintColor:[UIColor blackColor]];
-//    button1.tag = 1001;
-//    
-//    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
-//    buttonX.frame = CGRectMake(140, 120, 20, 20);
-//    [buttonX setTitle:@"X" forState:UIControlStateNormal];
-//    [buttonX setTintColor:[UIColor blackColor]];
-//    buttonX.tag = 2002;
-//    
-//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
-//    button2.frame = CGRectMake(140, 200, 20, 20);
-//    [button2 setTitle:@"2" forState:UIControlStateNormal];
-//    [button2 setTintColor:[UIColor blackColor]];
-//    button2.tag = 3003;
-//    
-//    [button1 addTarget:self
-//                action:@selector(answerButtonHandler:)
-//      forControlEvents:UIControlEventTouchUpInside];
     
     
     [UIView animateWithDuration:.3
-                          delay:0
+                          delay:0.03
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          popOverAnimatingView.frame = _popOver.frame;
