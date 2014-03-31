@@ -12,6 +12,9 @@
 
 @property (weak, nonatomic) IBOutlet UIView *holderView;
 //@property NSMutableArray *viewArray;
+@property (weak, nonatomic) IBOutlet UIView *popup;
+
+@property UIView *popOver;
 
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
@@ -30,6 +33,7 @@
 @property NSMutableArray *moveArray;
 @property NSString *moveDirection;
 @property NSMutableArray *suctionMoveArray;
+@property BOOL popOverIsActive;
 
 @end
 
@@ -54,8 +58,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-//    [_containerView setBackgroundColor:[UIColor blueColor]];
 
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     _uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
@@ -120,15 +122,49 @@
 //    NSLog(@"Testmodell: %@", testModel);
     
     
+
+    // for popup dialogue
+    _popOverIsActive = NO;
+    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 100, 290, 300)];
+    [_popOver setBackgroundColor:[UIColor whiteColor]];
+    _popOver.layer.cornerRadius = 25;
+    _popOver.layer.masksToBounds = YES;
+    _popOver.hidden = YES;
     
-    // test
-//    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithNumberOfRowsAndColumns:@4];
-//    QCSuctionMove *testMove = [testModel takeFirstSuctionStepFrom:@5 inDirection:@"up"];
-//    NSLog(@"testSuctionMove: %@", testMove);
-//    QCSuctionMove *nextMove = [testModel takeNewSuctionStepFromID:@1 WithMove:testMove inDirection:@"right"];
-//    NSLog(@"Next move: %@", nextMove);
-//    QCSuctionMove *thirdMove = [testModel takeNewSuctionStepFromID:@2 WithMove:nextMove inDirection:@"down"];
-//    NSLog(@"Third move: %@", thirdMove);
+    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
+    button1.frame = CGRectMake(140, 45, 20, 20);
+    [button1 setTitle:@"1" forState:UIControlStateNormal];
+    [button1 setTintColor:[UIColor blackColor]];
+    button1.tag = 1001;
+    
+    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
+    buttonX.frame = CGRectMake(140, 120, 20, 20);
+    [buttonX setTitle:@"X" forState:UIControlStateNormal];
+    [buttonX setTintColor:[UIColor blackColor]];
+    buttonX.tag = 2002;
+    
+    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
+    button2.frame = CGRectMake(140, 200, 20, 20);
+    [button2 setTitle:@"2" forState:UIControlStateNormal];
+    [button2 setTintColor:[UIColor blackColor]];
+    button2.tag = 3003;
+    
+    [_popOver addSubview:button1];
+    [_popOver addSubview:buttonX];
+    [_popOver addSubview:button2];
+    
+    [button1 addTarget:self
+                action:@selector(answerButtonHandler:)
+      forControlEvents:UIControlEventTouchUpInside];
+    [buttonX addTarget:self
+                action:@selector(answerButtonHandler:)
+      forControlEvents:UIControlEventTouchUpInside];
+    [button2 addTarget:self
+                action:@selector(answerButtonHandler:)
+      forControlEvents:UIControlEventTouchUpInside];
+    
+    [_holderView addSubview:_popOver];
+
 }
 
 
@@ -233,12 +269,15 @@
     NSDictionary *dict = @{@"x" : [NSNumber numberWithInt:column], @"y" : [NSNumber numberWithInt:row]};
 
     // test
-    NSLog(@"Grid position, row: %d, column %d", row, column);
+//    NSLog(@"Grid position, row: %d, column %d", row, column);
     return dict;
 }
 
 -(void) suctionPanHandler:(UIPanGestureRecognizer *) recognizer {
     if (_animating) {
+        return;
+    }
+    if (_popOverIsActive) {
         return;
     }
     
@@ -392,12 +431,14 @@
 //        [_playingFieldModel updateModelWithMoves:_moveArray];
 
         // perform animations and update model
-        for (QCSuctionMove *move in _suctionMoveArray) {
-            NSLog(@"Suction move: %@", move);
-        }
-        _animating = YES;
-        [self performAndAnimateSuctionMoves:_suctionMoveArray];
-        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+//        for (QCSuctionMove *move in _suctionMoveArray) {
+//            NSLog(@"Suction move: %@", move);
+//        }
+        
+        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+//        _animating = YES;
+//        [self performAndAnimateSuctionMoves:_suctionMoveArray];
+//        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
         
     }
     else if (recognizer.state == UIGestureRecognizerStateCancelled) {
@@ -720,6 +761,91 @@
                      completion:^(BOOL finished) {
                          [self recursionSuctionAnimation:moves index:index + 1];
                      }];
+}
+
+-(void) launchPopOverFromID:(NSNumber *) ID withColor:(UIColor *) color {
+    _popOverIsActive = YES;
+    [_holderView bringSubviewToFront:_popOver];
+    
+    //    CGRect endFrame = CGRectMake(15, 100, 290, 300);
+    UIView *tileView = _viewDictionary[ID];
+    
+    
+    UIView *popOverAnimatingView = [[UIView alloc] initWithFrame:tileView.frame];
+    [popOverAnimatingView setBackgroundColor:tileView.backgroundColor];
+    popOverAnimatingView.layer.cornerRadius = 25;
+    popOverAnimatingView.layer.masksToBounds = YES;
+    [_holderView addSubview:popOverAnimatingView];
+//
+//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
+//    button1.frame = CGRectMake(140, 45, 20, 20);
+//    [button1 setTitle:@"1" forState:UIControlStateNormal];
+//    [button1 setTintColor:[UIColor blackColor]];
+//    button1.tag = 1001;
+//    
+//    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
+//    buttonX.frame = CGRectMake(140, 120, 20, 20);
+//    [buttonX setTitle:@"X" forState:UIControlStateNormal];
+//    [buttonX setTintColor:[UIColor blackColor]];
+//    buttonX.tag = 2002;
+//    
+//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
+//    button2.frame = CGRectMake(140, 200, 20, 20);
+//    [button2 setTitle:@"2" forState:UIControlStateNormal];
+//    [button2 setTintColor:[UIColor blackColor]];
+//    button2.tag = 3003;
+//    
+//    [button1 addTarget:self
+//                action:@selector(answerButtonHandler:)
+//      forControlEvents:UIControlEventTouchUpInside];
+    
+    
+    [UIView animateWithDuration:.3
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         popOverAnimatingView.frame = _popOver.frame;
+                         [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
+                         [popOverAnimatingView setAlpha:.97];
+                         
+                         
+    }
+                     completion:^(BOOL finished) {
+                         _popOver.hidden = NO;
+                         [popOverAnimatingView removeFromSuperview];
+                     }];
+}
+
+-(void) answerButtonHandler:(id) sender {
+    UIButton *senderButton = (UIButton *) sender;
+    _popOver.hidden = YES;
+    _popOverIsActive = NO;
+    [self unMarkTiles:_tilesTouched];
+    
+    switch (senderButton.tag) {
+        case 1001: {
+            NSLog(@"Rätt svar 1");
+            _animating = YES;
+            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+
+            break;
+        }
+        case 2002: {
+            NSLog(@"Rätt svar X");
+            _animating = YES;
+            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+            break;
+        }
+        case 3003: {
+            NSLog(@"Fel svar 2");
+            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            break;
+        }
+    }
+    
+    
 }
 
 @end

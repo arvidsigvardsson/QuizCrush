@@ -11,7 +11,7 @@
 	<key>Falling animation duration</key>
 	<real>0.4</real>
 	<key>Number of categories</key>
-	<integer>5</integer>
+	<integer>2</integer>
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
 	<key>Alpha of selected tile</key>
@@ -21,7 +21,7 @@
 	<key>Suction animation duration</key>
 	<real>0.13</real>
 	<key>Number of rows</key>
-	<integer>8</integer>
+	<integer>11</integer>
 	<key>Number of columns</key>
 	<integer>7</integer>
 </dict>
