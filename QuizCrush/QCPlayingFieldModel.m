@@ -20,21 +20,51 @@
 @implementation QCPlayingFieldModel
 
 -(NSString *) description {
-    NSMutableString *string = [[NSMutableString alloc] init];
-    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
-    for (NSNumber *key in _tileDict) {
-        QCTile *tile = _tileDict[key];
-//        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
-//        [string appendString:str];
-        [string appendFormat:@"ID: %@, x = %@, y = %@,\n", key, tile.x, tile.y];
-        
-    }
-    return string;
+    return [self playingfieldAsString];
     
     
-    
+//    NSMutableString *string = [[NSMutableString alloc] init];
+//    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
+//    for (NSNumber *key in _tileDict) {
+//        QCTile *tile = _tileDict[key];
+////        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
+////        [string appendString:str];
+//        [string appendFormat:@"ID: %@, x = %@, y = %@,\n", key, tile.x, tile.y];
+//        
+//    }
+//    return string;
+//    
+//    
+//    
 //    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
 }
+
+-(NSString *) playingfieldAsString {
+    NSMutableString *string = [[NSMutableString alloc] init];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    int rows = [_numberOfRows intValue];
+    int cols = [_numberOfColumns intValue];
+    for (int i = 0; i < rows * cols; i++) {
+        [array addObject:@-1];
+    }
+    
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+        int index = [tile.y intValue] * cols + [tile.x intValue];
+        array[index] = tile.category;
+    }
+    
+    for (int n = 0; n < [array count]; n++) {
+        [string appendFormat:@"%@ ", array[n]];
+        if ((n + 1) % cols == 0) {
+            [string appendString:@"\n"];
+        }
+    }
+    
+    return string;
+}
+
+
 
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *)rowsAndCols {
     if(!(self = [super init])){

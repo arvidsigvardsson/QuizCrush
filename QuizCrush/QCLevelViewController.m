@@ -534,6 +534,8 @@
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
+    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
+    
     CGPoint point = [recognizer locationInView:_holderView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
                                             numberOfRows:_numberOfRows
