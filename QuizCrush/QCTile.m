@@ -31,6 +31,7 @@
         _xDuringMotion = x;
         _yDuringMotion = y;
         _hasBeenMoved = NO;
+        _toBeDeleted = NO;
     }
     return self;
 

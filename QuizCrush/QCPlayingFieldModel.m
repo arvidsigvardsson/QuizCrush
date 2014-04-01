@@ -102,6 +102,18 @@
     return [NSNumber numberWithInt:arc4random_uniform(noCategories)];
 }
 
+-(NSNumber *) nextCategoryExcluding:(NSNumber *) category {
+    if (!category) {
+        return [self nextCategory];
+    }
+    
+    // somewhat dirty hack :=)
+    NSNumber *returnCategory = [self nextCategory];
+    while ([returnCategory isEqualToNumber:category]) {
+        returnCategory = [self nextCategory];
+    }
+    return returnCategory;
+}
 
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD {
     NSNumber *category = [self categoryOfTileWithID:iD];
@@ -288,7 +300,7 @@
     }
 }
 
--(NSSet *) getNewTilesReplacing:(NSSet *) set{
+-(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory {
     if (!set) {
         return nil;
     }
@@ -303,7 +315,7 @@
             y -= 1;
         }
         // add new tile at top of stack
-        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategory]
+        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategoryExcluding:excludeCategory]
                                                         iD:[self nextID]
                                                          x:x
                                                          y:[NSNumber numberWithInt:y]];
@@ -586,9 +598,10 @@
     }
     [self deleteTiles:deleteSet];
     
-    // reset moved tiles
+    // reset moved tiles and set toBeDeleted to NO
     for (NSNumber *key in _tileDict) {
         QCTile *tile = _tileDict[key];
+        tile.toBeDeleted = NO;
         if (tile.hasBeenMoved) {
             tile.xDuringMotion = tile.x;
             tile.yDuringMotion = tile.y;
@@ -622,6 +635,7 @@
     
     QCTile *startTile = _tileDict[startID];
     startTile.hasBeenMoved = YES;
+    startTile.toBeDeleted = YES;
     int x = [startTile.x intValue];
     int y = [startTile.y intValue];
     
@@ -667,6 +681,8 @@
     
     nextMove.createdTile = newTile.iD;
     nextMove.deletedTile = startID;
+    QCTile *deleteTile = _tileDict[startID];
+    deleteTile.toBeDeleted = YES;
     nextMove.tailArray = [NSMutableArray arrayWithArray:suctionMove.tailArray];
     [nextMove.tailArray addObject:newTile.iD];
     
@@ -695,5 +711,14 @@
     return nextMove;
 }
 
-
+-(NSNumber *) changeHeadOfSnakeToBoosterAndReturnItForMove:(QCSuctionMove *) move {
+    for (NSNumber *key in move.tailArray) {
+        QCTile *tile = _tileDict[key];
+        if (!tile.toBeDeleted) {
+            tile.category = @7;
+            return key;
+        }
+    }
+    return nil;
+}
 @end

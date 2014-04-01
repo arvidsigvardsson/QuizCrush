@@ -21,7 +21,7 @@
 -(NSNumber *) IDOfTileDuringMotionAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(QCTile *) tileWithID:(NSNumber *) iD;
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
--(NSSet *) getNewTilesReplacing:(NSSet *) set;
+-(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
 -(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
 -(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
@@ -33,5 +33,6 @@
 -(QCSuctionMove *) takeNewSuctionStepFromID:(NSNumber *) startID WithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction;
 -(void) suctionSwipeWasAbortedWithMoves:(NSArray *) moveArray;
 -(void) updateModelWithSuctionMoves:(NSArray *) moves;
+-(NSNumber *) changeHeadOfSnakeToBoosterAndReturnItForMove:(QCSuctionMove *) move;
 
 @end
