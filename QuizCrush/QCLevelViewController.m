@@ -36,6 +36,7 @@
 @property NSMutableArray *suctionMoveArray;
 @property BOOL popOverIsActive;
 @property BOOL boosterIsActive;
+@property NSNumber *selectedBoosterTile;
 
 @end
 
@@ -142,7 +143,7 @@
     button1.frame = CGRectMake(70, 70, 150, 40);
     [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
     [button1 setTintColor:[UIColor blackColor]];
-    button1.backgroundColor = [UIColor greenColor];
+    button1.backgroundColor = [UIColor grayColor]; //[UIColor greenColor];
     button1.layer.masksToBounds = YES;
     button1.layer.cornerRadius = 15;
     button1.tag = 1001;
@@ -151,7 +152,7 @@
     buttonX.frame = CGRectMake(70, 140, 150, 40);
     [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
     [buttonX setTintColor:[UIColor blackColor]];
-    buttonX.backgroundColor = [UIColor purpleColor];
+    buttonX.backgroundColor = [UIColor grayColor]; //[UIColor purpleColor];
     buttonX.layer.masksToBounds = YES;
     buttonX.layer.cornerRadius = 15;
     buttonX.tag = 2002;
@@ -160,7 +161,7 @@
     button2.frame = CGRectMake(70, 210, 150, 40);
     [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
     [button2 setTintColor:[UIColor blackColor]];
-    button2.backgroundColor = [UIColor blueColor];
+    button2.backgroundColor = [UIColor grayColor]; //[UIColor blueColor];
     button2.layer.masksToBounds = YES;
     button2.layer.cornerRadius = 15;
     button2.tag = 3003;
@@ -240,6 +241,60 @@
     }];
 }
 
+-(void) deleteTheBoosterTile:(NSNumber *) boosterTile excludingCategory:(NSNumber *) excludeCategory {
+    NSSet *selectionSet = [NSSet setWithObject:boosterTile];
+    // identify if new tiles have been created and give them a view etc
+    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet
+                                             excludingCategory:excludeCategory];
+    
+    for (NSNumber *addNewKey in newTiles) {
+        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
+        int x = [newTile.x intValue];
+        int y = [newTile.y intValue];
+        //
+        
+        //        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+        //        newView.layer.cornerRadius = 17.0;
+        //        newView.layer.masksToBounds = YES;
+        //        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
+        //
+        //        UIColor *color = _colorArray[[category intValue]];
+        //
+        //        [newView setBackgroundColor:color];
+        
+        UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
+        [_viewDictionary setObject:newView
+                            forKey:addNewKey];
+        [_holderView addSubview:newView];
+    }
+    
+    
+    // dict with ids of tiles to move, with their corresponding moves
+    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    
+    for (NSNumber *key in selectionSet) {
+        UIView * view = _viewDictionary[key];
+        //        [view setBackgroundColor:[UIColor blackColor]];
+        [view removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
+    }
+    
+    _animating = YES;
+    
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue]
+                     animations:^{
+                         for (NSNumber *aniKey in animateDict) {
+                             UIView *aniView = _viewDictionary[aniKey];
+                             CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
+                             [aniView setCenter:newCenter];
+                         }
+                     }
+                     completion:^(BOOL finished) {
+                         _animating = NO;
+                     }];
+}
+
+
 - (void)boosterDeleteTiles:(NSNumber *)IDTileClicked {
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
 //    if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
@@ -294,6 +349,8 @@
                      }
                      completion:^(BOOL finished) {
                          _animating = NO;
+                         [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:IDTileClicked];//[_playingFieldModel categoryOfTileWithID:tileTouched]];
+
                      }];
 }
 
@@ -558,6 +615,7 @@
         _messageLabel.text = @"Tap squares you want to remove!";
         NSLog(@"Booster!");
         _boosterIsActive = YES;
+        _selectedBoosterTile = tileTouched;
         return;
     }
     
@@ -566,6 +624,7 @@
         return;
     }
 
+//    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:tileTouched]];
     [self boosterDeleteTiles:tileTouched];
     _messageLabel.hidden = YES;
     _boosterIsActive = NO;
@@ -921,10 +980,12 @@
     
     switch (senderButton.tag) {
         case 1001: {
-            NSLog(@"Rätt svar 1");
+            NSLog(@"Rätt svar 1, antal swipes: %lu", (unsigned long)[_tilesTouched count]);
             _animating = YES;
-            NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-            [self changeTileToBooster:tileToChangeToBooster];
+            if ([_tilesTouched count] >= 3) {
+                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+                [self changeTileToBooster:tileToChangeToBooster];
+            }
             [self performAndAnimateSuctionMoves:_suctionMoveArray];
             [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
 
@@ -933,9 +994,10 @@
         case 2002: {
             NSLog(@"Rätt svar X");
             _animating = YES;
-            NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-            [self changeTileToBooster:tileToChangeToBooster];
-            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+            if ([_tilesTouched count] >= 3) {
+                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+                [self changeTileToBooster:tileToChangeToBooster];
+            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
             [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
             break;
         }
