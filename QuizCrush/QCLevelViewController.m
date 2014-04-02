@@ -59,6 +59,7 @@
     } else {
         color = _colorArray[[category intValue]];
     }
+ 
     [tile setBackgroundColor:color];
 
     return tile;
@@ -254,14 +255,17 @@
         int x = [newTile.x intValue];
         int y = [newTile.y intValue];
         //
-        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        newView.layer.cornerRadius = 17.0;
-        newView.layer.masksToBounds = YES;
-        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
         
-        UIColor *color = _colorArray[[category intValue]];
-        
-        [newView setBackgroundColor:color];
+//        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+//        newView.layer.cornerRadius = 17.0;
+//        newView.layer.masksToBounds = YES;
+//        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
+//        
+//        UIColor *color = _colorArray[[category intValue]];
+//        
+//        [newView setBackgroundColor:color];
+
+        UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
         [_viewDictionary setObject:newView
                             forKey:addNewKey];
         [_holderView addSubview:newView];
@@ -280,15 +284,17 @@
     
     _animating = YES;
     
-    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue] animations:^{
-        for (NSNumber *aniKey in animateDict) {
-            UIView *aniView = _viewDictionary[aniKey];
-            CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
-            [aniView setCenter:newCenter];
-        }
-    }completion:^(BOOL finished) {
-        _animating = NO;
-    }];
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue]
+                     animations:^{
+                         for (NSNumber *aniKey in animateDict) {
+                             UIView *aniView = _viewDictionary[aniKey];
+                             CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
+                             [aniView setCenter:newCenter];
+                         }
+                     }
+                     completion:^(BOOL finished) {
+                         _animating = NO;
+                     }];
 }
 
 -(void)onViewClickedHandler:(UITapGestureRecognizer *)recognizer {
@@ -534,7 +540,7 @@
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
-    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
+//    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
     
     CGPoint point = [recognizer locationInView:_holderView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
@@ -563,6 +569,8 @@
     [self boosterDeleteTiles:tileTouched];
     _messageLabel.hidden = YES;
     _boosterIsActive = NO;
+//    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
+
 }
 
 -(void) panHandler:(UIPanGestureRecognizer *) recognizer {

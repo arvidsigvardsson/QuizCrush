@@ -20,22 +20,22 @@
 @implementation QCPlayingFieldModel
 
 -(NSString *) description {
-    return [self playingfieldAsString];
+//    return [self playingfieldAsString];
     
     
-//    NSMutableString *string = [[NSMutableString alloc] init];
-//    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
-//    for (NSNumber *key in _tileDict) {
-//        QCTile *tile = _tileDict[key];
-////        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
-////        [string appendString:str];
-//        [string appendFormat:@"ID: %@, x = %@, y = %@,\n", key, tile.x, tile.y];
-//        
-//    }
-//    return string;
-//    
-//    
-//    
+    NSMutableString *string = [[NSMutableString alloc] init];
+    [string appendFormat:@"QCPlayingFieldModel, size: %lu\n", (unsigned long)[_tileDict count]];
+    for (NSNumber *key in _tileDict) {
+        QCTile *tile = _tileDict[key];
+//        NSString *str = [[NSString stringWithFormat:@"ID: %@ at x: %@, y: %@\n", key, tile.x, tile.y] stringByPaddingToLength:15 withString:@" " startingAtIndex:0];
+//        [string appendString:str];
+        [string appendFormat:@"ID: %@, x = %@, y = %@,\n", key, tile.x, tile.y];
+        
+    }
+    return string;
+    
+    
+    
 //    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
 }
 
@@ -394,7 +394,17 @@
         QCTile *transTile = _tileDict[transKey];
         int newY = [transTile.y intValue] + [transDict[transKey] intValue];
         transTile.y = [NSNumber numberWithInt:newY];
+        
+        // lets see if this helps
+        transTile.xDuringMotion = transTile.x;
+        transTile.yDuringMotion = transTile.y;
     }
+    
+    // test
+    NSLog(@"tiledict innifrån removeandreturn: %@", self);
+    
+    
+    
     
     // removeTiles
     for (NSNumber *thirdKey in removeSet) {
