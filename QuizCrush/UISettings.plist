@@ -24,5 +24,7 @@
 	<integer>9</integer>
 	<key>Number of columns</key>
 	<integer>7</integer>
+	<key>Tiles required for booster</key>
+	<integer>3</integer>
 </dict>
 </plist>

@@ -15,6 +15,7 @@
 //@prperty (weak, nonatomic) IBOutlet UIView *popup;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
 
+@property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property UIView *popOver;
 
 @property NSMutableDictionary *viewDictionary;
@@ -37,7 +38,7 @@
 @property BOOL popOverIsActive;
 @property BOOL boosterIsActive;
 @property NSNumber *selectedBoosterTile;
-
+@property int score;
 @end
 
 @implementation QCLevelViewController
@@ -88,6 +89,7 @@
     
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     _viewDictionary = [[NSMutableDictionary alloc] init];
+    _score = 0;
 
     // swipe handling properties
     _animating = NO;
@@ -964,12 +966,25 @@
                          [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
                          [popOverAnimatingView setAlpha:.97];
                          
-                         
     }
                      completion:^(BOOL finished) {
                          _popOver.hidden = NO;
                          [popOverAnimatingView removeFromSuperview];
                      }];
+}
+
+- (void)playerAnsweredCorrect {
+    _score += round(pow(1.2, [_tilesTouched count]) * 10) * 10;
+    _scoreLabel.text = [NSString stringWithFormat:@"%d", _score];
+    _messageLabel.hidden = NO;
+    _messageLabel.text = @"Correct!";
+    _animating = YES;
+    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
+        NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+        [self changeTileToBooster:tileToChangeToBooster];
+    }
+    [self performAndAnimateSuctionMoves:_suctionMoveArray];
+    [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
 }
 
 -(void) answerButtonHandler:(id) sender {
@@ -980,34 +995,34 @@
     
     switch (senderButton.tag) {
         case 1001: {
-            NSLog(@"Rätt svar 1, antal swipes: %lu", (unsigned long)[_tilesTouched count]);
-            _animating = YES;
-            if ([_tilesTouched count] >= 3) {
-                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-                [self changeTileToBooster:tileToChangeToBooster];
-            }
-            [self performAndAnimateSuctionMoves:_suctionMoveArray];
-            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-
+            [self playerAnsweredCorrect];
             break;
         }
         case 2002: {
-            NSLog(@"Rätt svar X");
-            _animating = YES;
-            if ([_tilesTouched count] >= 3) {
-                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-                [self changeTileToBooster:tileToChangeToBooster];
-            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
-            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+            [self playerAnsweredCorrect];
+            
+//            NSLog(@"Rätt svar X");
+//            _animating = YES;
+//            if ([_tilesTouched count] >= 3) {
+//                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+//                [self changeTileToBooster:tileToChangeToBooster];
+//            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+//            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
             break;
         }
         case 3003: {
             NSLog(@"Fel svar 2");
+            _messageLabel.hidden = NO;
+            _messageLabel.text = @"Sorry, incorrect answer";
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             break;
         }
     }
 }
+
+//-(void) playerAnsweredCorrect {
+//    
+//}
 
 -(void) changeTileToBooster:(NSNumber *) ID {
     UIView *tile = _viewDictionary[ID];
