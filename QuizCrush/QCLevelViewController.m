@@ -14,6 +14,7 @@
 //@property NSMutableArray *viewArray;
 //@prperty (weak, nonatomic) IBOutlet UIView *popup;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
+@property (weak, nonatomic) IBOutlet UILabel *movesLeftLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property UIView *popOver;
@@ -39,6 +40,7 @@
 @property BOOL boosterIsActive;
 @property NSNumber *selectedBoosterTile;
 @property int score;
+@property int numberOfMovesMade;
 @end
 
 @implementation QCLevelViewController
@@ -89,7 +91,13 @@
     
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     _viewDictionary = [[NSMutableDictionary alloc] init];
+
+    // game play variables etc
     _score = 0;
+    _numberOfMovesMade = 0;
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue]];
+    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
+    _messageLabel.hidden = NO;
 
     // swipe handling properties
     _animating = NO;
@@ -145,7 +153,7 @@
     button1.frame = CGRectMake(70, 70, 150, 40);
     [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
     [button1 setTintColor:[UIColor blackColor]];
-    button1.backgroundColor = [UIColor grayColor]; //[UIColor greenColor];
+    button1.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor greenColor];
     button1.layer.masksToBounds = YES;
     button1.layer.cornerRadius = 15;
     button1.tag = 1001;
@@ -154,7 +162,7 @@
     buttonX.frame = CGRectMake(70, 140, 150, 40);
     [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
     [buttonX setTintColor:[UIColor blackColor]];
-    buttonX.backgroundColor = [UIColor grayColor]; //[UIColor purpleColor];
+    buttonX.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor purpleColor];
     buttonX.layer.masksToBounds = YES;
     buttonX.layer.cornerRadius = 15;
     buttonX.tag = 2002;
@@ -163,7 +171,7 @@
     button2.frame = CGRectMake(70, 210, 150, 40);
     [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
     [button2 setTintColor:[UIColor blackColor]];
-    button2.backgroundColor = [UIColor grayColor]; //[UIColor blueColor];
+    button2.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor blueColor];
     button2.layer.masksToBounds = YES;
     button2.layer.cornerRadius = 15;
     button2.tag = 3003;
@@ -974,10 +982,10 @@
 }
 
 - (void)playerAnsweredCorrect {
-    _score += round(pow(1.2, [_tilesTouched count]) * 10) * 10;
+    _score += round(pow(1.6, [_tilesTouched count]) * 10) * 10;
     _scoreLabel.text = [NSString stringWithFormat:@"%d", _score];
-    _messageLabel.hidden = NO;
     _messageLabel.text = @"Correct!";
+    _messageLabel.hidden = NO;
     _animating = YES;
     if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
         NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
@@ -985,39 +993,64 @@
     }
     [self performAndAnimateSuctionMoves:_suctionMoveArray];
     [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+
+    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+        [self gameOver];
+    }
+
+}
+
+-(void) playerAnsweredWrong {
+    _messageLabel.text = @"Sorry, incorrect answer";
+    _messageLabel.hidden = NO;
+    [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+    
+    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue]) {
+        [self gameOver];
+    }
 }
 
 -(void) answerButtonHandler:(id) sender {
-    UIButton *senderButton = (UIButton *) sender;
+//    UIButton *senderButton = (UIButton *) sender;
     _popOver.hidden = YES;
     _popOverIsActive = NO;
     [self unMarkTiles:_tilesTouched];
     
-    switch (senderButton.tag) {
-        case 1001: {
-            [self playerAnsweredCorrect];
-            break;
-        }
-        case 2002: {
-            [self playerAnsweredCorrect];
-            
-//            NSLog(@"Rätt svar X");
-//            _animating = YES;
-//            if ([_tilesTouched count] >= 3) {
-//                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-//                [self changeTileToBooster:tileToChangeToBooster];
-//            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
-//            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-            break;
-        }
-        case 3003: {
-            NSLog(@"Fel svar 2");
-            _messageLabel.hidden = NO;
-            _messageLabel.text = @"Sorry, incorrect answer";
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            break;
-        }
+    _numberOfMovesMade += 1;
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
+    
+    int outcome = arc4random_uniform(3);
+    if (outcome == 0) {
+        [self playerAnsweredWrong];
+    } else {
+        [self playerAnsweredCorrect];
     }
+    
+//    switch (senderButton.tag) {
+//        case 1001: {
+//            [self playerAnsweredCorrect];
+//            break;
+//        }
+//        case 2002: {
+//            [self playerAnsweredCorrect];
+//            
+////            NSLog(@"Rätt svar X");
+////            _animating = YES;
+////            if ([_tilesTouched count] >= 3) {
+////                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+////                [self changeTileToBooster:tileToChangeToBooster];
+////            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+////            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+//            break;
+//        }
+//        case 3003: {
+//            NSLog(@"Fel svar 2");
+//            _messageLabel.hidden = NO;
+//            _messageLabel.text = @"Sorry, incorrect answer";
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            break;
+//        }
+//    }
 }
 
 //-(void) playerAnsweredCorrect {
@@ -1028,5 +1061,20 @@
     UIView *tile = _viewDictionary[ID];
     tile.backgroundColor = [UIColor blackColor];
 }
+
+-(void) gameOver {
+    NSString *string;
+    if (_score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+        string = @"Good Job! Level accomplished";
+    } else {
+        string = @"Out of moves!";
+    }
+    _messageLabel.text = string;
+    
+    for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
+        [_holderView removeGestureRecognizer:rec];
+    }
+}
+
 
 @end
