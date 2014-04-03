@@ -761,4 +761,10 @@
     }
     return nil;
 }
+
+-(void) changeToBoosterForID:(NSNumber *) ID {
+    QCTile *tile = _tileDict[ID];
+    tile.category = @7;
+}
+
 @end

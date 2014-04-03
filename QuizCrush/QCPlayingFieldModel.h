@@ -34,5 +34,6 @@
 -(void) suctionSwipeWasAbortedWithMoves:(NSArray *) moveArray;
 -(void) updateModelWithSuctionMoves:(NSArray *) moves;
 -(NSNumber *) changeHeadOfSnakeToBoosterAndReturnItForMove:(QCSuctionMove *) move;
+-(void) changeToBoosterForID:(NSNumber *) ID;
 
 @end
