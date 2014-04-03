@@ -194,6 +194,7 @@
 
     // for booster
     _boosterIsActive = NO;
+    
 }
 
 
