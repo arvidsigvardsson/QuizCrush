@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */; };
 		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
+		71B4E39718EEF46400F2EB41 /* QCPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71B4E39618EEF46400F2EB41 /* QCPopupView.m */; };
 		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
 		71E0C4E918D6E39800B5FFC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4E818D6E39800B5FFC7 /* Foundation.framework */; };
 		71E0C4EB18D6E39800B5FFC7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4EA18D6E39800B5FFC7 /* CoreGraphics.framework */; };
@@ -46,6 +47,8 @@
 		71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCMoveDescription.m; sourceTree = "<group>"; };
 		7147829618E2DF7E00A1A08A /* QCSuctionMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSuctionMove.h; sourceTree = "<group>"; };
 		7147829718E2DF7E00A1A08A /* QCSuctionMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSuctionMove.m; sourceTree = "<group>"; };
+		71B4E39518EEF46400F2EB41 /* QCPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCPopupView.h; sourceTree = "<group>"; };
+		71B4E39618EEF46400F2EB41 /* QCPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCPopupView.m; sourceTree = "<group>"; };
 		71DD0AF618D859AF00E9247A /* QCModelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCModelTestCase.m; sourceTree = "<group>"; };
 		71E0C4E518D6E39800B5FFC7 /* QuizCrush.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizCrush.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E0C4E818D6E39800B5FFC7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -135,6 +138,8 @@
 			isa = PBXGroup;
 			children = (
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
+				71B4E39518EEF46400F2EB41 /* QCPopupView.h */,
+				71B4E39618EEF46400F2EB41 /* QCPopupView.m */,
 				71E0C4F718D6E39800B5FFC7 /* QCAppDelegate.h */,
 				71E0C4F818D6E39800B5FFC7 /* QCAppDelegate.m */,
 				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
@@ -294,6 +299,7 @@
 				71F644ED18ED8EB2007090B4 /* QCQuestion.m in Sources */,
 				71E0C52218D6E80400B5FFC7 /* QCTile.m in Sources */,
 				71E0C52518D6ED0200B5FFC7 /* QCPlayingFieldModel.m in Sources */,
+				71B4E39718EEF46400F2EB41 /* QCPopupView.m in Sources */,
 				71E0C4F918D6E39800B5FFC7 /* QCAppDelegate.m in Sources */,
 				71E0C4F518D6E39800B5FFC7 /* main.m in Sources */,
 			);

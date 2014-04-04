@@ -45,7 +45,15 @@
 
 @implementation QCLevelViewController
 
+// delegate methods
 
+-(NSArray *) questionStrings {
+    return nil;
+}
+
+-(void) answerButtonHandler:(NSNumber *)index {
+    NSLog(@"Knapp nr: %@", index);
+}
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
 {
