@@ -22,6 +22,8 @@
 @property QCPopupView *popView;
 
 @property QCQuestionProvider *questionProvider;
+@property QCTileImageProvider *imageProvider;
+
 @property QCQuestion *currentQuestion;
 
 @property NSMutableDictionary *viewDictionary;
@@ -85,24 +87,28 @@
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
 {
-    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-    tile.layer.cornerRadius = 17.0;
-    tile.layer.masksToBounds = YES;
-    //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
     NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
-
-    UIColor *color;
-    // check if a booster has been created
-    if ([category isEqualToNumber:@7]) {
-//        [self changeTileToBooster:iD];
-        color = [UIColor blackColor];
-    } else {
-        color = _colorArray[[category intValue]];
-    }
- 
-    [tile setBackgroundColor:color];
-
+    
+    UIView *tile = [_imageProvider provideImageTileOfCategory:category];
+    tile.center = CGPointMake(xIndex * _lengthOfTile + _lengthOfTile / 2, yIndex * _lengthOfTile + _lengthOfTile / 2);
     return tile;
+//    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+//    tile.layer.cornerRadius = 17.0;
+//    tile.layer.masksToBounds = YES;
+//    //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
+//
+//    UIColor *color;
+//    // check if a booster has been created
+//    if ([category isEqualToNumber:@7]) {
+////        [self changeTileToBooster:iD];
+//        color = [UIColor blackColor];
+//    } else {
+//        color = _colorArray[[category intValue]];
+//    }
+// 
+//    [tile setBackgroundColor:color];
+//
+//    return tile;
 }
 
 - (void)viewDidLoad
@@ -142,8 +148,9 @@
     _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
 
-    // questionProvider
+    // questionProvider and imageProvider
     _questionProvider = [[QCQuestionProvider alloc] init];
+    _imageProvider = [[QCTileImageProvider alloc] init];
     
     // swipe handling properties
     _animating = NO;

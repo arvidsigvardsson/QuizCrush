@@ -10,6 +10,7 @@
 #import "QCPlayingFieldModel.h"
 #import "QCQuestionProvider.h"
 #import "QCPopupView.h"
+#import "QCTileImageProvider.h"
 
 @interface QCLevelViewController : UIViewController <PopupViewDelegate>
 
