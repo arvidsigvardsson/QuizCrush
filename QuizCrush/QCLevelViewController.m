@@ -112,8 +112,15 @@
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     _uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
-    _colorArray = @[[UIColor orangeColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor], [UIColor yellowColor]];
+//    _colorArray = @[[UIColor orangeColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor], [UIColor yellowColor]];
 
+    _colorArray = @[[UIColor purpleColor],
+                    [UIColor blueColor],
+                    [UIColor yellowColor],
+                    [UIColor brownColor],
+                    [UIColor greenColor],
+                    [UIColor orangeColor]];
+    
     // set up holder views dimensions
     _lengthOfTile = self.view.frame.size.width / [_uiSettingsDictionary[@"Number of columns"] floatValue];
     float frameHeight = [_uiSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
@@ -1028,7 +1035,9 @@
 //                                                        answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
 //                                             correctAnswerIndex:@0];
     
-    QCQuestion *question = [_questionProvider provideQuestionOfCategory:@5];
+    NSNumber *category = [_playingFieldModel categoryOfTileWithID:_currentTileTouched];
+    
+    QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
     [_popView loadQuestionStrings:question];
 

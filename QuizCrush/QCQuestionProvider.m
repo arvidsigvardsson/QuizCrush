@@ -19,7 +19,7 @@
                                                   answers:@[@"Romarna", @"Grekerna", @"Mayafolket", @"Aztekerna"]
                                        correctAnswerIndex:@0];
 
-    
+    NSLog(@"Kategori: %@", category);
     
     return q;
 }
