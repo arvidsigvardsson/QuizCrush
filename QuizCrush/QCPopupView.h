@@ -7,10 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "QCQuestion.h"
 
 @protocol PopupViewDelegate
 
--(NSArray *) questionStrings; //:(id) qObject;
+-(NSArray *) questionStrings:(QCQuestion *) question; //:(id) qObject;
 -(void) answerButtonHandler:(NSNumber *) index;
 
 @end
@@ -19,6 +20,6 @@
 
 @property (weak) id <PopupViewDelegate> delegate;
 
--(void) loadQuestionStrings;
+-(void) loadQuestionStrings:(QCQuestion *)question;
 
 @end

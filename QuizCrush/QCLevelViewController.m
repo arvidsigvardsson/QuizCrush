@@ -19,6 +19,11 @@
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
 @property UIView *popOver;
 
+@property QCPopupView *popView;
+
+@property QCQuestionProvider *questionProvider;
+@property QCQuestion *currentQuestion;
+
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
@@ -47,12 +52,35 @@
 
 // delegate methods
 
--(NSArray *) questionStrings {
-    return nil;
+-(NSArray *) questionStrings:(QCQuestion *) question {
+//    return nil;
+    return @[question.topic,
+             question.questionString,
+             question.answers[0],
+             question.answers[1],
+             question.answers[2],
+             question.answers[3],
+             question.correctAnswerIndex];
+
 }
 
 -(void) answerButtonHandler:(NSNumber *)index {
+    [self unMarkTiles:_tilesTouched];
+    _popOverIsActive = NO;
+
+    
+    _numberOfMovesMade += 1;
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
     NSLog(@"Knapp nr: %@", index);
+    if ([index isEqualToNumber:_currentQuestion.correctAnswerIndex]) {
+        [self playerAnsweredCorrect];
+    } else {
+        [self playerAnsweredWrong];
+    }
+
+
+    
+    _popView.hidden = YES;
 }
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
@@ -107,6 +135,9 @@
     _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
 
+    // questionProvider
+    _questionProvider = [[QCQuestionProvider alloc] init];
+    
     // swipe handling properties
     _animating = NO;
     _tilesTouched = [[NSMutableSet alloc] init];
@@ -147,10 +178,19 @@
 //    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithRows:@2 Columns:@3];
 //    NSLog(@"Testmodell: %@", testModel);
     
+    // new popup
+    _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
+    [_popView setDelegate:self];
+    _popView.hidden = YES;
+    [_holderView addSubview:_popView];
+    
     
 
     // for popup dialogue
     _popOverIsActive = NO;
+    
+    
+    
     _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
     [_popOver setBackgroundColor:[UIColor whiteColor]];
     _popOver.layer.cornerRadius = 25;
@@ -189,13 +229,13 @@
     [_popOver addSubview:button2];
     
     [button1 addTarget:self
-                action:@selector(answerButtonHandler:)
+                action:@selector(answerPopButtonHandler:)
       forControlEvents:UIControlEventTouchUpInside];
     [buttonX addTarget:self
-                action:@selector(answerButtonHandler:)
+                action:@selector(answerPopButtonHandler:)
       forControlEvents:UIControlEventTouchUpInside];
     [button2 addTarget:self
-                action:@selector(answerButtonHandler:)
+                action:@selector(answerPopButtonHandler:)
       forControlEvents:UIControlEventTouchUpInside];
     
     [_holderView addSubview:_popOver];
@@ -981,17 +1021,32 @@
     [_holderView addSubview:popOverAnimatingView];
     
     
+//    _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
+//    [_popView setDelegate:self];
+//    QCQuestion *question = [[QCQuestion alloc] initWithCategory:@1 topic:@"Fysik"
+//                                                 questionString:@"Vad f\u00f6rs\u00f6ker man hitta i LIGO-experimentet?"
+//                                                        answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
+//                                             correctAnswerIndex:@0];
+    
+    QCQuestion *question = [_questionProvider provideQuestionOfCategory:@5];
+    _currentQuestion = question;
+    [_popView loadQuestionStrings:question];
+
+    
     [UIView animateWithDuration:.3
                           delay:0.03
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         popOverAnimatingView.frame = _popOver.frame;
+                         popOverAnimatingView.frame = _popView.frame;
                          [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
                          [popOverAnimatingView setAlpha:.97];
                          
     }
                      completion:^(BOOL finished) {
-                         _popOver.hidden = NO;
+//                         _popOver.hidden = NO;
+//                         [_holderView addSubview:_popView];
+                         _popView.hidden = NO;
+                         [_holderView bringSubviewToFront:_popView];
                          [popOverAnimatingView removeFromSuperview];
                      }];
 }
@@ -1032,7 +1087,7 @@
     }
 }
 
--(void) answerButtonHandler:(id) sender {
+-(void) answerPopButtonHandler:(id) sender {
 //    UIButton *senderButton = (UIButton *) sender;
     _popOver.hidden = YES;
     _popOverIsActive = NO;

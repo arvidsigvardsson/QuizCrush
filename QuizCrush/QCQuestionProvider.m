@@ -13,10 +13,10 @@
 -(QCQuestion *) provideQuestionOfCategory:(NSNumber *) category{
     // TODO placeholder implementation
     
-    QCQuestion *q = [[QCQuestion alloc] initWithCategory:@4
-                                                    topic:@"Fysik"
-                                           questionString:@"Vad f\u00f6rs\u00f6ker man hitta i LIGO-experimentet?"
-                                                  answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
+    QCQuestion *q = [[QCQuestion alloc] initWithCategory:@5
+                                                    topic:@"Golf"
+                                           questionString:@"Vilket folkslag uppfann en stamform till golf?"
+                                                  answers:@[@"Romarna", @"Grekerna", @"Mayafolket", @"Aztekerna"]
                                        correctAnswerIndex:@0];
 
     

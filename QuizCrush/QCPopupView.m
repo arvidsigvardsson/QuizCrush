@@ -179,8 +179,8 @@ typedef enum {
     
 }
 
--(void) loadQuestionStrings {
-    NSArray *strings = [self.delegate questionStrings];
+-(void) loadQuestionStrings:(QCQuestion *) question {
+    NSArray *strings = [self.delegate questionStrings:question];
     
     [_topicLabel setText:strings[0]];
     [_questionLabel setText:strings[1]];
