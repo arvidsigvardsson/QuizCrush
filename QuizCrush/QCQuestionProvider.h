@@ -11,6 +11,7 @@
 
 @interface QCQuestionProvider : NSObject
 
+-(id) init;
 -(QCQuestion *) provideQuestionOfCategory:(NSNumber *) category;
 
 @end

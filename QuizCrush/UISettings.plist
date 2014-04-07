@@ -29,6 +29,6 @@
 	<key>Max number of moves</key>
 	<integer>10</integer>
 	<key>Score required</key>
-	<integer>7000</integer>
+	<integer>5000</integer>
 </dict>
 </plist>

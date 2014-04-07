@@ -10,6 +10,8 @@
 		71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */; };
 		71386C3F18F2904100414357 /* QCPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71386C3E18F2904100414357 /* QCPopupView.m */; };
 		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
+		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
+		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
 		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
 		71E0C4E918D6E39800B5FFC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4E818D6E39800B5FFC7 /* Foundation.framework */; };
 		71E0C4EB18D6E39800B5FFC7 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4EA18D6E39800B5FFC7 /* CoreGraphics.framework */; };
@@ -29,7 +31,6 @@
 		71E0C52518D6ED0200B5FFC7 /* QCPlayingFieldModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 71E0C52418D6ED0200B5FFC7 /* QCPlayingFieldModel.m */; };
 		71E0C52718D6F3C900B5FFC7 /* UISettings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71E0C52618D6F3C900B5FFC7 /* UISettings.plist */; };
 		71F644ED18ED8EB2007090B4 /* QCQuestion.m in Sources */ = {isa = PBXBuildFile; fileRef = 71F644EC18ED8EB2007090B4 /* QCQuestion.m */; };
-		71F644F018ED95CA007090B4 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 71F644EF18ED95CA007090B4 /* QCQuestionProvider.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,9 @@
 		71386C3E18F2904100414357 /* QCPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCPopupView.m; sourceTree = "<group>"; };
 		7147829618E2DF7E00A1A08A /* QCSuctionMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSuctionMove.h; sourceTree = "<group>"; };
 		7147829718E2DF7E00A1A08A /* QCSuctionMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSuctionMove.m; sourceTree = "<group>"; };
+		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
+		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
+		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
 		71DD0AF618D859AF00E9247A /* QCModelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCModelTestCase.m; sourceTree = "<group>"; };
 		71E0C4E518D6E39800B5FFC7 /* QuizCrush.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuizCrush.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		71E0C4E818D6E39800B5FFC7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -76,8 +80,6 @@
 		71E0C52618D6F3C900B5FFC7 /* UISettings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = UISettings.plist; sourceTree = "<group>"; };
 		71F644EB18ED8EB2007090B4 /* QCQuestion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestion.h; sourceTree = "<group>"; };
 		71F644EC18ED8EB2007090B4 /* QCQuestion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestion.m; sourceTree = "<group>"; };
-		71F644EE18ED95CA007090B4 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
-		71F644EF18ED95CA007090B4 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,9 +139,10 @@
 		71E0C4EE18D6E39800B5FFC7 /* QuizCrush */ = {
 			isa = PBXGroup;
 			children = (
+				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
+				719950E718F2CAD90041DC21 /* svenskaQuestions.json */,
 				71386C3D18F2904100414357 /* QCPopupView.h */,
 				71386C3E18F2904100414357 /* QCPopupView.m */,
-				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
 				71E0C4F718D6E39800B5FFC7 /* QCAppDelegate.h */,
 				71E0C4F818D6E39800B5FFC7 /* QCAppDelegate.m */,
 				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
@@ -151,12 +154,12 @@
 				71E0C51E18D6E44300B5FFC7 /* QCLevelViewController.m */,
 				71F644EB18ED8EB2007090B4 /* QCQuestion.h */,
 				71F644EC18ED8EB2007090B4 /* QCQuestion.m */,
-				71F644EE18ED95CA007090B4 /* QCQuestionProvider.h */,
-				71F644EF18ED95CA007090B4 /* QCQuestionProvider.m */,
 				7147829618E2DF7E00A1A08A /* QCSuctionMove.h */,
 				7147829718E2DF7E00A1A08A /* QCSuctionMove.m */,
 				71107AAC18DC5B83000AEF57 /* QCMoveDescription.h */,
 				71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */,
+				719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */,
+				719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */,
 				71E0C50018D6E39800B5FFC7 /* Images.xcassets */,
 				71E0C4EF18D6E39800B5FFC7 /* Supporting Files */,
 			);
@@ -271,6 +274,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				71E0C50118D6E39800B5FFC7 /* Images.xcassets in Resources */,
+				719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */,
 				71E0C52718D6F3C900B5FFC7 /* UISettings.plist in Resources */,
 				71E0C4F318D6E39800B5FFC7 /* InfoPlist.strings in Resources */,
 				71E0C4FC18D6E39800B5FFC7 /* Main.storyboard in Resources */,
@@ -292,10 +296,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */,
 				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
 				71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */,
-				71F644F018ED95CA007090B4 /* QCQuestionProvider.m in Sources */,
 				71F644ED18ED8EB2007090B4 /* QCQuestion.m in Sources */,
 				71E0C52218D6E80400B5FFC7 /* QCTile.m in Sources */,
 				71E0C52518D6ED0200B5FFC7 /* QCPlayingFieldModel.m in Sources */,
