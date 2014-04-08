@@ -10,6 +10,6 @@
 
 @interface QCTileImageProvider : NSObject
 
--(UIView *) provideImageTileOfCategory:(NSNumber *) category;
+-(UIView *) provideImageTileOfCategory:(NSNumber *) category frame:(CGRect) frame;
 
 @end

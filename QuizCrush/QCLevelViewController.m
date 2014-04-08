@@ -89,7 +89,12 @@
 {
     NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
     
-    UIView *tile = [_imageProvider provideImageTileOfCategory:category];
+    UIView *tile = [_imageProvider provideImageTileOfCategory:category
+                                                        frame:CGRectMake(xIndex * _lengthOfTile,
+                                                                         yIndex * _lengthOfTile,
+                                                                         _lengthOfTile * 0.9,
+                                                                         _lengthOfTile * 0.9)];
+    
     tile.center = CGPointMake(xIndex * _lengthOfTile + _lengthOfTile / 2, yIndex * _lengthOfTile + _lengthOfTile / 2);
     return tile;
 //    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
@@ -126,6 +131,14 @@
                     [UIColor brownColor],
                     [UIColor greenColor],
                     [UIColor orangeColor]];
+    
+    // background
+    UIImage *background = [UIImage imageNamed:@"QC_background"];
+    UIImageView *bgView = [[UIImageView alloc] initWithImage:background];
+    [self.view addSubview:bgView];
+    [self.view sendSubviewToBack:bgView];
+    
+//    return;
     
     // set up holder views dimensions
     _lengthOfTile = self.view.frame.size.width / [_uiSettingsDictionary[@"Number of columns"] floatValue];
