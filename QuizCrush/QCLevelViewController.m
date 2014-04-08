@@ -76,14 +76,43 @@
     NSLog(@"Knapp nr: %@", index);
     if ([index isEqualToNumber:_currentQuestion.correctAnswerIndex]) {
         [self playerAnsweredCorrect];
+//        [_popView rightAnswerChosenWithIndex:index points:@(-1)];
     } else {
         [self playerAnsweredWrong];
+        [_popView wrongAnswerIndex:index correctWasIndex:_currentQuestion.correctAnswerIndex];
     }
 
 
 
+//    _popView.hidden = YES;
+}
+
+-(void) dismissPopup {
     _popView.hidden = YES;
 }
+
+-(void) questionAnimationCompleted {
+    BOOL booster;
+    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
+        booster = YES;
+        //        NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+        //        [self changeTileToBooster:tileToChangeToBooster];
+    } else {
+        booster = NO;
+    }
+    
+    //    [self performAndAnimateSuctionMoves:_suctionMoveArray];
+    [self performAndAnimateSuctionMoves:_suctionMoveArray withBooster:booster];
+    [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+    
+    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+        [self gameOver];
+    }
+
+}
+
+
+
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
 {
@@ -1059,7 +1088,7 @@
 
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
-    [_popView loadQuestionStrings:question];
+    [_popView resetAndLoadQuestionStrings:question];
 
 
     [UIView animateWithDuration:.3
@@ -1081,34 +1110,40 @@
 }
 
 - (void)playerAnsweredCorrect {
-    _score += round(pow(1.6, [_tilesTouched count]) * 10) * 10;
+    
+    int points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
+    _score += points;
     _scoreLabel.text = [NSString stringWithFormat:@"%d", _score];
-    _messageLabel.text = @"Correct!";
-    _messageLabel.hidden = NO;
+    
+    [_popView rightAnswerChosenWithIndex:_currentQuestion.correctAnswerIndex points:@(points)];
+    
+//    _messageLabel.text = @"Correct!";
+//    _messageLabel.hidden = NO;
     _animating = YES;
 
-    BOOL booster;
-    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
-        booster = YES;
-//        NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-//        [self changeTileToBooster:tileToChangeToBooster];
-    } else {
-        booster = NO;
-    }
-
-//    [self performAndAnimateSuctionMoves:_suctionMoveArray];
-    [self performAndAnimateSuctionMoves:_suctionMoveArray withBooster:booster];
-    [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-
-    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-        [self gameOver];
-    }
+//    BOOL booster;
+//    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
+//        booster = YES;
+////        NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+////        [self changeTileToBooster:tileToChangeToBooster];
+//    } else {
+//        booster = NO;
+//    }
+//
+////    [self performAndAnimateSuctionMoves:_suctionMoveArray];
+//    [self performAndAnimateSuctionMoves:_suctionMoveArray withBooster:booster];
+//    [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+//
+//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+//        [self gameOver];
+//    }
 
 }
 
 -(void) playerAnsweredWrong {
-    _messageLabel.text = @"Sorry, incorrect answer";
-    _messageLabel.hidden = NO;
+//    _messageLabel.text = @"Sorry, incorrect answer";
+//    _messageLabel.hidden = NO;
+    
     [self abortSuctionSwipeWithMoves:_suctionMoveArray];
 
     if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue]) {

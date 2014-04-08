@@ -13,13 +13,17 @@
 
 -(NSArray *) questionStrings:(QCQuestion *) question; //:(id) qObject;
 -(void) answerButtonHandler:(NSNumber *) index;
+-(void) dismissPopup;
+-(void) questionAnimationCompleted;
 
 @end
 
 @interface QCPopupView : UIView
 
+-(void) rightAnswerChosenWithIndex:(NSNumber *) index points:(NSNumber *)points;
+-(void) wrongAnswerIndex:(NSNumber *) chosenIndex correctWasIndex:(NSNumber *) index;
 @property (weak) id <PopupViewDelegate> delegate;
 
--(void) loadQuestionStrings:(QCQuestion *)question;
+-(void) resetAndLoadQuestionStrings:(QCQuestion *)question;
 
 @end

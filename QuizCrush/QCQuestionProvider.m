@@ -62,6 +62,8 @@
                                                  answers:answers
                                       correctAnswerIndex:correctIndex];
 
+    NSLog(@"%@", q);
+    
     return q;
 //    return nil;
 }
