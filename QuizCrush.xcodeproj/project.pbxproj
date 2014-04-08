@@ -10,6 +10,7 @@
 		71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */; };
 		71386C3F18F2904100414357 /* QCPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71386C3E18F2904100414357 /* QCPopupView.m */; };
 		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
+		715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */; };
 		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
 		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
 		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
@@ -50,6 +51,8 @@
 		71386C3E18F2904100414357 /* QCPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCPopupView.m; sourceTree = "<group>"; };
 		7147829618E2DF7E00A1A08A /* QCSuctionMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSuctionMove.h; sourceTree = "<group>"; };
 		7147829718E2DF7E00A1A08A /* QCSuctionMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSuctionMove.m; sourceTree = "<group>"; };
+		715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCTileImageProvider.h; sourceTree = "<group>"; };
+		715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCTileImageProvider.m; sourceTree = "<group>"; };
 		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
 		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
@@ -140,6 +143,8 @@
 			isa = PBXGroup;
 			children = (
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
+				715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */,
+				715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */,
 				719950E718F2CAD90041DC21 /* svenskaQuestions.json */,
 				71386C3D18F2904100414357 /* QCPopupView.h */,
 				71386C3E18F2904100414357 /* QCPopupView.m */,
@@ -300,6 +305,7 @@
 				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
 				71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */,
+				715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */,
 				71F644ED18ED8EB2007090B4 /* QCQuestion.m in Sources */,
 				71E0C52218D6E80400B5FFC7 /* QCTile.m in Sources */,
 				71E0C52518D6ED0200B5FFC7 /* QCPlayingFieldModel.m in Sources */,

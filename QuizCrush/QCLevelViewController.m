@@ -22,6 +22,8 @@
 @property QCPopupView *popView;
 
 @property QCQuestionProvider *questionProvider;
+@property QCTileImageProvider *imageProvider;
+
 @property QCQuestion *currentQuestion;
 
 @property NSMutableDictionary *viewDictionary;
@@ -68,7 +70,7 @@
     [self unMarkTiles:_tilesTouched];
     _popOverIsActive = NO;
 
-    
+
     _numberOfMovesMade += 1;
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
     NSLog(@"Knapp nr: %@", index);
@@ -79,30 +81,39 @@
     }
 
 
-    
+
     _popView.hidden = YES;
 }
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
 {
-    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-    tile.layer.cornerRadius = 17.0;
-    tile.layer.masksToBounds = YES;
-    //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
     NSNumber *category = [_playingFieldModel categoryOfTileWithID:iD];
 
-    UIColor *color;
-    // check if a booster has been created
-    if ([category isEqualToNumber:@7]) {
-//        [self changeTileToBooster:iD];
-        color = [UIColor blackColor];
-    } else {
-        color = _colorArray[[category intValue]];
-    }
- 
-    [tile setBackgroundColor:color];
+    UIView *tile = [_imageProvider provideImageTileOfCategory:category
+                                                        frame:CGRectMake(xIndex * _lengthOfTile,
+                                                                         yIndex * _lengthOfTile,
+                                                                         _lengthOfTile * 0.9,
+                                                                         _lengthOfTile * 0.9)];
 
+    tile.center = CGPointMake(xIndex * _lengthOfTile + _lengthOfTile / 2, yIndex * _lengthOfTile + _lengthOfTile / 2);
     return tile;
+//    UIView *tile = [[UIView alloc] initWithFrame:CGRectMake(xIndex * _lengthOfTile, yIndex * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+//    tile.layer.cornerRadius = 17.0;
+//    tile.layer.masksToBounds = YES;
+//    //        NSNumber *category = [_playingFieldModel categoryOfTileAtPosition:[NSNumber numberWithInt:i]];
+//
+//    UIColor *color;
+//    // check if a booster has been created
+//    if ([category isEqualToNumber:@7]) {
+////        [self changeTileToBooster:iD];
+//        color = [UIColor blackColor];
+//    } else {
+//        color = _colorArray[[category intValue]];
+//    }
+//
+//    [tile setBackgroundColor:color];
+//
+//    return tile;
 }
 
 - (void)viewDidLoad
@@ -120,18 +131,26 @@
                     [UIColor brownColor],
                     [UIColor greenColor],
                     [UIColor orangeColor]];
-    
+
+
+    // background
+    UIImage *background = [UIImage imageNamed:@"QC_background"];
+    UIImageView *bgView = [[UIImageView alloc] initWithImage:background];
+    [self.view addSubview:bgView];
+    [self.view sendSubviewToBack:bgView];
+
+
     // set up holder views dimensions
     _lengthOfTile = self.view.frame.size.width / [_uiSettingsDictionary[@"Number of columns"] floatValue];
     float frameHeight = [_uiSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
     CGRect holderFrame = CGRectMake(0, self.view.frame.size.height / 2.0f - frameHeight / 2.0f, self.view.frame.size.width, frameHeight);
     _holderView.frame = holderFrame;
-    
-    
+
+
     _numberOfRows = _uiSettingsDictionary[@"Number of rows"];
     _numberOfColumns = _uiSettingsDictionary[@"Number of columns"];
     _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
-    
+
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
@@ -142,15 +161,16 @@
     _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
 
-    // questionProvider
+    // questionProvider and imageProvider
     _questionProvider = [[QCQuestionProvider alloc] init];
-    
+    _imageProvider = [[QCTileImageProvider alloc] init];
+
     // swipe handling properties
     _animating = NO;
     _tilesTouched = [[NSMutableSet alloc] init];
     _moveArray = [[NSMutableArray alloc] init];
     _moveDirection = [[NSString alloc] init];
-    
+
     // suction action
     _suctionMoveArray = [[NSMutableArray alloc] init];
 
@@ -158,11 +178,11 @@
     UIPanGestureRecognizer *suctionPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(suctionPanHandler:)];
     suctionPanRecognizer.maximumNumberOfTouches = 1;
     [_holderView addGestureRecognizer:suctionPanRecognizer];
-    
+
     // tap action for boosters
     UITapGestureRecognizer *boosterTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(boosterTapHandler:)];
     [_holderView addGestureRecognizer:boosterTapRecognizer];
-    
+
     int xIndex, yIndex;
     NSNumber *iD;
 
@@ -180,30 +200,30 @@
                             forKey:iD];
         [_holderView addSubview:tile];
     }
-    
+
 //    // test
 //    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithRows:@2 Columns:@3];
 //    NSLog(@"Testmodell: %@", testModel);
-    
+
     // new popup
     _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
     [_popView setDelegate:self];
     _popView.hidden = YES;
     [_holderView addSubview:_popView];
-    
-    
+
+
 
     // for popup dialogue
     _popOverIsActive = NO;
-    
-    
-    
+
+
+
     _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
     [_popOver setBackgroundColor:[UIColor whiteColor]];
     _popOver.layer.cornerRadius = 25;
     _popOver.layer.masksToBounds = YES;
     _popOver.hidden = YES;
-    
+
     UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
     button1.frame = CGRectMake(70, 70, 150, 40);
     [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
@@ -212,7 +232,7 @@
     button1.layer.masksToBounds = YES;
     button1.layer.cornerRadius = 15;
     button1.tag = 1001;
-    
+
     UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
     buttonX.frame = CGRectMake(70, 140, 150, 40);
     [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
@@ -221,7 +241,7 @@
     buttonX.layer.masksToBounds = YES;
     buttonX.layer.cornerRadius = 15;
     buttonX.tag = 2002;
-    
+
     UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
     button2.frame = CGRectMake(70, 210, 150, 40);
     [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
@@ -230,11 +250,11 @@
     button2.layer.masksToBounds = YES;
     button2.layer.cornerRadius = 15;
     button2.tag = 3003;
-    
+
     [_popOver addSubview:button1];
     [_popOver addSubview:buttonX];
     [_popOver addSubview:button2];
-    
+
     [button1 addTarget:self
                 action:@selector(answerPopButtonHandler:)
       forControlEvents:UIControlEventTouchUpInside];
@@ -244,12 +264,12 @@
     [button2 addTarget:self
                 action:@selector(answerPopButtonHandler:)
       forControlEvents:UIControlEventTouchUpInside];
-    
+
     [_holderView addSubview:_popOver];
 
     // for booster
     _boosterIsActive = NO;
-    
+
 }
 
 
@@ -312,13 +332,13 @@
     // identify if new tiles have been created and give them a view etc
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet
                                              excludingCategory:excludeCategory];
-    
+
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
         int y = [newTile.y intValue];
         //
-        
+
         //        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
         //        newView.layer.cornerRadius = 17.0;
         //        newView.layer.masksToBounds = YES;
@@ -327,26 +347,26 @@
         //        UIColor *color = _colorArray[[category intValue]];
         //
         //        [newView setBackgroundColor:color];
-        
+
         UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
         [_viewDictionary setObject:newView
                             forKey:addNewKey];
         [_holderView addSubview:newView];
     }
-    
-    
+
+
     // dict with ids of tiles to move, with their corresponding moves
     NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
-    
+
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
         //        [view setBackgroundColor:[UIColor blackColor]];
         [view removeFromSuperview];
         [_viewDictionary removeObjectForKey:key];
     }
-    
+
     _animating = YES;
-    
+
     [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue]
                      animations:^{
                          for (NSNumber *aniKey in animateDict) {
@@ -366,24 +386,24 @@
 //    if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
 //        return;
 //    }
-    
+
     // identify if new tiles have been created and give them a view etc
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet
                                              excludingCategory:[_playingFieldModel categoryOfTileWithID:IDTileClicked]];
-    
+
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
         int y = [newTile.y intValue];
         //
-        
+
 //        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
 //        newView.layer.cornerRadius = 17.0;
 //        newView.layer.masksToBounds = YES;
 //        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
-//        
+//
 //        UIColor *color = _colorArray[[category intValue]];
-//        
+//
 //        [newView setBackgroundColor:color];
 
         UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
@@ -391,20 +411,20 @@
                             forKey:addNewKey];
         [_holderView addSubview:newView];
     }
-    
-    
+
+
     // dict with ids of tiles to move, with their corresponding moves
     NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
-    
+
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
         //        [view setBackgroundColor:[UIColor blackColor]];
         [view removeFromSuperview];
         [_viewDictionary removeObjectForKey:key];
     }
-    
+
     _animating = YES;
-    
+
     [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue]
                      animations:^{
                          for (NSNumber *aniKey in animateDict) {
@@ -479,8 +499,8 @@
     if (_popOverIsActive) {
         return;
     }
-    
-    
+
+
     CGPoint point = [recognizer locationInView:_holderView];
 //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
@@ -491,26 +511,26 @@
     NSNumber *y = touchPoint[@"y"];
     //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
     //    NSLog(@"Touchpoint: %@", touchPoint);
-    
-    
-    
-    
+
+
+
+
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
 //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
         [_tilesTouched removeAllObjects];
 //        [_moveArray removeAllObjects];
         [_suctionMoveArray removeAllObjects];
-        
-        
+
+
         _vaildSwipe = YES;
         //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        
+
         [_tilesTouched addObject:_currentTileTouched];
         _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
     }
-    
+
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
         if (!_vaildSwipe) {
             return;
@@ -533,11 +553,11 @@
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
-        
+
         // cancel booster action if player wants to swipe instead
         _boosterIsActive = NO;
         _messageLabel.hidden = YES;
-        
+
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
             _vaildSwipe = NO;
 //            if (_moveArray) {
@@ -563,15 +583,15 @@
             _vaildSwipe = NO;
             return;
         }
-        
+
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
         _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
-        
+
 //        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
 //        if (move) {
 //            [_moveArray addObject:move];
 //        }
-        
+
         // check if first step has been taken
         QCSuctionMove *suctionMove;
         if (![_suctionMoveArray count] > 0) {
@@ -582,18 +602,18 @@
                                                            inDirection:_moveDirection];
         }
         [_suctionMoveArray addObject:suctionMove];
-        
+
         _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
         [self markTiles:_tilesTouched];
-        
-        
+
+
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
         if (!_vaildSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
-            
+
             //            NSLog(@"Invalid swipe");
             [_tilesTouched removeAllObjects];
 //            [_moveArray removeAllObjects];
@@ -603,9 +623,9 @@
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
-            
+
             //            NSLog(@"Invalid swipe, not enough tiles swiped!");
-            
+
             [_tilesTouched removeAllObjects];
 //            [_moveArray removeAllObjects];
 //            [_suctionMoveArray removeAllObjects];
@@ -619,7 +639,7 @@
         }
         //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
         [self markTiles:_tilesTouched];
-        
+
         // make final move
 //        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
 //        [_moveArray addObject:finalMove];
@@ -629,13 +649,13 @@
                                                                               WithMove:[_suctionMoveArray lastObject]
                                                                            inDirection:_moveDirection];
         [_suctionMoveArray addObject:finalSuctionMove];
-        
+
         //        [_tilesTouched removeAllObjects];
         //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
 //        for (QCMoveDescription *moveInspect in _moveArray) {
 //            NSLog(@"%@", moveInspect);
 //        }
-        
+
         //        NSLog(@"moveArray: %@", _moveArray);
 //        [self performAndAnimateMoves:_moveArray];
 //        [_playingFieldModel updateModelWithMoves:_moveArray];
@@ -644,12 +664,12 @@
 //        for (QCSuctionMove *move in _suctionMoveArray) {
 //            NSLog(@"Suction move: %@", move);
 //        }
-        
+
         [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
 //        _animating = YES;
 //        [self performAndAnimateSuctionMoves:_suctionMoveArray];
 //        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-        
+
     }
     else if (recognizer.state == UIGestureRecognizerStateCancelled) {
         [self abortSwipeWithMoves:_moveArray];
@@ -657,14 +677,14 @@
     else if (recognizer.state == UIGestureRecognizerStateFailed) {
         [self abortSwipeWithMoves:_moveArray];
     }
-    
+
     //    NSLog(@"Tiles touched: %@", _tilesTouched);
 
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
 //    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
-    
+
     CGPoint point = [recognizer locationInView:_holderView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
                                             numberOfRows:_numberOfRows
@@ -672,7 +692,7 @@
                                            lengthOfSides:_lengthOfTile];
 
     NSNumber *tileTouched = [_playingFieldModel iDOfTileAtX:touchPoint[@"x"] Y:touchPoint[@"y"]];
-    
+
     if (!_boosterIsActive) {
         if (![[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7]) {
             return;
@@ -684,7 +704,7 @@
         _selectedBoosterTile = tileTouched;
         return;
     }
-    
+
     // booster is active, let user tap a tile, find surrounding tiles and remove them
     if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7]) {
         return;
@@ -827,7 +847,7 @@
 //        NSLog(@"moveArray: %@", _moveArray);
         [self performAndAnimateMoves:_moveArray];
         [_playingFieldModel updateModelWithMoves:_moveArray];
-        
+
     }
     else if (recognizer.state == UIGestureRecognizerStateCancelled) {
         [self abortSwipeWithMoves:_moveArray];
@@ -902,13 +922,13 @@
         [_viewDictionary[deleteID] removeFromSuperview];
         [_viewDictionary removeObjectForKey:deleteID];
     }
-    
+
     // change first created tile to booster
     if (booster) {
         NSNumber *boosterTile = [[moves firstObject] createdTile];
         [_playingFieldModel changeToBoosterForID:boosterTile];
     }
-    
+
     // create new views
     for (QCSuctionMove *createNew in moves) {
         QCTile *newTile = [_playingFieldModel tileWithID:createNew.createdTile];
@@ -918,10 +938,10 @@
         [_holderView addSubview:newTileView];
         [_viewDictionary setObject:newTileView forKey:newTile.iD];
     }
-    
+
     // start recursion animation
     [self recursionSuctionAnimation:moves index:0];
-    
+
 }
 
 -(void) recursionAnimation:(NSArray *)moves index:(int) index {
@@ -979,8 +999,8 @@
         animationStyle = UIViewAnimationOptionCurveLinear;
         duration = [_uiSettingsDictionary[@"Suction animation duration"] floatValue];
     }
-    
-    
+
+
     [UIView animateWithDuration:duration
                           delay:0
                         options:animationStyle
@@ -1016,31 +1036,32 @@
 -(void) launchPopOverFromID:(NSNumber *) ID withColor:(UIColor *) color {
     _popOverIsActive = YES;
     [_holderView bringSubviewToFront:_popOver];
-    
+
     //    CGRect endFrame = CGRectMake(15, 100, 290, 300);
     UIView *tileView = _viewDictionary[ID];
-    
-    
+
+
     UIView *popOverAnimatingView = [[UIView alloc] initWithFrame:tileView.frame];
     [popOverAnimatingView setBackgroundColor:tileView.backgroundColor];
     popOverAnimatingView.layer.cornerRadius = 25;
     popOverAnimatingView.layer.masksToBounds = YES;
     [_holderView addSubview:popOverAnimatingView];
-    
-    
+
+
 //    _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
 //    [_popView setDelegate:self];
 //    QCQuestion *question = [[QCQuestion alloc] initWithCategory:@1 topic:@"Fysik"
 //                                                 questionString:@"Vad f\u00f6rs\u00f6ker man hitta i LIGO-experimentet?"
 //                                                        answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
 //                                             correctAnswerIndex:@0];
-    
+
     NSNumber *category = [_playingFieldModel categoryOfTileWithID:_currentTileTouched];
+
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
     [_popView loadQuestionStrings:question];
 
-    
+
     [UIView animateWithDuration:.3
                           delay:0.03
                         options:UIViewAnimationOptionCurveEaseInOut
@@ -1048,7 +1069,7 @@
                          popOverAnimatingView.frame = _popView.frame;
                          [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
                          [popOverAnimatingView setAlpha:.97];
-                         
+
     }
                      completion:^(BOOL finished) {
 //                         _popOver.hidden = NO;
@@ -1065,7 +1086,7 @@
     _messageLabel.text = @"Correct!";
     _messageLabel.hidden = NO;
     _animating = YES;
-    
+
     BOOL booster;
     if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue]) {
         booster = YES;
@@ -1074,7 +1095,7 @@
     } else {
         booster = NO;
     }
-    
+
 //    [self performAndAnimateSuctionMoves:_suctionMoveArray];
     [self performAndAnimateSuctionMoves:_suctionMoveArray withBooster:booster];
     [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
@@ -1089,7 +1110,7 @@
     _messageLabel.text = @"Sorry, incorrect answer";
     _messageLabel.hidden = NO;
     [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-    
+
     if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue]) {
         [self gameOver];
     }
@@ -1100,17 +1121,17 @@
     _popOver.hidden = YES;
     _popOverIsActive = NO;
     [self unMarkTiles:_tilesTouched];
-    
+
     _numberOfMovesMade += 1;
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
-    
+
     int outcome = arc4random_uniform(3);
     if (outcome == 0) {
         [self playerAnsweredWrong];
     } else {
         [self playerAnsweredCorrect];
     }
-    
+
 //    switch (senderButton.tag) {
 //        case 1001: {
 //            [self playerAnsweredCorrect];
@@ -1118,7 +1139,7 @@
 //        }
 //        case 2002: {
 //            [self playerAnsweredCorrect];
-//            
+//
 ////            NSLog(@"Rätt svar X");
 ////            _animating = YES;
 ////            if ([_tilesTouched count] >= 3) {
@@ -1139,7 +1160,7 @@
 }
 
 //-(void) playerAnsweredCorrect {
-//    
+//
 //}
 
 -(void) changeTileToBooster:(NSNumber *) ID {
@@ -1155,7 +1176,7 @@
         string = @"Out of moves!";
     }
     _messageLabel.text = string;
-    
+
     for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
         [_holderView removeGestureRecognizer:rec];
     }
