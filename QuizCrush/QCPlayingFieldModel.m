@@ -330,10 +330,12 @@
     }
 }
 
--(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory {
+-(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory withBooster:(BOOL) booster {
     if (!set) {
         return nil;
     }
+    
+    BOOL boosterAdded = NO;
     
     NSMutableSet *returnSet = [[NSMutableSet alloc] init];
     
@@ -345,7 +347,16 @@
             y -= 1;
         }
         // add new tile at top of stack
-        QCTile *newTile = [[QCTile alloc] initWithCategory:[self nextCategoryExcluding:excludeCategory]
+        NSNumber *category;
+        if (booster && !boosterAdded) {
+            category = @7;
+            boosterAdded = YES;
+        } else {
+            category = [self nextCategoryExcluding:excludeCategory];
+        }
+        
+        
+        QCTile *newTile = [[QCTile alloc] initWithCategory:category
                                                         iD:[self nextID]
                                                          x:x
                                                          y:[NSNumber numberWithInt:y]];

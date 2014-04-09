@@ -21,7 +21,7 @@
 -(NSNumber *) IDOfTileDuringMotionAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(QCTile *) tileWithID:(NSNumber *) iD;
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
--(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory;
+-(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory withBooster:(BOOL) booster;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
 -(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
 -(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;

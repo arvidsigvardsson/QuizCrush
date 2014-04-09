@@ -260,6 +260,7 @@ typedef enum {
                      }
                      completion:^(BOOL finished) {
                          self.hidden = YES;
+                         [self.delegate questionAnimationCompleted];
                      }
      ];
 
