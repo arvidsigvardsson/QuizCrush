@@ -821,6 +821,7 @@
         
         [_tilesTouched addObject:_currentTileTouched];
         _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+        [self markTiles:_tilesTouched];
     }
     
     else if (recognizer.state == UIGestureRecognizerStateChanged) {

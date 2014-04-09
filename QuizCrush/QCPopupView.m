@@ -215,7 +215,7 @@ typedef enum {
     
     UIImageView *categoryView = [[UIImageView alloc] initWithImage:[self.delegate provideCategoryImage]];
 //    categoryView.image = [self.delegate provideCategoryImage];
-    categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
+    categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.08);
     [self addSubview:categoryView];
 
 
