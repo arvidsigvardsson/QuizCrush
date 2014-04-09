@@ -15,6 +15,7 @@
 -(void) answerButtonHandler:(NSNumber *) index;
 -(void) dismissPopup;
 -(void) questionAnimationCompleted;
+-(UIImage *) provideCategoryImage;
 
 @end
 

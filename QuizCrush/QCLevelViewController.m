@@ -67,6 +67,23 @@
 
 }
 
+-(UIImage *) provideCategoryImage{
+    
+//    return [UIImage imageNamed:@"arts"];
+    
+    
+    NSDictionary *dict = @{@0 : @"entertainment",
+                           @1 : @"geography",
+                           @2 : @"history",
+                           @3 : @"arts",
+                           @4 : @"science",
+                           @5 : @"sports",
+                           @7 : @"bomb"};
+    
+    UIImage *image = [UIImage imageNamed:dict[_currentQuestion.category]];
+    return image;
+}
+
 -(void) answerButtonHandler:(NSNumber *)index {
     [self unMarkTiles:_tilesTouched];
     _popOverIsActive = NO;
@@ -122,8 +139,8 @@
     UIView *tile = [_imageProvider provideImageTileOfCategory:category
                                                         frame:CGRectMake(xIndex * _lengthOfTile,
                                                                          yIndex * _lengthOfTile,
-                                                                         _lengthOfTile * 0.9,
-                                                                         _lengthOfTile * 0.9)];
+                                                                         _lengthOfTile/* * 0.9*/,
+                                                                         _lengthOfTile/* * 0.9*/)];
 
     tile.center = CGPointMake(xIndex * _lengthOfTile + _lengthOfTile / 2, yIndex * _lengthOfTile + _lengthOfTile / 2);
     return tile;

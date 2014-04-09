@@ -18,6 +18,7 @@
 @property UIButton *button3;
 @property UIColor *buttonColor;
 @property NSArray *buttonArray;
+//@property UIImageView *categoryView;
 
 @end
 
@@ -160,6 +161,13 @@ typedef enum {
 
     _buttonArray = @[_button0, _button1, _button2, _button3];
     
+    
+//    _categoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"arts"]];
+//    _categoryView = [[UIImageView alloc] init];
+//    _categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
+//    
+//    [self addSubview:_categoryView];
+//    
     return self;
 }
 
@@ -205,6 +213,12 @@ typedef enum {
     [_button2 setTitle:strings[4] forState:UIControlStateNormal];
     [_button3 setTitle:strings[5] forState:UIControlStateNormal];
     
+    UIImageView *categoryView = [[UIImageView alloc] initWithImage:[self.delegate provideCategoryImage]];
+//    categoryView.image = [self.delegate provideCategoryImage];
+    categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
+    [self addSubview:categoryView];
+
+
 }
 
 -(void) rightAnswerChosenWithIndex:(NSNumber *) index points:(NSNumber *)points {

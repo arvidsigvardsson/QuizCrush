@@ -29,7 +29,7 @@
     _questionsArray = [NSJSONSerialization JSONObjectWithData:JSONData
                                                               options:NSJSONReadingAllowFragments
                                                                 error:nil];
-
+//    NSLog(@"Antal frågor: %lu", [_questionsArray count]);
     return self;
 }
 
