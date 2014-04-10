@@ -249,6 +249,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = Planeto;
 				TargetAttributes = {
+					71E0C4E418D6E39800B5FFC7 = {
+						DevelopmentTeam = WBKCVWUHZ5;
+					};
 					71E0C50518D6E39900B5FFC7 = {
 						TestTargetID = 71E0C4E418D6E39800B5FFC7;
 					};
@@ -437,10 +440,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizCrush/QuizCrush-Prefix.pch";
 				INFOPLIST_FILE = "QuizCrush/QuizCrush-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -450,10 +456,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "QuizCrush/QuizCrush-Prefix.pch";
 				INFOPLIST_FILE = "QuizCrush/QuizCrush-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
