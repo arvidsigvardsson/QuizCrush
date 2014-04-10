@@ -16,6 +16,8 @@
 -(void) dismissPopup;
 -(void) questionAnimationCompleted;
 -(UIImage *) provideCategoryImage;
+-(NSSet *) answerButtonsToDisableFiftyFifty;
+-(void) resetFiftyFifty;
 
 @end
 
@@ -25,6 +27,6 @@
 -(void) wrongAnswerIndex:(NSNumber *) chosenIndex correctWasIndex:(NSNumber *) index;
 @property (weak) id <PopupViewDelegate> delegate;
 
--(void) resetAndLoadQuestionStrings:(QCQuestion *)question;
+-(void) resetAndLoadQuestionStrings:(QCQuestion *)question withFiftyFifty:(BOOL) fiftyFifty;
 
 @end

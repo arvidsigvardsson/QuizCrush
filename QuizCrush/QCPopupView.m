@@ -60,7 +60,7 @@ typedef enum {
     _buttonColor = [UIColor whiteColor]; //[UIColor greenColor]; //[UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f];
     UIColor *textColor = [UIColor blackColor];
     
-    _topicLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, height * 0.05, width * 0.8, height * 0.1)];
+    _topicLabel = [[UILabel alloc] initWithFrame:CGRectMake(width * 0.2, height * 0.04, width * 0.8, height * 0.1)];
     _topicLabel.textAlignment = NSTextAlignmentLeft;
 //    myLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:14];
     _topicLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:16];
@@ -84,6 +84,8 @@ typedef enum {
     _button0.backgroundColor = _buttonColor;
 //    _button0.titleLabel.textColor = textColor;
     [_button0 setTitleColor:textColor forState:UIControlStateNormal];
+    _button0.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    _button0.titleLabel.textAlignment = NSTextAlignmentCenter;
     _button0.layer.masksToBounds = YES;
     _button0.layer.cornerRadius = 15;
     _button0.layer.borderWidth = 2;
@@ -100,6 +102,8 @@ typedef enum {
     _button1.backgroundColor = _buttonColor;
 //    _button1.titleLabel.textColor = textColor;
     [_button1 setTitleColor:textColor forState:UIControlStateNormal];
+    _button1.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    _button1.titleLabel.textAlignment = NSTextAlignmentCenter;
     _button1.layer.masksToBounds = YES;
     _button1.layer.cornerRadius = 15;
     _button1.layer.borderWidth = 2;
@@ -115,6 +119,8 @@ typedef enum {
     _button2.backgroundColor = _buttonColor;
 //    _button2.titleLabel.textColor = textColor;
     [_button2 setTitleColor:textColor forState:UIControlStateNormal];
+    _button2.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    _button2.titleLabel.textAlignment = NSTextAlignmentCenter;
     _button2.layer.masksToBounds = YES;
     _button2.layer.cornerRadius = 15;
     _button2.layer.borderWidth = 2;
@@ -130,6 +136,8 @@ typedef enum {
     _button3.backgroundColor = _buttonColor;
 //    _button3.titleLabel.textColor = textColor;
     [_button3 setTitleColor:textColor forState:UIControlStateNormal];
+    _button3.titleEdgeInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+    _button3.titleLabel.textAlignment = NSTextAlignmentCenter;
     _button3.layer.masksToBounds = YES;
     _button3.layer.cornerRadius = 15;
     _button3.layer.borderWidth = 2;
@@ -198,10 +206,11 @@ typedef enum {
     
 }
 
--(void) resetAndLoadQuestionStrings:(QCQuestion *) question {
+-(void) resetAndLoadQuestionStrings:(QCQuestion *) question withFiftyFifty:(BOOL) fiftyFifty {
     self.alpha = 1.0;
     for (UIButton *button in _buttonArray) {
         button.backgroundColor = _buttonColor;
+        button.hidden = NO;
     }
     
     NSArray *strings = [self.delegate questionStrings:question];
@@ -215,9 +224,21 @@ typedef enum {
     
     UIImageView *categoryView = [[UIImageView alloc] initWithImage:[self.delegate provideCategoryImage]];
 //    categoryView.image = [self.delegate provideCategoryImage];
-    categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.08);
+    categoryView.center = CGPointMake(self.frame.size.width * 0.10, self.frame.size.height * 0.08);
     [self addSubview:categoryView];
 
+    if (fiftyFifty) {
+        UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
+        UIButton *fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
+        fiftyButton.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
+        
+        [fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
+        [fiftyButton addTarget:self
+                        action:@selector(fiftyButtonHandler:)
+              forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:fiftyButton];
+    }
 
 }
 
@@ -267,7 +288,7 @@ typedef enum {
     correctButton.backgroundColor = [UIColor greenColor];
     
     [UIView animateWithDuration:0.2
-                          delay:1.15
+                          delay:1.0
                         options:UIViewAnimationOptionCurveLinear
                      animations:^{
                          self.alpha = 0;
@@ -280,5 +301,19 @@ typedef enum {
 
     
 }
+
+-(void) fiftyButtonHandler:(id) sender {
+    UIButton * button = (UIButton *) sender;
+//    button.enabled = NO;
+    [button removeFromSuperview];
+    [self.delegate resetFiftyFifty];
+    
+    NSSet *set = [self.delegate answerButtonsToDisableFiftyFifty];
+    
+    for (NSNumber *index in set) {
+        [_buttonArray[[index intValue]] setHidden:YES];
+    }
+}
+
 
 @end

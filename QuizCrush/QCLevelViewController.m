@@ -49,6 +49,8 @@
 @property int score;
 @property int numberOfMovesMade;
 @property BOOL answerWasCorrect;
+@property BOOL fiftyFiftyBooster;
+
 @end
 
 @implementation QCLevelViewController
@@ -111,10 +113,13 @@
 
 -(void) questionAnimationCompleted {
     BOOL booster;
-    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for booster"] intValue] && _answerWasCorrect) {
+    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for bomb booster"] intValue] && _answerWasCorrect) {
         booster = YES;
     } else {
         booster = NO;
+    }
+    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for fifty fifty"] intValue] && _answerWasCorrect) {
+        _fiftyFiftyBooster = YES;
     }
     
     //    [self performAndAnimateSuctionMoves:_suctionMoveArray];
@@ -127,6 +132,27 @@
         [self gameOver];
     }
 
+}
+
+-(NSSet *) answerButtonsToDisableFiftyFifty {
+    NSMutableSet *set = [NSMutableSet setWithArray:@[@0, @1, @2, @3]];
+    [set removeObject:_currentQuestion.correctAnswerIndex];
+    
+    NSMutableArray *array = (NSMutableArray *) [set allObjects];
+    
+    int randomIndex = arc4random_uniform((u_int32_t)[array count]);
+    NSNumber *removeNumber = array[randomIndex];
+    [set removeObject:removeNumber];
+    
+    //    [array removeObjectAtIndex:randomIndex];
+    
+    
+    
+    return set;
+}
+
+-(void) resetFiftyFifty {
+    _fiftyFiftyBooster = NO;
 }
 
 
@@ -207,6 +233,9 @@
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue]];
     _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
+    
+    // 50/50 booster
+    _fiftyFiftyBooster = NO;
 
     // questionProvider and imageProvider
     _questionProvider = [[QCQuestionProvider alloc] init];
@@ -868,35 +897,7 @@
             _vaildSwipe = NO;
             return;
         }
-        // prevent stepping on tail
-//        NSNumber *testOnTailID = [_playingFieldModel IDOfTileDuringMotionAtX:x Y:y];
-//        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:testOnTailID]) {
-//            NSLog(@"Can't hit your own tail!");
-//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-//            _vaildSwipe = NO;
-//            return;
-//        }
-        
-        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
-//        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
-        
-        //        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-        //        if (move) {
-        //            [_moveArray addObject:move];
-        //        }
-        
-        // check if first step has been taken
-//        QCSuctionMove *suctionMove;
-//        if (![_suctionMoveArray count] > 0) {
-//            suctionMove = [_playingFieldModel takeFirstSuctionStepFrom:_currentTileTouched
-//                                                           inDirection:_moveDirection];
-//        } else {
-//            suctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched WithMove:[_suctionMoveArray lastObject]
-//                                                           inDirection:_moveDirection];
-//        }
-//        [_suctionMoveArray addObject:suctionMove];
-        
-        _currentTileTouched = newTileTouched;
+               _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
         [self markTiles:_tilesTouched];
         
@@ -926,8 +927,8 @@
             //                [self abortSwipeWithMoves:_moveArray];
             //            }
             
-            // abort suctionSwipe
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            // abort suctionSwipe
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
         //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
@@ -936,17 +937,13 @@
     
         
         [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
-        //        _animating = YES;
-        //        [self performAndAnimateSuctionMoves:_suctionMoveArray];
-        //        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-        
     }
-    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
-    else if (recognizer.state == UIGestureRecognizerStateFailed) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
+//    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
+////        [self abortSwipeWithMoves:_moveArray];
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateFailed) {
+//        [self abortSwipeWithMoves:_moveArray];
+//    }
     
     //    NSLog(@"Tiles touched: %@", _tilesTouched);
     
@@ -1329,7 +1326,7 @@
 
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
-    [_popView resetAndLoadQuestionStrings:question];
+    [_popView resetAndLoadQuestionStrings:question withFiftyFifty:_fiftyFiftyBooster];
 
 
     [UIView animateWithDuration:.3
