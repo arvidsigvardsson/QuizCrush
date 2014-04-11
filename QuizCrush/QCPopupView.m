@@ -211,6 +211,7 @@ typedef enum {
     for (UIButton *button in _buttonArray) {
         button.backgroundColor = _buttonColor;
         button.hidden = NO;
+        button.alpha = 1;
     }
     
     NSArray *strings = [self.delegate questionStrings:question];
@@ -310,9 +311,24 @@ typedef enum {
     
     NSSet *set = [self.delegate answerButtonsToDisableFiftyFifty];
     
-    for (NSNumber *index in set) {
-        [_buttonArray[[index intValue]] setHidden:YES];
-    }
+    [UIView animateWithDuration:0.1
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         for (NSNumber *index in set) {
+                             [_buttonArray[[index intValue]] setAlpha:0];
+                         }
+
+                     }
+                     completion:^(BOOL completion) {
+                         for (NSNumber *index in set) {
+                             [_buttonArray[[index intValue]] setHidden:YES];
+                         }
+                     }
+     ];
+    
+    
+    
 }
 
 

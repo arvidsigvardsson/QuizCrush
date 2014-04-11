@@ -349,7 +349,7 @@
         // add new tile at top of stack
         NSNumber *category;
         if (booster && !boosterAdded) {
-            category = @7;
+            category = @8;
             boosterAdded = YES;
         } else {
             category = [self nextCategoryExcluding:excludeCategory];

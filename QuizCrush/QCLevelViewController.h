@@ -11,7 +11,9 @@
 #import "QCQuestionProvider.h"
 #import "QCPopupView.h"
 #import "QCTileImageProvider.h"
+#import "QCSelectCategoryPopup.h"
+#import "QCSelectCategoryPopup.h"
 
-@interface QCLevelViewController : UIViewController <PopupViewDelegate>
+@interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate>
 
 @end

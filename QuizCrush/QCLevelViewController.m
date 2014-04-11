@@ -44,18 +44,23 @@
 @property NSString *moveDirection;
 @property NSMutableArray *suctionMoveArray;
 @property BOOL popOverIsActive;
-@property BOOL boosterIsActive;
+@property BOOL bombBoosterIsActive;
 @property NSNumber *selectedBoosterTile;
 @property int score;
 @property int numberOfMovesMade;
 @property BOOL answerWasCorrect;
 @property BOOL fiftyFiftyBooster;
+@property CGRect popupFrame;
 
 @end
 
 @implementation QCLevelViewController
 
 // delegate methods
+
+-(void) selectCategoryButtonHandler:(NSNumber *) category {
+    NSLog(@"Kategori vald: %@", category);
+}
 
 -(NSArray *) questionStrings:(QCQuestion *) question {
 //    return nil;
@@ -285,8 +290,9 @@
 //    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithRows:@2 Columns:@3];
 //    NSLog(@"Testmodell: %@", testModel);
 
-    // new popup
-    _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
+    // new popups
+    _popupFrame = CGRectMake(20, 10, 280, 350);
+    _popView = [[QCPopupView alloc] initWithFrame:_popupFrame];
     [_popView setDelegate:self];
     _popView.hidden = YES;
     [_holderView addSubview:_popView];
@@ -348,7 +354,7 @@
     [_holderView addSubview:_popOver];
 
     // for booster
-    _boosterIsActive = NO;
+    _bombBoosterIsActive = NO;
 
 }
 
@@ -686,7 +692,7 @@
         }
 
         // cancel booster action if player wants to swipe instead
-        _boosterIsActive = NO;
+        _bombBoosterIsActive = NO;
         _messageLabel.hidden = YES;
 
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
@@ -877,7 +883,7 @@
         }
         
         // cancel booster action if player wants to swipe instead
-        _boosterIsActive = NO;
+        _bombBoosterIsActive = NO;
         _messageLabel.hidden = YES;
         
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
@@ -952,6 +958,11 @@
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
 //    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
 
+    //
+    // Fortsätt här på måndag!
+    //
+    
+    
     CGPoint point = [recognizer locationInView:_holderView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
                                             numberOfRows:_numberOfRows
@@ -960,14 +971,14 @@
 
     NSNumber *tileTouched = [_playingFieldModel iDOfTileAtX:touchPoint[@"x"] Y:touchPoint[@"y"]];
 
-    if (!_boosterIsActive) {
+    if (!_bombBoosterIsActive) {
         if (![[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7]) {
             return;
         }
         _messageLabel.hidden = NO;
         _messageLabel.text = @"Tap squares you want to remove!";
         NSLog(@"Booster!");
-        _boosterIsActive = YES;
+        _bombBoosterIsActive = YES;
         _selectedBoosterTile = tileTouched;
         return;
     }
@@ -980,7 +991,7 @@
 //    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:tileTouched]];
     [self boosterDeleteTiles:tileTouched];
     _messageLabel.hidden = YES;
-    _boosterIsActive = NO;
+    _bombBoosterIsActive = NO;
 //    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
 
 }
