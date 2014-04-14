@@ -20,6 +20,7 @@
 @property UIView *popOver;
 
 @property QCPopupView *popView;
+@property QCSelectCategoryPopup *selectCategoryPopup;
 
 @property QCQuestionProvider *questionProvider;
 @property QCTileImageProvider *imageProvider;
@@ -44,13 +45,15 @@
 @property NSString *moveDirection;
 @property NSMutableArray *suctionMoveArray;
 @property BOOL popOverIsActive;
-@property BOOL bombBoosterIsActive;
 @property NSNumber *selectedBoosterTile;
 @property int score;
 @property int numberOfMovesMade;
 @property BOOL answerWasCorrect;
 @property BOOL fiftyFiftyBooster;
 @property CGRect popupFrame;
+@property BOOL bombBoosterIsActive;
+@property BOOL changeCategoryBoosterIsActive;
+@property NSNumber *tileToChangeCategoryOf;
 
 @end
 
@@ -59,7 +62,28 @@
 // delegate methods
 
 -(void) selectCategoryButtonHandler:(NSNumber *) category {
-    NSLog(@"Kategori vald: %@", category);
+//    NSLog(@"Kategori vald: %@", category);
+    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:_tileToChangeCategoryOf];
+    
+    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:_tileToChangeCategoryOf]];
+    
+    [_playingFieldModel changeTiles:selectionSet toCategory:category];
+    
+    _selectCategoryPopup.hidden = YES;
+    // change views of tiles
+    for (NSNumber *key in selectionSet) {
+        QCTile *tile = [_playingFieldModel tileWithID:key];
+        UIView *oldView = _viewDictionary[key];
+        UIView *newView = [self tileViewCreatorXIndex:[tile.x intValue]
+                                               yIndex:[tile.y intValue]
+                                                   iD:key];
+        [oldView removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
+        [_viewDictionary setObject:newView forKey:key];
+        [_holderView addSubview:newView];
+        _popOverIsActive = NO;
+    }
+    
 }
 
 -(NSArray *) questionStrings:(QCQuestion *) question {
@@ -297,7 +321,10 @@
     _popView.hidden = YES;
     [_holderView addSubview:_popView];
 
-
+    _selectCategoryPopup = [[QCSelectCategoryPopup alloc] initWithFrame:_popupFrame];
+    [_selectCategoryPopup setDelegate:self];
+    _selectCategoryPopup.hidden = YES;
+    [_holderView addSubview:_selectCategoryPopup];
 
     // for popup dialogue
     _popOverIsActive = NO;
@@ -355,6 +382,7 @@
 
     // for booster
     _bombBoosterIsActive = NO;
+    _changeCategoryBoosterIsActive = NO;
 
 }
 
@@ -956,12 +984,7 @@
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
-//    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
 
-    //
-    // Fortsätt här på måndag!
-    //
-    
     
     CGPoint point = [recognizer locationInView:_holderView];
     NSDictionary *touchPoint = [self gridPositionOfPoint:point
@@ -971,30 +994,91 @@
 
     NSNumber *tileTouched = [_playingFieldModel iDOfTileAtX:touchPoint[@"x"] Y:touchPoint[@"y"]];
 
+    // here booster handling diverges. Refactoring.
+    
+    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7] || _bombBoosterIsActive) {
+        // bomb booster
+        [self bombBoosterHandling:tileTouched];
+    }
+    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@8] || _changeCategoryBoosterIsActive) {
+        // change category
+        [self changeCategoryBoosterHandling:tileTouched];
+    }
+
+}
+
+-(void) changeCategoryBoosterHandling:(NSNumber *) tileTouched {
+    if (!_changeCategoryBoosterIsActive) {
+        _changeCategoryBoosterIsActive = YES;
+        _messageLabel.hidden = NO;
+        _messageLabel.text = @"Tap squares you want to swap category of";
+        _selectedBoosterTile = tileTouched;
+        return;
+    }
+    
+    // booster is active, let user tap a tile, find surrounding tiles and change color
+    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7] || [[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@8]) {
+        return;
+    }
+    
+    _messageLabel.hidden = YES;
+    _changeCategoryBoosterIsActive = NO;
+
+//    NSSet *selectSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:tileTouched];
+    
+    _tileToChangeCategoryOf = tileTouched;
+    
+    // launch popover
+    UIView *tileView = _viewDictionary[tileTouched];
+    UIView *popOverAnimatingView = [[UIView alloc] initWithFrame:tileView.frame];
+    [popOverAnimatingView setBackgroundColor:[UIColor colorWithWhite:1 alpha:1]];   //tileView.backgroundColor];
+    popOverAnimatingView.layer.cornerRadius = 25;
+    popOverAnimatingView.layer.masksToBounds = YES;
+    [_holderView addSubview:popOverAnimatingView];
+    _popOverIsActive = YES;
+
+    [UIView animateWithDuration:.3
+                          delay:0.03
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         popOverAnimatingView.frame = _popupFrame;
+//                         [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
+                         [popOverAnimatingView setAlpha:.97];
+                         
+                     }
+                     completion:^(BOOL finished) {
+                         _selectCategoryPopup.hidden = NO;
+                         [_holderView bringSubviewToFront:_selectCategoryPopup];
+                         [popOverAnimatingView removeFromSuperview];
+                     }];
+
+}
+
+-(void) bombBoosterHandling:(NSNumber *) tileTouched {
+    NSLog(@"Bomb booster handling");
+    
     if (!_bombBoosterIsActive) {
-        if (![[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7]) {
-            return;
-        }
+        
         _messageLabel.hidden = NO;
         _messageLabel.text = @"Tap squares you want to remove!";
-        NSLog(@"Booster!");
+//        NSLog(@"Booster!");
         _bombBoosterIsActive = YES;
         _selectedBoosterTile = tileTouched;
         return;
     }
-
+    
     // booster is active, let user tap a tile, find surrounding tiles and remove them
-    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7]) {
+    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7] || [[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@8]) {
         return;
     }
-
-//    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:tileTouched]];
+    
+    //    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:tileTouched]];
     [self boosterDeleteTiles:tileTouched];
     _messageLabel.hidden = YES;
     _bombBoosterIsActive = NO;
-//    NSLog(@"Spelplanen: \n%@", _playingFieldModel);
-
 }
+
+
 
 -(void) panHandler:(UIPanGestureRecognizer *) recognizer {
 //    NSLog(@"Pan handler");

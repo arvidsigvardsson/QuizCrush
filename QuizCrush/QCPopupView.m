@@ -18,6 +18,8 @@
 @property UIButton *button3;
 @property UIColor *buttonColor;
 @property NSArray *buttonArray;
+@property UIImageView *categoryView;
+
 //@property UIImageView *categoryView;
 
 @end
@@ -59,6 +61,13 @@ typedef enum {
     float buttonWidth = width / 2 - 2 * offset;
     _buttonColor = [UIColor whiteColor]; //[UIColor greenColor]; //[UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f];
     UIColor *textColor = [UIColor blackColor];
+    
+    _categoryView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 45, 45)];  //initWithImage:[self.delegate provideCategoryImage]];
+    //    categoryView.image = [self.delegate provideCategoryImage];
+    _categoryView.center = CGPointMake(self.frame.size.width * 0.10, self.frame.size.height * 0.08);
+    [self addSubview:_categoryView];
+    
+    
     
     _topicLabel = [[UILabel alloc] initWithFrame:CGRectMake(width * 0.2, height * 0.04, width * 0.8, height * 0.1)];
     _topicLabel.textAlignment = NSTextAlignmentLeft;
@@ -223,10 +232,12 @@ typedef enum {
     [_button2 setTitle:strings[4] forState:UIControlStateNormal];
     [_button3 setTitle:strings[5] forState:UIControlStateNormal];
     
-    UIImageView *categoryView = [[UIImageView alloc] initWithImage:[self.delegate provideCategoryImage]];
-//    categoryView.image = [self.delegate provideCategoryImage];
-    categoryView.center = CGPointMake(self.frame.size.width * 0.10, self.frame.size.height * 0.08);
-    [self addSubview:categoryView];
+//    UIImageView *categoryView = [[UIImageView alloc] initWithImage:[self.delegate provideCategoryImage]];
+////    categoryView.image = [self.delegate provideCategoryImage];
+//    categoryView.center = CGPointMake(self.frame.size.width * 0.10, self.frame.size.height * 0.08);
+//    [self addSubview:categoryView];
+    
+    [_categoryView setImage:[self.delegate provideCategoryImage]];
 
     if (fiftyFifty) {
         UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];

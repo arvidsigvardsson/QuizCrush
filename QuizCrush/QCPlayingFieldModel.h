@@ -35,5 +35,6 @@
 -(void) updateModelWithSuctionMoves:(NSArray *) moves;
 -(NSNumber *) changeHeadOfSnakeToBoosterAndReturnItForMove:(QCSuctionMove *) move;
 -(void) changeToBoosterForID:(NSNumber *) ID;
+-(void) changeTiles:(NSSet *)set toCategory:(NSNumber *) category;
 
 @end

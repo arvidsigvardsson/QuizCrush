@@ -412,7 +412,7 @@
     }
     
     // test
-    NSLog(@"tiledict innifrån removeandreturn: %@", self);
+//    NSLog(@"tiledict innifrån removeandreturn: %@", self);
     
     
     
@@ -776,6 +776,13 @@
 -(void) changeToBoosterForID:(NSNumber *) ID {
     QCTile *tile = _tileDict[ID];
     tile.category = @7;
+}
+
+-(void) changeTiles:(NSSet *)set toCategory:(NSNumber *) category{
+    for (NSNumber *key in set) {
+        QCTile *tile = _tileDict[key];
+        tile.category = category;
+    }
 }
 
 @end
