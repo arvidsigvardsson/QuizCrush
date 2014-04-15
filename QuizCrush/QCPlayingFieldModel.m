@@ -330,7 +330,7 @@
     }
 }
 
--(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory withBooster:(BOOL) booster {
+-(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory withBooster:(NSNumber *) booster {
     if (!set) {
         return nil;
     }
@@ -349,7 +349,7 @@
         // add new tile at top of stack
         NSNumber *category;
         if (booster && !boosterAdded) {
-            category = @8;
+            category = booster; //@8;
             boosterAdded = YES;
         } else {
             category = [self nextCategoryExcluding:excludeCategory];

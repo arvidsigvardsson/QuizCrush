@@ -19,6 +19,8 @@
 @property UIColor *buttonColor;
 @property NSArray *buttonArray;
 @property UIImageView *categoryView;
+@property UIButton *fiftyButton;
+@property UILabel *fiftyXLabel;
 
 //@property UIImageView *categoryView;
 
@@ -184,7 +186,28 @@ typedef enum {
 //    _categoryView.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
 //    
 //    [self addSubview:_categoryView];
-//    
+//
+    
+    // 50/50
+    UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
+    _fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    _fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
+    _fiftyButton.center = CGPointMake(self.frame.size.width * 0.75, self.frame.size.height * 0.1);
+    
+    [_fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
+    _fiftyButton.hidden = YES;
+    
+    [_fiftyButton addTarget:self
+                    action:@selector(fiftyButtonHandler:)
+          forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:_fiftyButton];
+
+    _fiftyXLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width * 0.1, self.frame.size.width * 0.13)];
+    _fiftyXLabel.center = CGPointMake(self.frame.size.width * 0.90, self.frame.size.height * 0.1);
+//    _fiftyXLabel.text = @"X 2";
+    _fiftyXLabel.hidden = YES;
+    [self addSubview:_fiftyXLabel];
+    
     return self;
 }
 
@@ -215,7 +238,7 @@ typedef enum {
     
 }
 
--(void) resetAndLoadQuestionStrings:(QCQuestion *) question withFiftyFifty:(BOOL) fiftyFifty {
+-(void) resetAndLoadQuestionStrings:(QCQuestion *) question withFiftyFifty:(NSNumber *) numberOfFiftyFifty {
     self.alpha = 1.0;
     for (UIButton *button in _buttonArray) {
         button.backgroundColor = _buttonColor;
@@ -239,18 +262,32 @@ typedef enum {
     
     [_categoryView setImage:[self.delegate provideCategoryImage]];
 
-    if (fiftyFifty) {
-        UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
-        UIButton *fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
-        fiftyButton.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
-        
-        [fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
-        [fiftyButton addTarget:self
-                        action:@selector(fiftyButtonHandler:)
-              forControlEvents:UIControlEventTouchUpInside];
-        [self addSubview:fiftyButton];
+    if ([numberOfFiftyFifty intValue] >= 2) {
+        _fiftyButton.hidden = NO;
+        _fiftyXLabel.hidden = NO;
+        _fiftyXLabel.text = [NSString stringWithFormat:@"X %@", numberOfFiftyFifty];
     }
+    else if ([numberOfFiftyFifty intValue] == 1) {
+        _fiftyButton.hidden = NO;
+        _fiftyXLabel.hidden = YES;
+    }
+    else if ([numberOfFiftyFifty intValue] <= 0) {
+        _fiftyButton.hidden = YES;
+        _fiftyXLabel.hidden = YES;
+    }
+    
+    //if (fiftyFifty) {
+//        UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
+//        UIButton *fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//        fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
+//        fiftyButton.center = CGPointMake(self.frame.size.width * 0.87, self.frame.size.height * 0.1);
+//        
+//        [fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
+//        [fiftyButton addTarget:self
+//                        action:@selector(fiftyButtonHandler:)
+//              forControlEvents:UIControlEventTouchUpInside];
+//        [self addSubview:fiftyButton];
+//    }
 
 }
 
@@ -315,10 +352,10 @@ typedef enum {
 }
 
 -(void) fiftyButtonHandler:(id) sender {
-    UIButton * button = (UIButton *) sender;
+//    UIButton * button = (UIButton *) sender;
 //    button.enabled = NO;
-    [button removeFromSuperview];
-    [self.delegate resetFiftyFifty];
+//    [button removeFromSuperview];
+    [self.delegate decreaseFiftyFifty];
     
     NSSet *set = [self.delegate answerButtonsToDisableFiftyFifty];
     
