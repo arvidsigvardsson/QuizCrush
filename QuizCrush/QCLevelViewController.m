@@ -183,22 +183,6 @@
         } else if ([_tilesTouched count] == 3) {
             booster = @7;
         }
-//        switch ([_tilesTouched count]) {
-//            case 3: {
-//                // bomb booster
-//                booster = @7;
-//                break;
-//            }
-//            case 4: {
-//                _numberOfFiftyFiftyBooster += 1;
-//                break;
-//            }
-//            case 5: {
-//                // change category
-//                booster = @8;
-//                break;
-//            }
-//        }
     }
     
     
