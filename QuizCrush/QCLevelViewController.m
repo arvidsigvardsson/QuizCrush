@@ -71,18 +71,51 @@
     
     _selectCategoryPopup.hidden = YES;
     // change views of tiles
+    
+//    NSMutableSet *oldViews = [[NSMutableSet alloc] init];
+//    NSMutableSet *newViews = [[NSMutableSet alloc] init];
+    NSMutableDictionary *oldViews = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *newViews = [[NSMutableDictionary alloc] init];
     for (NSNumber *key in selectionSet) {
         QCTile *tile = [_playingFieldModel tileWithID:key];
         UIView *oldView = _viewDictionary[key];
         UIView *newView = [self tileViewCreatorXIndex:[tile.x intValue]
                                                yIndex:[tile.y intValue]
                                                    iD:key];
-        [oldView removeFromSuperview];
-        [_viewDictionary removeObjectForKey:key];
-        [_viewDictionary setObject:newView forKey:key];
+        newView.alpha = 0;
         [_holderView addSubview:newView];
-        _popOverIsActive = NO;
+//        [oldViews addObject:oldView];
+//        [newViews addObject:newView];
+        [oldViews setObject:oldView forKey:key];
+        [newViews setObject:newView forKey:key];
     }
+    
+    [UIView animateWithDuration:0.8
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^{
+                         for (NSNumber *animateKey in oldViews) {
+                             [oldViews[animateKey] setAlpha:0];
+                             [newViews[animateKey] setAlpha:1];
+                         }
+                     }
+                     completion:^(BOOL finished) {
+                         for (NSNumber *delKey in oldViews) {
+                             [oldViews[delKey] removeFromSuperview];
+                             [_viewDictionary removeObjectForKey:delKey];
+                             [_viewDictionary setObject:newViews[delKey] forKey:delKey];
+                             _popOverIsActive = NO;
+                             
+                         }
+                     }
+     ];
+    
+    
+//        [oldView removeFromSuperview];
+//        [_viewDictionary removeObjectForKey:key];
+//        [_viewDictionary setObject:newView forKey:key];
+//        [_holderView addSubview:newView];
+//    }
     
 }
 
@@ -142,23 +175,30 @@
 
 -(void) questionAnimationCompleted {
     NSNumber *booster = nil;
-    if (_answerWasCorrect) {        
-        switch ([_tilesTouched count]) {
-            case 3: {
-                // bomb booster
-                booster = @7;
-                break;
-            }
-            case 4: {
-                _numberOfFiftyFiftyBooster += 1;
-                break;
-            }
-            case 5: {
-                // change category
-                booster = @8;
-                break;
-            }
+    if (_answerWasCorrect) {
+        if ([_tilesTouched count] >= 5) {
+            booster = @8;
+        } else if ([_tilesTouched count] == 4) {
+            _numberOfFiftyFiftyBooster += 1;
+        } else if ([_tilesTouched count] == 3) {
+            booster = @7;
         }
+//        switch ([_tilesTouched count]) {
+//            case 3: {
+//                // bomb booster
+//                booster = @7;
+//                break;
+//            }
+//            case 4: {
+//                _numberOfFiftyFiftyBooster += 1;
+//                break;
+//            }
+//            case 5: {
+//                // change category
+//                booster = @8;
+//                break;
+//            }
+//        }
     }
     
     
