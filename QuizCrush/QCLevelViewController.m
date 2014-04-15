@@ -148,13 +148,17 @@
     return image;
 }
 
+- (void)updateMovesLeftLabel {
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
+}
+
 -(void) answerButtonHandler:(NSNumber *)index {
     [self unMarkTiles:_tilesTouched];
     _popOverIsActive = NO;
 
 
     _numberOfMovesMade += 1;
-    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
+    [self updateMovesLeftLabel];
     NSLog(@"Knapp nr: %@", index);
     if ([index isEqualToNumber:_currentQuestion.correctAnswerIndex]) {
         [self playerAnsweredCorrect];
@@ -202,9 +206,9 @@
 
     [self swipeDeleteTiles:_tilesTouched withBooster:booster];
     
-    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-        [self gameOver];
-    }
+//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+//        [self gameOver];
+//    }
 
 }
 
@@ -522,15 +526,21 @@
     
     _animating = YES;
     
-    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue] animations:^{
-        for (NSNumber *aniKey in animateDict) {
-            UIView *aniView = _viewDictionary[aniKey];
-            CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
-            [aniView setCenter:newCenter];
-        }
-    }completion:^(BOOL finished) {
-        _animating = NO;
-    }];
+    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue]
+                     animations:^{
+                         for (NSNumber *aniKey in animateDict) {
+                             UIView *aniView = _viewDictionary[aniKey];
+                             CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
+                             [aniView setCenter:newCenter];
+                         }
+                     }completion:^(BOOL finished) {
+                         _animating = NO;
+                         if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+                             [self gameOver];
+                         }
+
+                     }
+     ];
 }
 
 
@@ -1507,9 +1517,9 @@
 //    [self abortSuctionSwipeWithMoves:_suctionMoveArray];
 
     _answerWasCorrect = NO;
-    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue]) {
-        [self gameOver];
-    }
+//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue]) {
+//        [self gameOver];
+//    }
 }
 
 -(void) answerPopButtonHandler:(id) sender {
@@ -1565,19 +1575,41 @@
 }
 
 -(void) gameOver {
-    NSString *string;
+//    NSString *string;
     if (_score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-        string = @"Good Job! Level accomplished";
-    } else {
-        string = @"Out of moves...";
-    }
-    _messageLabel.hidden = NO;
-    _messageLabel.text = string;
+//        string = @"Good Job! Level accomplished";
+        _messageLabel.hidden = NO;
+        _messageLabel.text = @"Good Job! Level accomplished";
+        
+        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
+            [_holderView removeGestureRecognizer:rec];
+        }
 
-    for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
-        [_holderView removeGestureRecognizer:rec];
+    } else {
+//        string = @"Out of moves...";
+        UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"Out of moves"
+                                                            message:@"Would you like to buy five more moves?"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"No, thank you"
+                                                  otherButtonTitles:@"Yes, please!", nil];
+        [alertview show];
     }
+
 }
 
+-(void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    NSLog(@"Index of button clicked: %ld", buttonIndex);
+
+    if (buttonIndex == 0) {
+        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
+            [_holderView removeGestureRecognizer:rec];
+        }
+        _messageLabel.hidden = NO;
+        _messageLabel.text = @"Game over";
+        } else if (buttonIndex == 1) {
+            _numberOfMovesMade -= 5;
+            [self updateMovesLeftLabel];
+        }
+}
 
 @end

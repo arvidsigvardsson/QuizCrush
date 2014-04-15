@@ -117,6 +117,10 @@
     return self;
 }
 
+-(NSDictionary *) returnPlayingField {
+    return _tileDict;
+}
+
 -(NSNumber *) nextID {
     _currentID += 1;
     return [NSNumber numberWithInt:_currentID - 1];

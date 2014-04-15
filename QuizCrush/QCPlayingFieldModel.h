@@ -13,6 +13,7 @@
 
 @interface QCPlayingFieldModel : NSObject
 
+-(NSDictionary *) returnPlayingField;
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
 -(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD;

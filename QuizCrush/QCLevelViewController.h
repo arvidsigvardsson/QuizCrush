@@ -14,6 +14,6 @@
 #import "QCSelectCategoryPopup.h"
 #import "QCSelectCategoryPopup.h"
 
-@interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate>
+@interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate, UIAlertViewDelegate>
 
 @end
