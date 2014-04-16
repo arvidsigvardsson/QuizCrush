@@ -145,9 +145,9 @@
 		71E0C4EE18D6E39800B5FFC7 /* QuizCrush */ = {
 			isa = PBXGroup;
 			children = (
+				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
 				71CE961918F810EA003E8D3F /* QCSelectCategoryPopup.h */,
 				71CE961A18F810EA003E8D3F /* QCSelectCategoryPopup.m */,
-				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
 				715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */,
 				715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */,
 				719950E718F2CAD90041DC21 /* svenskaQuestions.json */,

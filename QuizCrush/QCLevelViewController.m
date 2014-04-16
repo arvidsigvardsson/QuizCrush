@@ -17,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *movesLeftLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-@property UIView *popOver;
+//@property UIView *popOver;
 
 @property QCPopupView *popView;
 @property QCSelectCategoryPopup *selectCategoryPopup;
@@ -46,10 +46,10 @@
 @property NSMutableArray *suctionMoveArray;
 @property BOOL popOverIsActive;
 @property NSNumber *selectedBoosterTile;
-@property int score;
+@property NSUInteger score;
 @property int numberOfMovesMade;
 @property BOOL answerWasCorrect;
-@property int numberOfFiftyFiftyBooster;
+@property int numberOfFiftyFiftyBoosters;
 @property CGRect popupFrame;
 @property BOOL bombBoosterIsActive;
 @property BOOL changeCategoryBoosterIsActive;
@@ -62,6 +62,10 @@
 // delegate methods
 
 -(void) selectCategoryButtonHandler:(NSNumber *) category {
+    // I think this belongs here...
+    _changeCategoryBoosterIsActive = NO;
+    
+    
 //    NSLog(@"Kategori vald: %@", category);
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:_tileToChangeCategoryOf];
     
@@ -183,7 +187,7 @@
         if ([_tilesTouched count] >= 5) {
             booster = @8;
         } else if ([_tilesTouched count] == 4) {
-            _numberOfFiftyFiftyBooster += 1;
+            _numberOfFiftyFiftyBoosters += 1;
         } else if ([_tilesTouched count] == 3) {
             booster = @7;
         }
@@ -230,7 +234,7 @@
 }
 
 -(void) decreaseFiftyFifty {
-    _numberOfFiftyFiftyBooster -= 1;
+    _numberOfFiftyFiftyBoosters -= 1;
 }
 
 
@@ -265,6 +269,33 @@
 //    [tile setBackgroundColor:color];
 //
 //    return tile;
+}
+
+- (void)resetGameplayVariables
+{
+    // game play variables etc
+    _score = 0;
+    _numberOfMovesMade = 0;
+    _numberOfFiftyFiftyBoosters = 0;
+
+}
+
+- (void)resetMessages
+{
+    int movesLeft = [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade;
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", movesLeft]; //[_uiSettingsDictionary[@"Max number of moves"] intValue]];
+    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
+    _messageLabel.hidden = NO;
+    _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
+}
+
+- (void)resetState
+{
+    // for booster
+    _bombBoosterIsActive = NO;
+    _changeCategoryBoosterIsActive = NO;
+    _popOverIsActive = NO;
+
 }
 
 - (void)viewDidLoad
@@ -305,15 +336,11 @@
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
-    // game play variables etc
-    _score = 0;
-    _numberOfMovesMade = 0;
-    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue]];
-    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
-    _messageLabel.hidden = NO;
+    [self resetGameplayVariables];
+    [self resetState];
+    [self resetMessages];
     
     // 50/50 booster
-    _numberOfFiftyFiftyBooster = 0;
 
     // questionProvider and imageProvider
     _questionProvider = [[QCQuestionProvider alloc] init];
@@ -375,63 +402,60 @@
     _selectCategoryPopup.hidden = YES;
     [_holderView addSubview:_selectCategoryPopup];
 
-    // for popup dialogue
-    _popOverIsActive = NO;
+//    // for popup dialogue
 
-
-
-    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
-    [_popOver setBackgroundColor:[UIColor whiteColor]];
-    _popOver.layer.cornerRadius = 25;
-    _popOver.layer.masksToBounds = YES;
-    _popOver.hidden = YES;
-
-    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
-    button1.frame = CGRectMake(70, 70, 150, 40);
-    [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
-    [button1 setTintColor:[UIColor blackColor]];
-    button1.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor greenColor];
-    button1.layer.masksToBounds = YES;
-    button1.layer.cornerRadius = 15;
-    button1.tag = 1001;
-
-    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
-    buttonX.frame = CGRectMake(70, 140, 150, 40);
-    [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
-    [buttonX setTintColor:[UIColor blackColor]];
-    buttonX.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor purpleColor];
-    buttonX.layer.masksToBounds = YES;
-    buttonX.layer.cornerRadius = 15;
-    buttonX.tag = 2002;
-
-    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
-    button2.frame = CGRectMake(70, 210, 150, 40);
-    [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
-    [button2 setTintColor:[UIColor blackColor]];
-    button2.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor blueColor];
-    button2.layer.masksToBounds = YES;
-    button2.layer.cornerRadius = 15;
-    button2.tag = 3003;
-
-    [_popOver addSubview:button1];
-    [_popOver addSubview:buttonX];
-    [_popOver addSubview:button2];
-
-    [button1 addTarget:self
-                action:@selector(answerPopButtonHandler:)
-      forControlEvents:UIControlEventTouchUpInside];
-    [buttonX addTarget:self
-                action:@selector(answerPopButtonHandler:)
-      forControlEvents:UIControlEventTouchUpInside];
-    [button2 addTarget:self
-                action:@selector(answerPopButtonHandler:)
-      forControlEvents:UIControlEventTouchUpInside];
-
-    [_holderView addSubview:_popOver];
-
-    // for booster
-    _bombBoosterIsActive = NO;
-    _changeCategoryBoosterIsActive = NO;
+//
+//
+//    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
+//    [_popOver setBackgroundColor:[UIColor whiteColor]];
+//    _popOver.layer.cornerRadius = 25;
+//    _popOver.layer.masksToBounds = YES;
+//    _popOver.hidden = YES;
+//
+//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
+//    button1.frame = CGRectMake(70, 70, 150, 40);
+//    [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
+//    [button1 setTintColor:[UIColor blackColor]];
+//    button1.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor greenColor];
+//    button1.layer.masksToBounds = YES;
+//    button1.layer.cornerRadius = 15;
+//    button1.tag = 1001;
+//
+//    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
+//    buttonX.frame = CGRectMake(70, 140, 150, 40);
+//    [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
+//    [buttonX setTintColor:[UIColor blackColor]];
+//    buttonX.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor purpleColor];
+//    buttonX.layer.masksToBounds = YES;
+//    buttonX.layer.cornerRadius = 15;
+//    buttonX.tag = 2002;
+//
+//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
+//    button2.frame = CGRectMake(70, 210, 150, 40);
+//    [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
+//    [button2 setTintColor:[UIColor blackColor]];
+//    button2.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor blueColor];
+//    button2.layer.masksToBounds = YES;
+//    button2.layer.cornerRadius = 15;
+//    button2.tag = 3003;
+//
+//    [_popOver addSubview:button1];
+//    [_popOver addSubview:buttonX];
+//    [_popOver addSubview:button2];
+//
+//    [button1 addTarget:self
+//                action:@selector(answerPopButtonHandler:)
+//      forControlEvents:UIControlEventTouchUpInside];
+//    [buttonX addTarget:self
+//                action:@selector(answerPopButtonHandler:)
+//      forControlEvents:UIControlEventTouchUpInside];
+//    [button2 addTarget:self
+//                action:@selector(answerPopButtonHandler:)
+//      forControlEvents:UIControlEventTouchUpInside];
+//
+//    [_holderView addSubview:_popOver];
+//
+//    [self resetState];
 
 }
 
@@ -910,6 +934,8 @@
         return;
     }
     
+    _changeCategoryBoosterIsActive = NO;
+    _bombBoosterIsActive = NO;
     
     CGPoint point = [recognizer locationInView:_holderView];
     //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
@@ -1452,7 +1478,7 @@
 
 -(void) launchPopOverFromID:(NSNumber *) ID withColor:(UIColor *) color {
     _popOverIsActive = YES;
-    [_holderView bringSubviewToFront:_popOver];
+//    [_holderView bringSubviewToFront:_popOver];
 
     //    CGRect endFrame = CGRectMake(15, 100, 290, 300);
     UIView *tileView = _viewDictionary[ID];
@@ -1476,7 +1502,7 @@
 
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
-    [_popView resetAndLoadQuestionStrings:question withFiftyFifty:@(_numberOfFiftyFiftyBooster)];
+    [_popView resetAndLoadQuestionStrings:question withFiftyFifty:@(_numberOfFiftyFiftyBoosters)];
 
 
     [UIView animateWithDuration:.3
@@ -1484,7 +1510,7 @@
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
                          popOverAnimatingView.frame = _popView.frame;
-                         [popOverAnimatingView setBackgroundColor:_popOver.backgroundColor];
+                         [popOverAnimatingView setBackgroundColor:_popView.backgroundColor];
                          [popOverAnimatingView setAlpha:.97];
 
     }
@@ -1499,9 +1525,9 @@
 
 - (void)playerAnsweredCorrect {
     _answerWasCorrect = YES;
-    int points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
+    NSUInteger points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
     _score += points;
-    _scoreLabel.text = [NSString stringWithFormat:@"%d", _score];
+    _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
     
     [_popView rightAnswerChosenWithIndex:_currentQuestion.correctAnswerIndex points:@(points)];
     
@@ -1522,48 +1548,48 @@
 //    }
 }
 
--(void) answerPopButtonHandler:(id) sender {
-//    UIButton *senderButton = (UIButton *) sender;
-    _popOver.hidden = YES;
-    _popOverIsActive = NO;
-    [self unMarkTiles:_tilesTouched];
-
-    _numberOfMovesMade += 1;
-    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
-
-    int outcome = arc4random_uniform(3);
-    if (outcome == 0) {
-        [self playerAnsweredWrong];
-    } else {
-        [self playerAnsweredCorrect];
-    }
-
-//    switch (senderButton.tag) {
-//        case 1001: {
-//            [self playerAnsweredCorrect];
-//            break;
-//        }
-//        case 2002: {
-//            [self playerAnsweredCorrect];
+//-(void) answerPopButtonHandler:(id) sender {
+////    UIButton *senderButton = (UIButton *) sender;
+//    _popOver.hidden = YES;
+//    _popOverIsActive = NO;
+//    [self unMarkTiles:_tilesTouched];
 //
-////            NSLog(@"Rätt svar X");
-////            _animating = YES;
-////            if ([_tilesTouched count] >= 3) {
-////                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
-////                [self changeTileToBooster:tileToChangeToBooster];
-////            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
-////            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-//            break;
-//        }
-//        case 3003: {
-//            NSLog(@"Fel svar 2");
-//            _messageLabel.hidden = NO;
-//            _messageLabel.text = @"Sorry, incorrect answer";
-//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-//            break;
-//        }
+//    _numberOfMovesMade += 1;
+//    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
+//
+//    int outcome = arc4random_uniform(3);
+//    if (outcome == 0) {
+//        [self playerAnsweredWrong];
+//    } else {
+//        [self playerAnsweredCorrect];
 //    }
-}
+//
+////    switch (senderButton.tag) {
+////        case 1001: {
+////            [self playerAnsweredCorrect];
+////            break;
+////        }
+////        case 2002: {
+////            [self playerAnsweredCorrect];
+////
+//////            NSLog(@"Rätt svar X");
+//////            _animating = YES;
+//////            if ([_tilesTouched count] >= 3) {
+//////                NSNumber *tileToChangeToBooster = [_playingFieldModel changeHeadOfSnakeToBoosterAndReturnItForMove:[_suctionMoveArray lastObject]];
+//////                [self changeTileToBooster:tileToChangeToBooster];
+//////            }            [self performAndAnimateSuctionMoves:_suctionMoveArray];
+//////            [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+////            break;
+////        }
+////        case 3003: {
+////            NSLog(@"Fel svar 2");
+////            _messageLabel.hidden = NO;
+////            _messageLabel.text = @"Sorry, incorrect answer";
+////            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+////            break;
+////        }
+////    }
+//}
 
 //-(void) playerAnsweredCorrect {
 //
@@ -1577,13 +1603,15 @@
 -(void) gameOver {
 //    NSString *string;
     if (_score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-//        string = @"Good Job! Level accomplished";
-        _messageLabel.hidden = NO;
-        _messageLabel.text = @"Good Job! Level accomplished";
+////        string = @"Good Job! Level accomplished";
+//        _messageLabel.hidden = NO;
+//        _messageLabel.text = @"Good Job! Level accomplished";
+//
+//        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
+//            [_holderView removeGestureRecognizer:rec];
+//        }
         
-        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
-            [_holderView removeGestureRecognizer:rec];
-        }
+        [self launchStartNewGame:@"Good Job! Level accomplished"];
 
     } else {
 //        string = @"Out of moves...";
@@ -1592,6 +1620,7 @@
                                                            delegate:self
                                                   cancelButtonTitle:@"No, thank you"
                                                   otherButtonTitles:@"Yes, please!", nil];
+        alertview.tag = 202;
         [alertview show];
     }
 
@@ -1599,17 +1628,98 @@
 
 -(void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     NSLog(@"Index of button clicked: %ld", buttonIndex);
-
-    if (buttonIndex == 0) {
-        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
-            [_holderView removeGestureRecognizer:rec];
-        }
-        _messageLabel.hidden = NO;
-        _messageLabel.text = @"Game over";
+    NSLog(@"Alertview tag: %ld", alertView.tag);
+    
+    if (alertView.tag == 202) {
+        if (buttonIndex == 0) {
+//            for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
+//                [_holderView removeGestureRecognizer:rec];
+//            }
+//            _messageLabel.hidden = NO;
+//            _messageLabel.text = @"Game over";
+            [self launchStartNewGame:@"Out of moves"];
+            
         } else if (buttonIndex == 1) {
             _numberOfMovesMade -= 5;
             [self updateMovesLeftLabel];
         }
+    } else if (alertView.tag == 3003) {
+        NSLog(@"Start new game");
+        [self startNewGame];
+    }
+    
+}
+
+-(void) launchStartNewGame:(NSString *) message {
+    UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"Game over"
+                                                        message:message
+                                                       delegate:self
+                                              cancelButtonTitle:@"Play again!"
+                                              otherButtonTitles:nil];
+    alertview.tag = 3003;
+    [alertview show];
+}
+
+-(void) startNewGame {
+    [self resetGameplayVariables];
+    [self resetMessages];
+    [self resetState];
+    
+    
+    NSMutableSet *selectionSet = [[NSMutableSet alloc] init];
+    for (NSNumber *selectKey in _viewDictionary) {
+        [selectionSet addObject:selectKey];
+    }
+    
+    
+    // identify if new tiles have been created and give them a view etc
+    //    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
+    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:NO];
+    
+    for (NSNumber *addNewKey in newTiles) {
+        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
+        int x = [newTile.x intValue];
+        int y = [newTile.y intValue];
+        //
+        //        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+        //        newView.layer.cornerRadius = 17.0;
+        //        newView.layer.masksToBounds = YES;
+        //        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
+        //
+        //        UIColor *color = _colorArray[[category intValue]];
+        //
+        //        [newView setBackgroundColor:color];
+        
+        UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
+        [_viewDictionary setObject:newView
+                            forKey:addNewKey];
+        [_holderView addSubview:newView];
+    }
+    
+    
+    // dict with ids of tiles to move, with their corresponding moves
+    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    
+    for (NSNumber *key in selectionSet) {
+        UIView * view = _viewDictionary[key];
+        //        [view setBackgroundColor:[UIColor blackColor]];
+        [view removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
+    }
+    
+    _animating = YES;
+    
+    [UIView animateWithDuration:1
+                     animations:^{
+                         for (NSNumber *aniKey in animateDict) {
+                             UIView *aniView = _viewDictionary[aniKey];
+                             CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
+                             [aniView setCenter:newCenter];
+                         }
+                     }completion:^(BOOL finished) {
+                         _animating = NO;
+                     }
+     ];
 }
 
 @end
