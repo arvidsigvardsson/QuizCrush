@@ -10,6 +10,13 @@
 
 @interface QCLevelViewController ()
 
+typedef enum {
+    BOMB,
+    CHANGE_CAT,
+    NONE
+} BoosterState;
+@property BoosterState boosterState;
+
 @property (weak, nonatomic) IBOutlet UIView *holderView;
 //@property NSMutableArray *viewArray;
 //@prperty (weak, nonatomic) IBOutlet UIView *popup;
@@ -292,8 +299,10 @@
 - (void)resetState
 {
     // for booster
-    _bombBoosterIsActive = NO;
-    _changeCategoryBoosterIsActive = NO;
+//    _bombBoosterIsActive = NO;
+//    _changeCategoryBoosterIsActive = NO;
+    _boosterState = NONE;
+    
     _popOverIsActive = NO;
 
 }
@@ -1074,23 +1083,78 @@
                                            lengthOfSides:_lengthOfTile];
 
     NSNumber *tileTouched = [_playingFieldModel iDOfTileAtX:touchPoint[@"x"] Y:touchPoint[@"y"]];
-
-    // here booster handling diverges. Refactoring.
+    NSNumber *category = [_playingFieldModel categoryOfTileWithID:tileTouched];
     
-    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7] || _bombBoosterIsActive) {
-        // bomb booster
-        [self bombBoosterHandling:tileTouched];
+    // New structure
+    
+    switch (_boosterState) {
+        case NONE: {
+            if ([category isEqualToNumber:@7]) {
+//                _boosterState = BOMB;
+//                _messageLabel.hidden = NO;
+//                _messageLabel.text = @"Tap squares you want to remove!";
+//                _selectedBoosterTile = tileTouched;
+                [self bombBoosterHandling:tileTouched];
+                return;
+            } else if ([category isEqualToNumber:@8]) {
+//                _boosterState = CHANGE_CAT;
+//                _messageLabel.hidden = NO;
+//                _messageLabel.text = @"Tap squares you want to swap category of";
+//                _selectedBoosterTile = tileTouched;
+                [self changeCategoryBoosterHandling:tileTouched];
+                return;
+            } else {
+                return;
+            }
+            break;
+        }
+        case BOMB: {
+            if ([category isEqualToNumber:@7]) {
+                _boosterState = NONE;
+                return;
+            } else if ([category isEqualToNumber:@8]) {
+                _boosterState = NONE;
+                [self changeCategoryBoosterHandling:tileTouched];
+                return;
+            } else {
+                [self bombBoosterHandling:tileTouched];
+                return;
+            }
+            break;
+        }
+        case CHANGE_CAT: {
+            if ([category isEqualToNumber:@8]) {
+                _boosterState = NONE;
+                return;
+            } else if ([category isEqualToNumber:@7]) {
+                _boosterState = NONE;
+                [self bombBoosterHandling:tileTouched];
+                return;
+            } else {
+                [self changeCategoryBoosterHandling:tileTouched];
+                return;
+            }
+            break;
+        }
     }
-    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@8] || _changeCategoryBoosterIsActive) {
-        // change category
-        [self changeCategoryBoosterHandling:tileTouched];
-    }
+    
+    
+//    
+//    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@7] || _bombBoosterIsActive) {
+//        // bomb booster
+//        [self bombBoosterHandling:tileTouched];
+//    }
+//    if ([[_playingFieldModel categoryOfTileWithID:tileTouched] isEqualToNumber:@8] || _changeCategoryBoosterIsActive) {
+//        // change category
+//        [self changeCategoryBoosterHandling:tileTouched];
+//    }
 
 }
 
 -(void) changeCategoryBoosterHandling:(NSNumber *) tileTouched {
-    if (!_changeCategoryBoosterIsActive) {
-        _changeCategoryBoosterIsActive = YES;
+    if (_boosterState != CHANGE_CAT) {
+        _boosterState = CHANGE_CAT;
+//        _changeCategoryBoosterIsActive = YES;
         _messageLabel.hidden = NO;
         _messageLabel.text = @"Tap squares you want to swap category of";
         _selectedBoosterTile = tileTouched;
@@ -1138,12 +1202,12 @@
 -(void) bombBoosterHandling:(NSNumber *) tileTouched {
     NSLog(@"Bomb booster handling");
     
-    if (!_bombBoosterIsActive) {
-        
+    if (_boosterState != BOMB) {
+        _boosterState = BOMB;
         _messageLabel.hidden = NO;
         _messageLabel.text = @"Tap squares you want to remove!";
 //        NSLog(@"Booster!");
-        _bombBoosterIsActive = YES;
+//        _bombBoosterIsActive = YES;
         _selectedBoosterTile = tileTouched;
         return;
     }
@@ -1156,7 +1220,8 @@
     //    [self deleteTheBoosterTile:_selectedBoosterTile excludingCategory:[_playingFieldModel categoryOfTileWithID:tileTouched]];
     [self boosterDeleteTiles:tileTouched];
     _messageLabel.hidden = YES;
-    _bombBoosterIsActive = NO;
+//    _bombBoosterIsActive = NO;
+    _boosterState = NONE;
 }
 
 
