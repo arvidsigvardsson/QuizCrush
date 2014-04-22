@@ -61,6 +61,10 @@ typedef enum {
 @property BOOL bombBoosterIsActive;
 @property BOOL changeCategoryBoosterIsActive;
 @property NSNumber *tileToChangeCategoryOf;
+//@property UIButton *fiftyFiftyButton;
+@property (weak, nonatomic) IBOutlet UIButton *fiftyFiftyButton;
+- (IBAction)fiftyFiftyButtonHandler:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
 
 @end
 
@@ -283,7 +287,7 @@ typedef enum {
     // game play variables etc
     _score = 0;
     _numberOfMovesMade = 0;
-    _numberOfFiftyFiftyBoosters = 0;
+    _numberOfFiftyFiftyBoosters = 3;
 
 }
 
@@ -350,6 +354,10 @@ typedef enum {
     [self resetMessages];
     
     // 50/50 booster
+//    _fiftyFiftyButton.imageView.image = [UIImage imageNamed:@"fifty"];
+    [_fiftyFiftyButton setTitle:@"" forState:UIControlStateNormal];
+    [_fiftyFiftyButton setBackgroundImage:[UIImage imageNamed:@"fifty"] forState:UIControlStateNormal];
+    
 
     // questionProvider and imageProvider
     _questionProvider = [[QCQuestionProvider alloc] init];
@@ -1788,4 +1796,7 @@ typedef enum {
      ];
 }
 
+- (IBAction)fiftyFiftyButtonHandler:(id)sender {
+    [_popView invokeFiftyFifty];
+}
 @end

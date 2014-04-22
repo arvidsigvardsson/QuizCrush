@@ -23,6 +23,7 @@
 
 @interface QCPopupView : UIView
 
+-(void) invokeFiftyFifty;
 -(void) rightAnswerChosenWithIndex:(NSNumber *) index points:(NSNumber *)points;
 -(void) wrongAnswerIndex:(NSNumber *) chosenIndex correctWasIndex:(NSNumber *) index;
 @property (weak) id <PopupViewDelegate> delegate;

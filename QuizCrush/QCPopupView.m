@@ -189,24 +189,24 @@ typedef enum {
 //
     
     // 50/50
-    UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
-    _fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
-    _fiftyButton.center = CGPointMake(self.frame.size.width * 0.75, self.frame.size.height * 0.1);
-    
-    [_fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
-    _fiftyButton.hidden = YES;
-    
-    [_fiftyButton addTarget:self
-                    action:@selector(fiftyButtonHandler:)
-          forControlEvents:UIControlEventTouchUpInside];
-    [self addSubview:_fiftyButton];
-
-    _fiftyXLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width * 0.1, self.frame.size.width * 0.13)];
-    _fiftyXLabel.center = CGPointMake(self.frame.size.width * 0.90, self.frame.size.height * 0.1);
-//    _fiftyXLabel.text = @"X 2";
-    _fiftyXLabel.hidden = YES;
-    [self addSubview:_fiftyXLabel];
+//    UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
+//    _fiftyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    _fiftyButton.frame = CGRectMake(0, 0, self.frame.size.width * 0.13, self.frame.size.width * 0.13);
+//    _fiftyButton.center = CGPointMake(self.frame.size.width * 0.75, self.frame.size.height * 0.1);
+//    
+//    [_fiftyButton setBackgroundImage:fiftyImage forState:UIControlStateNormal];
+//    _fiftyButton.hidden = YES;
+//    
+//    [_fiftyButton addTarget:self
+//                    action:@selector(fiftyButtonHandler:)
+//          forControlEvents:UIControlEventTouchUpInside];
+//    [self addSubview:_fiftyButton];
+//
+//    _fiftyXLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width * 0.1, self.frame.size.width * 0.13)];
+//    _fiftyXLabel.center = CGPointMake(self.frame.size.width * 0.90, self.frame.size.height * 0.1);
+////    _fiftyXLabel.text = @"X 2";
+//    _fiftyXLabel.hidden = YES;
+//    [self addSubview:_fiftyXLabel];
     
     return self;
 }
@@ -269,19 +269,19 @@ typedef enum {
     
     [_categoryView setImage:[self.delegate provideCategoryImage]];
 
-    if ([numberOfFiftyFifty intValue] >= 2) {
-        _fiftyButton.hidden = NO;
-        _fiftyXLabel.hidden = NO;
-        _fiftyXLabel.text = [NSString stringWithFormat:@"X %@", numberOfFiftyFifty];
-    }
-    else if ([numberOfFiftyFifty intValue] == 1) {
-        _fiftyButton.hidden = NO;
-        _fiftyXLabel.hidden = YES;
-    }
-    else if ([numberOfFiftyFifty intValue] <= 0) {
-        _fiftyButton.hidden = YES;
-        _fiftyXLabel.hidden = YES;
-    }
+//    if ([numberOfFiftyFifty intValue] >= 2) {
+//        _fiftyButton.hidden = NO;
+//        _fiftyXLabel.hidden = NO;
+//        _fiftyXLabel.text = [NSString stringWithFormat:@"X %@", numberOfFiftyFifty];
+//    }
+//    else if ([numberOfFiftyFifty intValue] == 1) {
+//        _fiftyButton.hidden = NO;
+//        _fiftyXLabel.hidden = YES;
+//    }
+//    else if ([numberOfFiftyFifty intValue] <= 0) {
+//        _fiftyButton.hidden = YES;
+//        _fiftyXLabel.hidden = YES;
+//    }
     
     //if (fiftyFifty) {
 //        UIImage *fiftyImage = [UIImage imageNamed:@"fifty"];
@@ -358,11 +358,10 @@ typedef enum {
     
 }
 
--(void) fiftyButtonHandler:(id) sender {
-//    UIButton * button = (UIButton *) sender;
-//    button.enabled = NO;
-//    [button removeFromSuperview];
-    [self.delegate decreaseFiftyFifty];
+- (void)invokeFiftyFifty {
+    if (self.hidden) {
+        return;
+    }
     
     NSSet *set = [self.delegate answerButtonsToDisableFiftyFifty];
     
@@ -373,7 +372,7 @@ typedef enum {
                          for (NSNumber *index in set) {
                              [_buttonArray[[index intValue]] setAlpha:0];
                          }
-
+                         
                      }
                      completion:^(BOOL completion) {
                          for (NSNumber *index in set) {
@@ -381,10 +380,20 @@ typedef enum {
                          }
                      }
      ];
-    
-    
-    
 }
+
+//-(void) fiftyButtonHandler:(id) sender {
+////    UIButton * button = (UIButton *) sender;
+////    button.enabled = NO;
+////    [button removeFromSuperview];
+//    [self.delegate decreaseFiftyFifty];
+//    
+//    [self invokeFiftyFifty];
+//    
+//    
+//    
+//}
+
 
 
 @end
