@@ -1197,6 +1197,7 @@ typedef enum {
                          [popOverAnimatingView removeFromSuperview];
                      }];
 
+    _boosterState = NONE;
 }
 
 -(void) bombBoosterHandling:(NSNumber *) tileTouched {

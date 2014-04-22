@@ -212,6 +212,12 @@ typedef enum {
 }
 
 -(void) buttonHandler:(id) sender {
+    // deactivate buttons after answer has been given
+    for (UIButton *deButton in _buttonArray) {
+        deButton.enabled = NO;
+    }
+    
+    
     UIButton *button = (UIButton *) sender;
 //    NSLog(@"Knapptyryck från %ld", button.tag);
     
@@ -241,6 +247,7 @@ typedef enum {
 -(void) resetAndLoadQuestionStrings:(QCQuestion *) question withFiftyFifty:(NSNumber *) numberOfFiftyFifty {
     self.alpha = 1.0;
     for (UIButton *button in _buttonArray) {
+        button.enabled = YES;
         button.backgroundColor = _buttonColor;
         button.hidden = NO;
         button.alpha = 1;
