@@ -65,6 +65,7 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UIButton *fiftyFiftyButton;
 - (IBAction)fiftyFiftyButtonHandler:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
+@property BOOL fiftyUsed;
 
 @end
 
@@ -193,6 +194,11 @@ typedef enum {
 }
 
 -(void) questionAnimationCompleted {
+//    if (_numberOfFiftyFiftyBoosters >= 1) {
+//        _fiftyFiftyButton.hidden = NO;
+//    }
+    
+    
     NSNumber *booster = nil;
     if (_answerWasCorrect) {
         if ([_tilesTouched count] >= 5) {
@@ -204,27 +210,11 @@ typedef enum {
         }
     }
     
+    // not sure if this should be here...
+    _fiftyUsed = NO;
+    [self updateFiftyButtonState];
     
-//    BOOL booster;
-//    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for bomb booster"] intValue] && _answerWasCorrect) {
-//        booster = YES;
-//    } else {
-//        booster = NO;
-//    }
-//    if ([_tilesTouched count] >= [_uiSettingsDictionary[@"Tiles required for fifty fifty"] intValue] && _answerWasCorrect) {
-//        _numberOfFiftyFiftyBooster = YES;
-//    }
-    
-    //    [self performAndAnimateSuctionMoves:_suctionMoveArray];
-//    [self performAndAnimateSuctionMoves:_suctionMoveArray withBooster:booster];
-//    [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-
     [self swipeDeleteTiles:_tilesTouched withBooster:booster];
-    
-//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-//        [self gameOver];
-//    }
-
 }
 
 -(NSSet *) answerButtonsToDisableFiftyFifty {
@@ -287,7 +277,7 @@ typedef enum {
     // game play variables etc
     _score = 0;
     _numberOfMovesMade = 0;
-    _numberOfFiftyFiftyBoosters = 3;
+    _numberOfFiftyFiftyBoosters = 0;
 
 }
 
@@ -357,6 +347,8 @@ typedef enum {
 //    _fiftyFiftyButton.imageView.image = [UIImage imageNamed:@"fifty"];
     [_fiftyFiftyButton setTitle:@"" forState:UIControlStateNormal];
     [_fiftyFiftyButton setBackgroundImage:[UIImage imageNamed:@"fifty"] forState:UIControlStateNormal];
+    _fiftyFiftyButton.hidden = YES;
+//    _fiftyXLabel.textColor = [UIColor greenColor];
     
 
     // questionProvider and imageProvider
@@ -538,15 +530,6 @@ typedef enum {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
         int y = [newTile.y intValue];
-        //
-//        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-//        newView.layer.cornerRadius = 17.0;
-//        newView.layer.masksToBounds = YES;
-//        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
-//        
-//        UIColor *color = _colorArray[[category intValue]];
-//        
-//        [newView setBackgroundColor:color];
         
         UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
         [_viewDictionary setObject:newView
@@ -1796,7 +1779,29 @@ typedef enum {
      ];
 }
 
+- (void)updateFiftyButtonState {
+    if (_numberOfFiftyFiftyBoosters >= 1) {
+        _fiftyFiftyButton.hidden = NO;
+    } else {
+        _fiftyFiftyButton.hidden = YES;
+    }
+    
+    if (_numberOfFiftyFiftyBoosters >= 2) {
+        _fiftyXLabel.text = [NSString stringWithFormat:@"X %d", _numberOfFiftyFiftyBoosters];
+        _fiftyXLabel.hidden = NO;
+    } else {
+        _fiftyXLabel.hidden = YES;
+    }
+}
+
 - (IBAction)fiftyFiftyButtonHandler:(id)sender {
+    if (!_popOverIsActive || _fiftyUsed) {
+        return;
+    }
+    _fiftyUsed = YES;
     [_popView invokeFiftyFifty];
+    _numberOfFiftyFiftyBoosters -= 1;
+    
+    [self updateFiftyButtonState];
 }
 @end
