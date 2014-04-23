@@ -1721,6 +1721,7 @@ typedef enum {
     [self resetGameplayVariables];
     [self resetMessages];
     [self resetState];
+    [self updateFiftyButtonState];
     
     
     NSMutableSet *selectionSet = [[NSMutableSet alloc] init];
