@@ -18,7 +18,8 @@
                            @4 : @"science",
                            @5 : @"sports",
                            @7 : @"bomb",
-                           @8 : @"color-wheel"};
+                           @8 : @"color-wheel",
+                           @9 : @"owl"};
     
     UIImage *image = [UIImage imageNamed:dict[category]];
     UIImageView *view = [[UIImageView alloc] initWithImage:image];

@@ -11,7 +11,7 @@
 	<key>Falling animation duration</key>
 	<real>0.4</real>
 	<key>Number of categories</key>
-	<integer>6</integer>
+	<integer>2</integer>
 	<key>Number of tiles swiped required</key>
 	<integer>2</integer>
 	<key>Alpha of selected tile</key>

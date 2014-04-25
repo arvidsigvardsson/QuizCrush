@@ -336,7 +336,12 @@ typedef enum {
     _numberOfColumns = _uiSettingsDictionary[@"Number of columns"];
     _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
 
-    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
+//    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
+    // avatar instead
+    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithAvatarRows:_numberOfRows Columns:_numberOfColumns];
+    
+    
+    
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
     [self resetGameplayVariables];
@@ -370,8 +375,13 @@ typedef enum {
 //    [_holderView addGestureRecognizer:suctionPanRecognizer];
 
     // swipe delete pan handler
-    UIPanGestureRecognizer *swipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDeletePanHandler:)];
-    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
+//    UIPanGestureRecognizer *swipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDeletePanHandler:)];
+//    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
+    
+    // move avatar pan handler
+    UIPanGestureRecognizer *avatarPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+                                                                                          action:@selector(avatarPanHandler:)];
+    [_holderView addGestureRecognizer:avatarPanRecognizer];
     
     // tap action for boosters
     UITapGestureRecognizer *boosterTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(boosterTapHandler:)];
@@ -924,6 +934,91 @@ typedef enum {
 
     //    NSLog(@"Tiles touched: %@", _tilesTouched);
 
+}
+
+-(void) avatarPanHandler:(UIPanGestureRecognizer *) recognizer {
+    if (_animating) {
+        return;
+    }
+    if (_popOverIsActive) {
+        return;
+    }
+    
+    _changeCategoryBoosterIsActive = NO;
+    _bombBoosterIsActive = NO;
+    
+    CGPoint point = [recognizer locationInView:_holderView];
+    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+                                            numberOfRows:_numberOfRows
+                                         numberOfColumns:_numberOfColumns
+                                           lengthOfSides:_lengthOfTile];
+    NSNumber *x = touchPoint[@"x"];
+    NSNumber *y = touchPoint[@"y"];
+    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+    //    NSLog(@"Touchpoint: %@", touchPoint);
+    
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        [self unMarkTiles:_tilesTouched];
+        [_tilesTouched removeAllObjects];
+//        [_suctionMoveArray removeAllObjects];
+
+        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        
+        // make sure swipe starts on avatar
+        if (![[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@9]) {
+            _vaildSwipe = NO;
+            return;
+        }
+        
+        _vaildSwipe = YES;
+        
+        [_tilesTouched removeAllObjects];
+        
+//        [_tilesTouched addObject:_currentTileTouched];
+        _matchingTiles = nil;
+        
+//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+//        [self markTiles:_tilesTouched];
+    }
+    
+    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+        if (!_vaildSwipe) {
+            return;
+        }
+        
+        // make sure booster is not swiped
+        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+            return;
+        }
+        
+        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+            return;
+        }
+        
+        if (!_matchingTiles) {
+            _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:newTileTouched];
+        }
+        
+        if (![_matchingTiles member:newTileTouched]) {
+            _vaildSwipe = NO;
+            //            if (_moveArray) {
+            //                [self abortSwipeWithMoves:_moveArray];
+            //            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            return;
+        }
+        
+        [_tilesTouched addObject:newTileTouched];
+        
+        [self markTiles:_tilesTouched];
+    }
+    
+    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        [self unMarkTiles:_tilesTouched];
+    }
 }
 
 -(void) swipeDeletePanHandler:(UIPanGestureRecognizer *) recognizer {

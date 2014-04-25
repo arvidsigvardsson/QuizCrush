@@ -117,6 +117,41 @@
     return self;
 }
 
+-(id) initWithAvatarRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns{
+    if(!(self = [super init])){
+        return self;
+    }
+    _currentID = 0;
+    _numberOfRows = numberOfRows;
+    _numberOfColumns = numberOfColumns;
+    _tileDict = [[NSMutableDictionary alloc] init];
+    
+    for (int i = 0; i < [numberOfRows intValue] * [numberOfColumns intValue]; i++) {
+        NSNumber *x = [NSNumber numberWithInt:i % [numberOfColumns intValue]];
+        NSNumber *y = [NSNumber numberWithInt:i / [numberOfColumns intValue]];
+        
+        QCTile *tile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                     iD:[self nextID]
+                                                      x:x
+                                                      y:y];
+        [_tileDict setObject:tile forKey:tile.iD];
+        
+    }
+    
+    // find spot for avatar in "center"
+    int aX = [numberOfColumns intValue] / 2;
+    int aY = [numberOfRows intValue] / 2;
+    
+    QCTile *avatar = [self tileAtX:@(aX) Y:@(aY)];
+    avatar.category = @9;
+    
+    return self;
+
+}
+
+
+
+
 -(NSDictionary *) returnPlayingField {
     return _tileDict;
 }
@@ -788,5 +823,21 @@
         tile.category = category;
     }
 }
+
+-(void) swapPositionsOfTile:(NSNumber *) firstID
+                    andTile:(NSNumber *) secondID {
+    QCTile *firstTile = _tileDict[firstID];
+    QCTile *secondTile = _tileDict[secondID];
+    
+    int tempX = [firstTile.x intValue];
+    int tempY = [secondTile.y intValue];
+    
+    firstTile.x = secondTile.x;
+    firstTile.y = secondTile.y;
+    
+    secondTile.x = @(tempX);
+    secondTile.y = @(tempY);
+}
+
 
 @end

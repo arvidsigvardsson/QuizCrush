@@ -16,26 +16,33 @@
 -(NSDictionary *) returnPlayingField;
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
 -(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
+-(id) initWithAvatarRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD;
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(NSNumber *) IDOfTileDuringMotionAtX:(NSNumber *) x Y:(NSNumber *) y;
 -(QCTile *) tileWithID:(NSNumber *) iD;
 -(NSDictionary *) removeAndReturnVerticalTranslations:(NSSet *) removeSet;
--(NSSet *) getNewTilesReplacing:(NSSet *) set excludingCategory:(NSNumber *) excludeCategory withBooster:(NSNumber *) booster;
+-(NSSet *) getNewTilesReplacing:(NSSet *) set
+              excludingCategory:(NSNumber *) excludeCategory
+                    withBooster:(NSNumber *) booster;
 -(BOOL) tilesAreAdjacentID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
--(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID InDirection:(NSString *) direction;
+-(QCMoveDescription *) takeOneStepAndReturnMoveForID:(NSNumber *) tileID
+                                         InDirection:(NSString *) direction;
 -(NSDictionary *) positionOneStepFromID:(NSNumber *) ID inDirection:(NSString *) direction;
 -(NSString *) directionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
 -(void) deleteTiles:(NSSet *) IDsToDelete;
 -(void) updateModelWithMoves:(NSArray *) moveArray;
 -(void) swipeWasAbortedWithMoves:(NSArray *) moveArray;
 -(QCSuctionMove *) takeFirstSuctionStepFrom:(NSNumber *) startID inDirection:(NSString *) direction;
--(QCSuctionMove *) takeNewSuctionStepFromID:(NSNumber *) startID WithMove:(QCSuctionMove *) suctionMove inDirection:(NSString *) direction;
+-(QCSuctionMove *) takeNewSuctionStepFromID:(NSNumber *) startID WithMove:(QCSuctionMove *) suctionMove
+                                inDirection:(NSString *) direction;
 -(void) suctionSwipeWasAbortedWithMoves:(NSArray *) moveArray;
 -(void) updateModelWithSuctionMoves:(NSArray *) moves;
 -(NSNumber *) changeHeadOfSnakeToBoosterAndReturnItForMove:(QCSuctionMove *) move;
 -(void) changeToBoosterForID:(NSNumber *) ID;
 -(void) changeTiles:(NSSet *)set toCategory:(NSNumber *) category;
+-(void) swapPositionsOfTile:(NSNumber *) firstID
+                    andTile:(NSNumber *) secondID;
 
 @end
