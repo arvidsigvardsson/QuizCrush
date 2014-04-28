@@ -1052,7 +1052,7 @@ typedef enum {
     }
     
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        [self unMarkTiles:_tilesTouched];
+//        [self unMarkTiles:_tilesTouched];
         
         if (!_vaildSwipe) {
             return;
@@ -1332,7 +1332,7 @@ typedef enum {
             break;
         }
         case BOMB: {
-            if ([category isEqualToNumber:@7]) {
+            if ([category isEqualToNumber:@7] || [category isEqualToNumber:@9]) {
                 _boosterState = NONE;
                 return;
             } else if ([category isEqualToNumber:@8]) {
@@ -1346,7 +1346,7 @@ typedef enum {
             break;
         }
         case CHANGE_CAT: {
-            if ([category isEqualToNumber:@8]) {
+            if ([category isEqualToNumber:@8] || [category isEqualToNumber:@9]) {
                 _boosterState = NONE;
                 return;
             } else if ([category isEqualToNumber:@7]) {
