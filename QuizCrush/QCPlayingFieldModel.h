@@ -44,5 +44,7 @@
 -(void) changeTiles:(NSSet *)set toCategory:(NSNumber *) category;
 -(void) swapPositionsOfTile:(NSNumber *) firstID
                     andTile:(NSNumber *) secondID;
+-(void) switchTileToAvatar:(NSNumber *) ID;
+-(NSNumber *) IDOfAvatar;
 
 @end

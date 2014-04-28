@@ -301,6 +301,22 @@ typedef enum {
 
 }
 
+- (void)seedAvatar
+{
+    NSNumber *avatarID = [_playingFieldModel iDOfTileAtX:@([_numberOfColumns intValue] / 2) Y: @([_numberOfRows intValue] / 2)];
+    [_playingFieldModel switchTileToAvatar:avatarID];
+//    QCTile *avatarTile = [_playingFieldModel tileWithID:avatarID];
+//    
+//    UIView *view = _viewDictionary[avatarID];
+//    [view removeFromSuperview];
+//    UIView *avatarView = [self tileViewCreatorXIndex:[avatarTile.x intValue]
+//                                              yIndex:[avatarTile.y intValue]
+//                                                  iD:avatarID];
+//    [_holderView addSubview:avatarView];
+//    [_viewDictionary setObject:avatarView forKey:avatarID];
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -336,10 +352,8 @@ typedef enum {
     _numberOfColumns = _uiSettingsDictionary[@"Number of columns"];
     _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
 
-//    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
-    // avatar instead
-    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithAvatarRows:_numberOfRows Columns:_numberOfColumns];
-    
+    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
+    [self seedAvatar];
     
     
     _viewDictionary = [[NSMutableDictionary alloc] init];
@@ -1004,21 +1018,69 @@ typedef enum {
         
         if (![_matchingTiles member:newTileTouched]) {
             _vaildSwipe = NO;
+            [self unMarkTiles:_tilesTouched];
             //            if (_moveArray) {
             //                [self abortSwipeWithMoves:_moveArray];
             //            }
 //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
-        
+        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+            _vaildSwipe = NO;
+            //            if (_moveArray) {
+            //                [self abortSwipeWithMoves:_moveArray];
+            //            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            return;
+        }
+
         [_tilesTouched addObject:newTileTouched];
         
         [self markTiles:_tilesTouched];
+        
+        _currentTileTouched = newTileTouched;
     }
     
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
         [self unMarkTiles:_tilesTouched];
+        
+        if (!_vaildSwipe) {
+            return;
+        }
+        
+        NSLog(@"current tile touched: %@", _currentTileTouched);
+        UIView *destinationView = _viewDictionary[_currentTileTouched];
+        UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
+        [_holderView bringSubviewToFront:avatarView];
+        
+        [UIView animateWithDuration:1
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^ {
+//                             avatarView.alpha = 0;
+                             avatarView.center = destinationView.center;
+//                             avatarView.center = CGPointMake(0, 0);
+                         }
+                         completion:^(BOOL finished) {
+                             [destinationView removeFromSuperview];
+//                             [self finishAvatarSwipe];
+                             [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
+
+
+                         }
+         ];
+        
     }
+}
+
+-(void) finishAvatarSwipe {
+    NSLog(@"Spelplan innan delete:\n%@", _playingFieldModel);
+    [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
+    NSLog(@"Spelplan efter swap:\n%@", _playingFieldModel);
+    [_tilesTouched addObject:_currentTileTouched];
+    [self swipeDeleteTiles:_tilesTouched withBooster:nil];
+    NSLog(@"Spelplan efter delete:\n%@", _playingFieldModel);
 }
 
 -(void) swipeDeletePanHandler:(UIPanGestureRecognizer *) recognizer {
@@ -1148,15 +1210,6 @@ typedef enum {
         
         [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
     }
-//    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
-////        [self abortSwipeWithMoves:_moveArray];
-//    }
-//    else if (recognizer.state == UIGestureRecognizerStateFailed) {
-//        [self abortSwipeWithMoves:_moveArray];
-//    }
-    
-    //    NSLog(@"Tiles touched: %@", _tilesTouched);
-    
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
@@ -1818,7 +1871,7 @@ typedef enum {
     [self resetState];
     [self updateFiftyButtonState];
     
-    
+    // select all tiles
     NSMutableSet *selectionSet = [[NSMutableSet alloc] init];
     for (NSNumber *selectKey in _viewDictionary) {
         [selectionSet addObject:selectKey];
@@ -1829,20 +1882,12 @@ typedef enum {
     //    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:NO];
     
+    
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
         int y = [newTile.y intValue];
-        //
-        //        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        //        newView.layer.cornerRadius = 17.0;
-        //        newView.layer.masksToBounds = YES;
-        //        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
-        //
-        //        UIColor *color = _colorArray[[category intValue]];
-        //
-        //        [newView setBackgroundColor:color];
-        
+
         UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
         [_viewDictionary setObject:newView
                             forKey:addNewKey];
@@ -1853,6 +1898,7 @@ typedef enum {
     // dict with ids of tiles to move, with their corresponding moves
     NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
     
+    
     for (NSNumber *key in selectionSet) {
         UIView * view = _viewDictionary[key];
         //        [view setBackgroundColor:[UIColor blackColor]];
@@ -1860,7 +1906,21 @@ typedef enum {
         [_viewDictionary removeObjectForKey:key];
     }
     
+    [self seedAvatar];
+    NSNumber *avatarID = [_playingFieldModel IDOfAvatar];
+    QCTile *avatarTile = [_playingFieldModel tileWithID:avatarID];
+    
+    UIView *view = _viewDictionary[avatarID];
+    [view removeFromSuperview];
+    UIView *avatarView = [self tileViewCreatorXIndex:[avatarTile.x intValue]
+                                              yIndex:[avatarTile.y intValue] - [_numberOfRows intValue]
+                                                  iD:avatarID];
+    [_holderView addSubview:avatarView];
+    [_viewDictionary setObject:avatarView forKey:avatarID];
+
+    
     _animating = YES;
+    
     
     [UIView animateWithDuration:1
                      animations:^{

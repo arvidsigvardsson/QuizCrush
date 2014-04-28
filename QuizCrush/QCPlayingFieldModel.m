@@ -15,12 +15,14 @@
 @property NSNumber *numberOfRows;
 @property NSNumber *numberOfColumns;
 @property int currentID;
+@property NSNumber *avatar;
+
 @end
 
 @implementation QCPlayingFieldModel
 
 -(NSString *) description {
-//    return [self playingfieldAsString];
+    return [self playingfieldAsString];
     
     
     NSMutableString *string = [[NSMutableString alloc] init];
@@ -144,6 +146,7 @@
     
     QCTile *avatar = [self tileAtX:@(aX) Y:@(aY)];
     avatar.category = @9;
+    _avatar = avatar.iD;
     
     return self;
 
@@ -830,7 +833,7 @@
     QCTile *secondTile = _tileDict[secondID];
     
     int tempX = [firstTile.x intValue];
-    int tempY = [secondTile.y intValue];
+    int tempY = [firstTile.y intValue];
     
     firstTile.x = secondTile.x;
     firstTile.y = secondTile.y;
@@ -839,5 +842,14 @@
     secondTile.y = @(tempY);
 }
 
+-(NSNumber *) IDOfAvatar {
+    return _avatar;
+}
+
+-(void) switchTileToAvatar:(NSNumber *) ID {
+    QCTile *tile = _tileDict[ID];
+    tile.category = @9;
+    _avatar = ID;
+}
 
 @end
