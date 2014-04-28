@@ -13,6 +13,14 @@
 
 @interface QCPlayingFieldModel : NSObject
 
+typedef enum {
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    NO_DIRECTION
+} Direction;
+
 -(NSDictionary *) returnPlayingField;
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
 -(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
@@ -46,5 +54,6 @@
                     andTile:(NSNumber *) secondID;
 -(void) switchTileToAvatar:(NSNumber *) ID;
 -(NSNumber *) IDOfAvatar;
+-(Direction) enumDirectionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
 
 @end

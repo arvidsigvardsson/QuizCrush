@@ -66,6 +66,7 @@ typedef enum {
 - (IBAction)fiftyFiftyButtonHandler:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
 @property BOOL fiftyUsed;
+@property NSMutableArray *avatarMovement;
 
 @end
 
@@ -353,8 +354,10 @@ typedef enum {
     _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
-    [self seedAvatar];
     
+    // for avatar
+    [self seedAvatar];
+    _avatarMovement = [[NSMutableArray alloc] init];
     
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
@@ -988,13 +991,11 @@ typedef enum {
         
         _vaildSwipe = YES;
         
-        [_tilesTouched removeAllObjects];
-        
-//        [_tilesTouched addObject:_currentTileTouched];
         _matchingTiles = nil;
         
-//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
-//        [self markTiles:_tilesTouched];
+        [_tilesTouched removeAllObjects];
+
+        [_avatarMovement removeAllObjects];
     }
     
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
@@ -1025,6 +1026,7 @@ typedef enum {
 //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
             return;
         }
+        
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
             _vaildSwipe = NO;
             //            if (_moveArray) {
@@ -1034,10 +1036,18 @@ typedef enum {
             return;
         }
 
+        // prevent player from moving backwards
+        if ([_tilesTouched member:newTileTouched]) {
+            _vaildSwipe = NO;
+            return;
+        }
+        
         [_tilesTouched addObject:newTileTouched];
         
         [self markTiles:_tilesTouched];
-        
+        Direction direction = [_playingFieldModel enumDirectionFromID:_currentTileTouched
+                                                                 toID:newTileTouched];
+        [_avatarMovement addObject:@(direction)];
         _currentTileTouched = newTileTouched;
     }
     
@@ -1048,10 +1058,13 @@ typedef enum {
             return;
         }
         
-        NSLog(@"current tile touched: %@", _currentTileTouched);
+//        NSLog(@"current tile touched: %@", _currentTileTouched);
         UIView *destinationView = _viewDictionary[_currentTileTouched];
         UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
         [_holderView bringSubviewToFront:avatarView];
+        
+        // log avatar movement
+        NSLog(@"Avatar movement: %@", _avatarMovement);
         
         [UIView animateWithDuration:1
                               delay:0

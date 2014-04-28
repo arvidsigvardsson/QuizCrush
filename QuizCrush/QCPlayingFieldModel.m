@@ -610,6 +610,41 @@
     }
 }
 
+-(Direction) enumDirectionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd {
+    QCTile *startTile = [self tileWithID:IDStart];
+    QCTile *endTile = [self tileWithID:IDEnd];
+    if(!startTile || !endTile || [IDStart isEqualToNumber:IDEnd]) {
+        return NO_DIRECTION;
+    }
+    
+    int startX = [startTile.x intValue];
+    int startY = [startTile.y intValue];
+    int endX = [endTile.x intValue];
+    int endY = [endTile.y intValue];
+    
+    if (startX == endX) {
+        if (startY > endY) {
+            return UP;
+        } else if (startY < endY) {
+            return DOWN;
+        } else {
+            return NO_DIRECTION;
+        }
+    } else if (startY == endY) {
+        if (startX < endX) {
+            return RIGHT;
+        } else if (startX > endX) {
+            return LEFT;
+        } else {
+            return NO_DIRECTION;
+        }
+    } else {
+        return NO_DIRECTION;
+    }
+
+}
+
+
 -(void) deleteTiles:(NSSet *) IDsToDelete {
     if (!IDsToDelete) {
         return;
