@@ -1059,32 +1059,103 @@ typedef enum {
         }
         
 //        NSLog(@"current tile touched: %@", _currentTileTouched);
-        UIView *destinationView = _viewDictionary[_currentTileTouched];
+//        UIView *destinationView = _viewDictionary[_currentTileTouched];
         UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
         [_holderView bringSubviewToFront:avatarView];
         
         // log avatar movement
         NSLog(@"Avatar movement: %@", _avatarMovement);
         
-        [UIView animateWithDuration:1
-                              delay:0
-                            options:UIViewAnimationOptionCurveLinear
-                         animations:^ {
-//                             avatarView.alpha = 0;
-                             avatarView.center = destinationView.center;
-//                             avatarView.center = CGPointMake(0, 0);
-                         }
-                         completion:^(BOOL finished) {
-                             [destinationView removeFromSuperview];
-//                             [self finishAvatarSwipe];
-                             [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
-                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
-
-
-                         }
-         ];
+        [self recursionAvatarAnimation:0];
+        
+//        [UIView animateWithDuration:1
+//                              delay:0
+//                            options:UIViewAnimationOptionCurveLinear
+//                         animations:^ {
+////                             avatarView.alpha = 0;
+//                             avatarView.center = destinationView.center;
+////                             avatarView.center = CGPointMake(0, 0);
+//                         }
+//                         completion:^(BOOL finished) {
+//                             [destinationView removeFromSuperview];
+////                             [self finishAvatarSwipe];
+//                             [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+//                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
+//
+//
+//                         }
+//         ];
         
     }
+}
+
+-(void) recursionAvatarAnimation:(int) index {
+//    CGPoint newCenter;
+    float deltaX, deltaY;
+    UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
+    
+    Direction direction = [_avatarMovement[index] intValue];
+    
+    switch (direction) {
+        case UP: {
+            deltaX = 0;
+            deltaY =-_lengthOfTile;
+            break;
+        }
+        case DOWN: {
+            deltaX = 0;
+            deltaY = _lengthOfTile;
+            break;
+        }
+        case RIGHT: {
+            deltaX = _lengthOfTile;
+            deltaY = 0;
+            break;
+        }
+        case LEFT: {
+            deltaX = -_lengthOfTile;
+            deltaY = 0;
+            break;
+        }
+        case NO_DIRECTION: {
+            [NSException raise:@"Avatar must move in a specified direction" format:@"Avatar must move in a specified direction"];
+        }
+    }
+    
+    CGPoint newCenter = CGPointMake(avatarView.center.x + deltaX,
+                                    avatarView.center.y + deltaY);
+    
+    NSTimeInterval duration;
+    NSUInteger options;
+    if (index == [_avatarMovement count] - 1) {
+        duration = 0.6;
+        options = UIViewAnimationOptionCurveEaseOut;
+    } else {
+        duration = 0.3;
+        options = UIViewAnimationOptionCurveLinear;
+    }
+    
+    [UIView animateWithDuration:duration
+                          delay:0
+                        options:options
+                     animations:^ {
+                         avatarView.center = newCenter;
+                     }
+                     completion:^(BOOL finished) {
+                         if (index < ([_avatarMovement count] - 1)) {
+                             [self recursionAvatarAnimation:index + 1];
+                         } else {
+                             UIView *destinationView = _viewDictionary[_currentTileTouched];
+                             [destinationView removeFromSuperview];
+                             [self launchPopOverFromID:_currentTileTouched
+                                             withColor:[UIColor redColor]];
+                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar]
+                                                             andTile:_currentTileTouched];
+                             
+
+                         }
+                     }
+     ];
 }
 
 -(void) finishAvatarSwipe {
