@@ -44,7 +44,7 @@ typedef enum {
 @property NSArray *colorArray;
 @property NSNumber *tilesRequiredToMatch;
 @property BOOL animating;
-@property BOOL vaildSwipe;
+@property BOOL validSwipe;
 @property NSMutableSet *tilesTouched;
 @property NSSet *matchingTiles;
 @property NSNumber *currentTileTouched;
@@ -794,7 +794,7 @@ typedef enum {
         [_suctionMoveArray removeAllObjects];
 
 
-        _vaildSwipe = YES;
+        _validSwipe = YES;
         //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
 
@@ -803,7 +803,7 @@ typedef enum {
     }
 
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             return;
         }
 
@@ -817,7 +817,7 @@ typedef enum {
             return;
         }
         if (![_matchingTiles member:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
 //            if (_moveArray) {
 //                [self abortSwipeWithMoves:_moveArray];
 //            }
@@ -830,7 +830,7 @@ typedef enum {
         _messageLabel.hidden = YES;
 
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
 //            if (_moveArray) {
 //                [self abortSwipeWithMoves:_moveArray];
 //            }
@@ -843,7 +843,7 @@ typedef enum {
 //                [self abortSwipeWithMoves:_moveArray];
 //            }
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             return;
         }
         // prevent stepping on tail
@@ -851,7 +851,7 @@ typedef enum {
         if ([[[_suctionMoveArray lastObject] tailArray] containsObject:testOnTailID]) {
             NSLog(@"Can't hit your own tail!");
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             return;
         }
 
@@ -881,7 +881,7 @@ typedef enum {
 
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
 
@@ -985,11 +985,11 @@ typedef enum {
         
         // make sure swipe starts on avatar
         if (![[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@9]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             return;
         }
         
-        _vaildSwipe = YES;
+        _validSwipe = YES;
         
         _matchingTiles = nil;
         
@@ -999,26 +999,35 @@ typedef enum {
     }
     
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             return;
         }
         
-        // make sure booster is not swiped
-        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
-            return;
-        }
+//        // make sure booster is not swiped
+//        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+//            return;
+//        }
         
         NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
         if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
             return;
         }
         
+        // prevent booster in swipe
+        if ([@[@7, @8] containsObject:[_playingFieldModel categoryOfTileWithID:newTileTouched]]) {
+            _validSwipe = NO;
+            [self unMarkTiles: _tilesTouched];
+            return;
+        }
+
+//        NSLog(@"New tile touched: %@", newTileTouched);
+        
         if (!_matchingTiles) {
             _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:newTileTouched];
         }
         
         if (![_matchingTiles member:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             [self unMarkTiles:_tilesTouched];
             //            if (_moveArray) {
             //                [self abortSwipeWithMoves:_moveArray];
@@ -1028,17 +1037,15 @@ typedef enum {
         }
         
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _vaildSwipe = NO;
-            //            if (_moveArray) {
-            //                [self abortSwipeWithMoves:_moveArray];
-            //            }
-//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            _validSwipe = NO;
+            [self unMarkTiles: _tilesTouched];
             return;
         }
 
         // prevent player from moving backwards
         if ([_tilesTouched member:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
+            [self unMarkTiles:_tilesTouched];
             return;
         }
         
@@ -1054,7 +1061,7 @@ typedef enum {
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
 //        [self unMarkTiles:_tilesTouched];
         
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             return;
         }
         
@@ -1200,7 +1207,7 @@ typedef enum {
         [_suctionMoveArray removeAllObjects];
         
         
-        _vaildSwipe = YES;
+        _validSwipe = YES;
         //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
         
@@ -1210,7 +1217,7 @@ typedef enum {
     }
     
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             return;
         }
         
@@ -1224,7 +1231,7 @@ typedef enum {
             return;
         }
         if (![_matchingTiles member:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             //            if (_moveArray) {
             //                [self abortSwipeWithMoves:_moveArray];
             //            }
@@ -1237,7 +1244,7 @@ typedef enum {
         _messageLabel.hidden = YES;
         
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             //            if (_moveArray) {
             //                [self abortSwipeWithMoves:_moveArray];
             //            }
@@ -1250,7 +1257,7 @@ typedef enum {
             //                [self abortSwipeWithMoves:_moveArray];
             //            }
             [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             return;
         }
                _currentTileTouched = newTileTouched;
@@ -1260,7 +1267,7 @@ typedef enum {
         
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
             
@@ -1473,7 +1480,7 @@ typedef enum {
         [_tilesTouched removeAllObjects];
         [_moveArray removeAllObjects];
 
-        _vaildSwipe = YES;
+        _validSwipe = YES;
 //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
         _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
 
@@ -1489,7 +1496,7 @@ typedef enum {
 //        NSLog(@"State began, possible matches: %@", _matchingTiles);
     }
     else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             return;
         }
         NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
@@ -1497,14 +1504,14 @@ typedef enum {
             return;
         }
         if (![_matchingTiles member:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             if (_moveArray) {
                 [self abortSwipeWithMoves:_moveArray];
             }
             return;
         }
         if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             if (_moveArray) {
                 [self abortSwipeWithMoves:_moveArray];
             }
@@ -1515,7 +1522,7 @@ typedef enum {
             if (_moveArray) {
                 [self abortSwipeWithMoves:_moveArray];
             }
-            _vaildSwipe = NO;
+            _validSwipe = NO;
             return;
         }
         // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
@@ -1540,7 +1547,7 @@ typedef enum {
 
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_vaildSwipe) {
+        if (!_validSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
 
