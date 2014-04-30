@@ -67,6 +67,7 @@ typedef enum {
 @property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
 @property BOOL fiftyUsed;
 @property NSMutableArray *avatarMovement;
+@property int animatingCount;
 
 @end
 
@@ -215,7 +216,8 @@ typedef enum {
     _fiftyUsed = NO;
     [self updateFiftyButtonState];
     
-    [self swipeDeleteTiles:_tilesTouched withBooster:booster];
+//    [self swipeDeleteTiles:_tilesTouched withBooster:booster];
+    [self swipeFallingDeleteTiles:_tilesTouched withBooster:booster];
 }
 
 -(NSSet *) answerButtonsToDisableFiftyFifty {
@@ -550,6 +552,75 @@ typedef enum {
     }];
 }
 
+-(void) swipeFallingDeleteTiles:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
+    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:booster];
+    
+    for (NSNumber *addNewKey in newTiles) {
+        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
+        int x = [newTile.x intValue];
+        int y = [newTile.y intValue];
+        
+        UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
+        [_viewDictionary setObject:newView
+                            forKey:addNewKey];
+        [_holderView addSubview:newView];
+    }
+    
+    
+    // dict with ids of tiles to move, with their corresponding moves
+    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    
+    for (NSNumber *key in selectionSet) {
+        UIView * view = _viewDictionary[key];
+        //        [view setBackgroundColor:[UIColor blackColor]];
+        [view removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
+    }
+    
+    _animating = YES;
+    
+    _animatingCount = (int)[animateDict count];
+    
+    for (NSNumber *animeTile in animateDict) {
+        [self fallingRecursionAnimationOfTile:animeTile
+                               StepsRemaining:[animateDict[animeTile] intValue]];
+    }
+}
+
+-(void) fallingRecursionAnimationOfTile:(NSNumber *) ID StepsRemaining:(int) steps {
+    UIView *view = _viewDictionary[ID];
+    CGPoint newCenter = CGPointMake(view.center.x, view.center.y + _lengthOfTile);
+    
+    [UIView animateWithDuration:.15
+                          delay:0
+                        options:UIViewAnimationOptionCurveLinear
+                     animations:^ {
+                         view.center = newCenter;
+                     }
+                     completion:^(BOOL finished) {
+                         
+                         NSLog(@"animating count: %d", _animatingCount);
+                         
+                         if (steps > 1) {
+                             [self fallingRecursionAnimationOfTile:ID
+                                                    StepsRemaining:steps - 1];
+                         } else {
+                             _animatingCount -= 1;
+                             if (_animatingCount <= 0) {
+                                 _animating = NO;
+                                 [self checkIfGameOver];
+                             }
+                         }
+                     }
+     ];
+}
+
+- (void)checkIfGameOver {
+    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+        [self gameOver];
+    }
+}
+
 -(void) swipeDeleteTiles:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:booster];
     
@@ -586,9 +657,7 @@ typedef enum {
                          }
                      }completion:^(BOOL finished) {
                          _animating = NO;
-                         if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-                             [self gameOver];
-                         }
+                         [self checkIfGameOver];
 
                      }
      ];
@@ -954,6 +1023,7 @@ typedef enum {
 }
 
 -(void) avatarPanHandler:(UIPanGestureRecognizer *) recognizer {
+    
     if (_animating) {
         return;
     }
@@ -974,6 +1044,10 @@ typedef enum {
     NSNumber *y = touchPoint[@"y"];
     //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
     //    NSLog(@"Touchpoint: %@", touchPoint);
+    
+    NSLog(@"Kategori för tile: %@", [_playingFieldModel categoryOfTileWithID:[_playingFieldModel iDOfTileAtX:x Y:y]]);
+    
+    
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
