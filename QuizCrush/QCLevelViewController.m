@@ -217,7 +217,8 @@ typedef enum {
     [self updateFiftyButtonState];
     
 //    [self swipeDeleteTiles:_tilesTouched withBooster:booster];
-    [self swipeFallingDeleteTiles:_tilesTouched withBooster:booster];
+//    [self swipeFallingDeleteTiles:_tilesTouched withBooster:booster];
+    [self deleteFallingTilesWithSpringForSet:_tilesTouched withBooster:booster];
 }
 
 -(NSSet *) answerButtonsToDisableFiftyFifty {
@@ -241,7 +242,64 @@ typedef enum {
     _numberOfFiftyFiftyBoosters -= 1;
 }
 
-
+-(void) deleteFallingTilesWithSpringForSet:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
+    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:booster];
+    
+    for (NSNumber *addNewKey in newTiles) {
+        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
+        int x = [newTile.x intValue];
+        int y = [newTile.y intValue];
+        
+        UIView *newView = [self tileViewCreatorXIndex:x yIndex:y iD:addNewKey];
+        [_viewDictionary setObject:newView
+                            forKey:addNewKey];
+        [_holderView addSubview:newView];
+    }
+    
+    
+    // dict with ids of tiles to move, with their corresponding moves
+    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+    
+    for (NSNumber *key in selectionSet) {
+        UIView * view = _viewDictionary[key];
+        //        [view setBackgroundColor:[UIColor blackColor]];
+        [view removeFromSuperview];
+        [_viewDictionary removeObjectForKey:key];
+    }
+    
+    _animating = YES;
+    
+    _animatingCount = (int)[animateDict count];
+    
+    double delay = 0;
+    double duration = 0.7;
+    
+    for (NSNumber *animateKey in animateDict) {
+        float steps = [animateDict[animateKey] floatValue];
+        UIView *view = _viewDictionary[animateKey];
+        CGPoint newCenter = CGPointMake(view.center.x, view.center.y + _lengthOfTile * steps);
+        
+        [UIView animateWithDuration:duration * steps
+                              delay:delay
+             usingSpringWithDamping:0.6
+              initialSpringVelocity:0.1
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             view.center = newCenter;
+                         }
+                         completion:^(BOOL finished) {
+                             _animatingCount -= 1;
+                             if (_animatingCount <= 0) {
+                                 _animating = NO;
+                                 [self checkIfGameOver];
+                             }
+                             
+                         }
+         ];
+    }
+    
+    
+}
 
 
 - (UIView *)tileViewCreatorXIndex:(int)xIndex yIndex:(int)yIndex iD:(NSNumber *)iD
@@ -590,29 +648,79 @@ typedef enum {
 -(void) fallingRecursionAnimationOfTile:(NSNumber *) ID StepsRemaining:(int) steps {
     UIView *view = _viewDictionary[ID];
     CGPoint newCenter = CGPointMake(view.center.x, view.center.y + _lengthOfTile);
+//    NSUInteger duration = 0.5;
     
-    [UIView animateWithDuration:.15
-                          delay:0
-                        options:UIViewAnimationOptionCurveLinear
-                     animations:^ {
-                         view.center = newCenter;
-                     }
-                     completion:^(BOOL finished) {
-                         
-                         NSLog(@"animating count: %d", _animatingCount);
-                         
-                         if (steps > 1) {
-                             [self fallingRecursionAnimationOfTile:ID
-                                                    StepsRemaining:steps - 1];
-                         } else {
-                             _animatingCount -= 1;
-                             if (_animatingCount <= 0) {
-                                 _animating = NO;
-                                 [self checkIfGameOver];
+    if (steps == 1) {
+        [UIView animateWithDuration:0.15
+                              delay:0
+             usingSpringWithDamping:0.2
+              initialSpringVelocity:0.8
+                            options:0
+                         animations:^ {
+                             view.center = newCenter;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             NSLog(@"animating count: %d", _animatingCount);
+                             
+                             if (steps > 1) {
+                                 [self fallingRecursionAnimationOfTile:ID
+                                                        StepsRemaining:steps - 1];
+                             } else {
+                                 _animatingCount -= 1;
+                                 if (_animatingCount <= 0) {
+                                     _animating = NO;
+                                     [self checkIfGameOver];
+                                 }
                              }
                          }
-                     }
-     ];
+         ];
+//        [UIView animateWithDuration:1
+//                              delay:0
+//                            options:UIViewAnimationOptionCurveLinear
+//                         animations:^ {
+//                             view.center = newCenter;
+//                         }
+//                         completion:^(BOOL finished) {
+//                             
+//                             NSLog(@"animating count: %d", _animatingCount);
+//                             
+//                             if (steps > 1) {
+//                                 [self fallingRecursionAnimationOfTile:ID
+//                                                        StepsRemaining:steps - 1];
+//                             } else {
+//                                 _animatingCount -= 1;
+//                                 if (_animatingCount <= 0) {
+//                                     _animating = NO;
+//                                     [self checkIfGameOver];
+//                                 }
+//                             }
+//                         }
+//         ];
+    } else {
+        [UIView animateWithDuration:0.15
+                              delay:0
+                            options:UIViewAnimationOptionCurveLinear
+                         animations:^ {
+                             view.center = newCenter;
+                         }
+                         completion:^(BOOL finished) {
+                             
+                             NSLog(@"animating count: %d", _animatingCount);
+                             
+                             if (steps > 1) {
+                                 [self fallingRecursionAnimationOfTile:ID
+                                                        StepsRemaining:steps - 1];
+                             } else {
+                                 _animatingCount -= 1;
+                                 if (_animatingCount <= 0) {
+                                     _animating = NO;
+                                     [self checkIfGameOver];
+                                 }
+                             }
+                         }
+         ];
+    }
 }
 
 - (void)checkIfGameOver {
