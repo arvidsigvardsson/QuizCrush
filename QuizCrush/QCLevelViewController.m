@@ -66,7 +66,7 @@ typedef enum {
 - (IBAction)fiftyFiftyButtonHandler:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
 @property BOOL fiftyUsed;
-@property NSMutableArray *avatarMovement;
+//@property NSMutableArray *avatarMovement;
 @property int animatingCount;
 
 @end
@@ -415,9 +415,9 @@ typedef enum {
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     
-    // for avatar
-    [self seedAvatar];
-    _avatarMovement = [[NSMutableArray alloc] init];
+    // for avatar, now taking it away
+//    [self seedAvatar];
+//    _avatarMovement = [[NSMutableArray alloc] init];
     
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
@@ -452,13 +452,13 @@ typedef enum {
 //    [_holderView addGestureRecognizer:suctionPanRecognizer];
 
     // swipe delete pan handler
-//    UIPanGestureRecognizer *swipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDeletePanHandler:)];
-//    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
+    UIPanGestureRecognizer *swipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDeletePanHandler:)];
+    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
     
     // move avatar pan handler
-    UIPanGestureRecognizer *avatarPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-                                                                                          action:@selector(avatarPanHandler:)];
-    [_holderView addGestureRecognizer:avatarPanRecognizer];
+//    UIPanGestureRecognizer *avatarPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
+//                                                                                          action:@selector(avatarPanHandler:)];
+//    [_holderView addGestureRecognizer:avatarPanRecognizer];
     
     // tap action for boosters
     UITapGestureRecognizer *boosterTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(boosterTapHandler:)];
@@ -1130,222 +1130,222 @@ typedef enum {
 
 }
 
--(void) avatarPanHandler:(UIPanGestureRecognizer *) recognizer {
-    
-    if (_animating) {
-        return;
-    }
-    if (_popOverIsActive) {
-        return;
-    }
-    
-    _changeCategoryBoosterIsActive = NO;
-    _bombBoosterIsActive = NO;
-    
-    CGPoint point = [recognizer locationInView:_holderView];
-    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point
-                                            numberOfRows:_numberOfRows
-                                         numberOfColumns:_numberOfColumns
-                                           lengthOfSides:_lengthOfTile];
-    NSNumber *x = touchPoint[@"x"];
-    NSNumber *y = touchPoint[@"y"];
-    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-    //    NSLog(@"Touchpoint: %@", touchPoint);
-    
-    NSLog(@"Kategori för tile: %@", [_playingFieldModel categoryOfTileWithID:[_playingFieldModel iDOfTileAtX:x Y:y]]);
-    
-    
-    
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        [self unMarkTiles:_tilesTouched];
-        [_tilesTouched removeAllObjects];
-//        [_suctionMoveArray removeAllObjects];
-
-        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
-        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        
-        // make sure swipe starts on avatar
-        if (![[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@9]) {
-            _validSwipe = NO;
-            return;
-        }
-        
-        _validSwipe = YES;
-        
-        _matchingTiles = nil;
-        
-        [_tilesTouched removeAllObjects];
-
-        [_avatarMovement removeAllObjects];
-    }
-    
-    else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_validSwipe) {
-            return;
-        }
-        
-//        // make sure booster is not swiped
-//        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+//-(void) avatarPanHandler:(UIPanGestureRecognizer *) recognizer {
+//    
+//    if (_animating) {
+//        return;
+//    }
+//    if (_popOverIsActive) {
+//        return;
+//    }
+//    
+//    _changeCategoryBoosterIsActive = NO;
+//    _bombBoosterIsActive = NO;
+//    
+//    CGPoint point = [recognizer locationInView:_holderView];
+//    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+//                                            numberOfRows:_numberOfRows
+//                                         numberOfColumns:_numberOfColumns
+//                                           lengthOfSides:_lengthOfTile];
+//    NSNumber *x = touchPoint[@"x"];
+//    NSNumber *y = touchPoint[@"y"];
+//    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+//    //    NSLog(@"Touchpoint: %@", touchPoint);
+//    
+//    NSLog(@"Kategori för tile: %@", [_playingFieldModel categoryOfTileWithID:[_playingFieldModel iDOfTileAtX:x Y:y]]);
+//    
+//    
+//    
+//    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        [self unMarkTiles:_tilesTouched];
+//        [_tilesTouched removeAllObjects];
+////        [_suctionMoveArray removeAllObjects];
+//
+//        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        
+//        // make sure swipe starts on avatar
+//        if (![[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@9]) {
+//            _validSwipe = NO;
 //            return;
 //        }
-        
-        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
-            return;
-        }
-        
-        // prevent booster in swipe
-        if ([@[@7, @8] containsObject:[_playingFieldModel categoryOfTileWithID:newTileTouched]]) {
-            _validSwipe = NO;
-            [self unMarkTiles: _tilesTouched];
-            return;
-        }
+//        
+//        _validSwipe = YES;
+//        
+//        _matchingTiles = nil;
+//        
+//        [_tilesTouched removeAllObjects];
+//
+////        [_avatarMovement removeAllObjects];
+//    }
+//    
+//    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+//        if (!_validSwipe) {
+//            return;
+//        }
+//        
+////        // make sure booster is not swiped
+////        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+////            return;
+////        }
+//        
+//        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+//            return;
+//        }
+//        
+//        // prevent booster in swipe
+//        if ([@[@7, @8] containsObject:[_playingFieldModel categoryOfTileWithID:newTileTouched]]) {
+//            _validSwipe = NO;
+//            [self unMarkTiles: _tilesTouched];
+//            return;
+//        }
+//
+////        NSLog(@"New tile touched: %@", newTileTouched);
+//        
+//        if (!_matchingTiles) {
+//            _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:newTileTouched];
+//        }
+//        
+//        if (![_matchingTiles member:newTileTouched]) {
+//            _validSwipe = NO;
+//            [self unMarkTiles:_tilesTouched];
+//            //            if (_moveArray) {
+//            //                [self abortSwipeWithMoves:_moveArray];
+//            //            }
+////            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
+//        }
+//        
+//        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+//            _validSwipe = NO;
+//            [self unMarkTiles: _tilesTouched];
+//            return;
+//        }
+//
+//        // prevent player from moving backwards
+//        if ([_tilesTouched member:newTileTouched]) {
+//            _validSwipe = NO;
+//            [self unMarkTiles:_tilesTouched];
+//            return;
+//        }
+//        
+//        [_tilesTouched addObject:newTileTouched];
+//        
+//        [self markTiles:_tilesTouched];
+//        Direction direction = [_playingFieldModel enumDirectionFromID:_currentTileTouched
+//                                                                 toID:newTileTouched];
+////        [_avatarMovement addObject:@(direction)];
+//        _currentTileTouched = newTileTouched;
+//    }
+//    
+//    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+////        [self unMarkTiles:_tilesTouched];
+//        
+//        if (!_validSwipe) {
+//            return;
+//        }
+//        
+////        NSLog(@"current tile touched: %@", _currentTileTouched);
+////        UIView *destinationView = _viewDictionary[_currentTileTouched];
+//        UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
+//        [_holderView bringSubviewToFront:avatarView];
+//        
+//        // log avatar movement
+////        NSLog(@"Avatar movement: %@", _avatarMovement);
+//        
+//        [self recursionAvatarAnimation:0];
+//        
+////        [UIView animateWithDuration:1
+////                              delay:0
+////                            options:UIViewAnimationOptionCurveLinear
+////                         animations:^ {
+//////                             avatarView.alpha = 0;
+////                             avatarView.center = destinationView.center;
+//////                             avatarView.center = CGPointMake(0, 0);
+////                         }
+////                         completion:^(BOOL finished) {
+////                             [destinationView removeFromSuperview];
+//////                             [self finishAvatarSwipe];
+////                             [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+////                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
+////
+////
+////                         }
+////         ];
+//        
+//    }
+//}
 
-//        NSLog(@"New tile touched: %@", newTileTouched);
-        
-        if (!_matchingTiles) {
-            _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:newTileTouched];
-        }
-        
-        if (![_matchingTiles member:newTileTouched]) {
-            _validSwipe = NO;
-            [self unMarkTiles:_tilesTouched];
-            //            if (_moveArray) {
-            //                [self abortSwipeWithMoves:_moveArray];
-            //            }
-//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-        
-        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _validSwipe = NO;
-            [self unMarkTiles: _tilesTouched];
-            return;
-        }
-
-        // prevent player from moving backwards
-        if ([_tilesTouched member:newTileTouched]) {
-            _validSwipe = NO;
-            [self unMarkTiles:_tilesTouched];
-            return;
-        }
-        
-        [_tilesTouched addObject:newTileTouched];
-        
-        [self markTiles:_tilesTouched];
-        Direction direction = [_playingFieldModel enumDirectionFromID:_currentTileTouched
-                                                                 toID:newTileTouched];
-        [_avatarMovement addObject:@(direction)];
-        _currentTileTouched = newTileTouched;
-    }
-    
-    else if (recognizer.state == UIGestureRecognizerStateEnded) {
-//        [self unMarkTiles:_tilesTouched];
-        
-        if (!_validSwipe) {
-            return;
-        }
-        
-//        NSLog(@"current tile touched: %@", _currentTileTouched);
-//        UIView *destinationView = _viewDictionary[_currentTileTouched];
-        UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
-        [_holderView bringSubviewToFront:avatarView];
-        
-        // log avatar movement
-        NSLog(@"Avatar movement: %@", _avatarMovement);
-        
-        [self recursionAvatarAnimation:0];
-        
-//        [UIView animateWithDuration:1
-//                              delay:0
-//                            options:UIViewAnimationOptionCurveLinear
-//                         animations:^ {
-////                             avatarView.alpha = 0;
-//                             avatarView.center = destinationView.center;
-////                             avatarView.center = CGPointMake(0, 0);
-//                         }
-//                         completion:^(BOOL finished) {
+//-(void) recursionAvatarAnimation:(int) index {
+////    CGPoint newCenter;
+//    float deltaX, deltaY;
+//    UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
+//    
+////    Direction direction = [_avatarMovement[index] intValue];
+//    
+//    switch (direction) {
+//        case UP: {
+//            deltaX = 0;
+//            deltaY =-_lengthOfTile;
+//            break;
+//        }
+//        case DOWN: {
+//            deltaX = 0;
+//            deltaY = _lengthOfTile;
+//            break;
+//        }
+//        case RIGHT: {
+//            deltaX = _lengthOfTile;
+//            deltaY = 0;
+//            break;
+//        }
+//        case LEFT: {
+//            deltaX = -_lengthOfTile;
+//            deltaY = 0;
+//            break;
+//        }
+//        case NO_DIRECTION: {
+//            [NSException raise:@"Avatar must move in a specified direction" format:@"Avatar must move in a specified direction"];
+//        }
+//    }
+//    
+//    CGPoint newCenter = CGPointMake(avatarView.center.x + deltaX,
+//                                    avatarView.center.y + deltaY);
+//    
+//    NSTimeInterval duration;
+//    NSUInteger options;
+//    if (index == [_avatarMovement count] - 1) {
+//        duration = 0.6;
+//        options = UIViewAnimationOptionCurveEaseOut;
+//    } else {
+//        duration = 0.3;
+//        options = UIViewAnimationOptionCurveLinear;
+//    }
+//    
+//    [UIView animateWithDuration:duration
+//                          delay:0
+//                        options:options
+//                     animations:^ {
+//                         avatarView.center = newCenter;
+//                     }
+//                     completion:^(BOOL finished) {
+//                         if (index < ([_avatarMovement count] - 1)) {
+//                             [self recursionAvatarAnimation:index + 1];
+//                         } else {
+//                             UIView *destinationView = _viewDictionary[_currentTileTouched];
 //                             [destinationView removeFromSuperview];
-////                             [self finishAvatarSwipe];
-//                             [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
-//                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar] andTile:_currentTileTouched];
-//
+//                             [self launchPopOverFromID:_currentTileTouched
+//                                             withColor:[UIColor redColor]];
+//                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar]
+//                                                             andTile:_currentTileTouched];
+//                             
 //
 //                         }
-//         ];
-        
-    }
-}
-
--(void) recursionAvatarAnimation:(int) index {
-//    CGPoint newCenter;
-    float deltaX, deltaY;
-    UIView *avatarView = _viewDictionary[[_playingFieldModel IDOfAvatar]];
-    
-    Direction direction = [_avatarMovement[index] intValue];
-    
-    switch (direction) {
-        case UP: {
-            deltaX = 0;
-            deltaY =-_lengthOfTile;
-            break;
-        }
-        case DOWN: {
-            deltaX = 0;
-            deltaY = _lengthOfTile;
-            break;
-        }
-        case RIGHT: {
-            deltaX = _lengthOfTile;
-            deltaY = 0;
-            break;
-        }
-        case LEFT: {
-            deltaX = -_lengthOfTile;
-            deltaY = 0;
-            break;
-        }
-        case NO_DIRECTION: {
-            [NSException raise:@"Avatar must move in a specified direction" format:@"Avatar must move in a specified direction"];
-        }
-    }
-    
-    CGPoint newCenter = CGPointMake(avatarView.center.x + deltaX,
-                                    avatarView.center.y + deltaY);
-    
-    NSTimeInterval duration;
-    NSUInteger options;
-    if (index == [_avatarMovement count] - 1) {
-        duration = 0.6;
-        options = UIViewAnimationOptionCurveEaseOut;
-    } else {
-        duration = 0.3;
-        options = UIViewAnimationOptionCurveLinear;
-    }
-    
-    [UIView animateWithDuration:duration
-                          delay:0
-                        options:options
-                     animations:^ {
-                         avatarView.center = newCenter;
-                     }
-                     completion:^(BOOL finished) {
-                         if (index < ([_avatarMovement count] - 1)) {
-                             [self recursionAvatarAnimation:index + 1];
-                         } else {
-                             UIView *destinationView = _viewDictionary[_currentTileTouched];
-                             [destinationView removeFromSuperview];
-                             [self launchPopOverFromID:_currentTileTouched
-                                             withColor:[UIColor redColor]];
-                             [_playingFieldModel swapPositionsOfTile:[_playingFieldModel IDOfAvatar]
-                                                             andTile:_currentTileTouched];
-                             
-
-                         }
-                     }
-     ];
-}
+//                     }
+//     ];
+//}
 
 -(void) finishAvatarSwipe {
     NSLog(@"Spelplan innan delete:\n%@", _playingFieldModel);
@@ -2179,17 +2179,17 @@ typedef enum {
         [_viewDictionary removeObjectForKey:key];
     }
     
-    [self seedAvatar];
-    NSNumber *avatarID = [_playingFieldModel IDOfAvatar];
-    QCTile *avatarTile = [_playingFieldModel tileWithID:avatarID];
-    
-    UIView *view = _viewDictionary[avatarID];
-    [view removeFromSuperview];
-    UIView *avatarView = [self tileViewCreatorXIndex:[avatarTile.x intValue]
-                                              yIndex:[avatarTile.y intValue] - [_numberOfRows intValue]
-                                                  iD:avatarID];
-    [_holderView addSubview:avatarView];
-    [_viewDictionary setObject:avatarView forKey:avatarID];
+//    [self seedAvatar];
+//    NSNumber *avatarID = [_playingFieldModel IDOfAvatar];
+//    QCTile *avatarTile = [_playingFieldModel tileWithID:avatarID];
+//    
+//    UIView *view = _viewDictionary[avatarID];
+//    [view removeFromSuperview];
+//    UIView *avatarView = [self tileViewCreatorXIndex:[avatarTile.x intValue]
+//                                              yIndex:[avatarTile.y intValue] - [_numberOfRows intValue]
+//                                                  iD:avatarID];
+//    [_holderView addSubview:avatarView];
+//    [_viewDictionary setObject:avatarView forKey:avatarID];
 
     
     _animating = YES;
