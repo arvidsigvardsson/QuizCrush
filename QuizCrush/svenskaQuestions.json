@@ -7925,9 +7925,7 @@
 
 {"qpid": 0, "ac": "Arktis", "s": 0, "v": 1, "dl": 21, "tp": "D\u00e4ggdjur", "cat": 4, "a1": "Antarktis", "a3": "Kaukasus", "a2": "Alperna", "t": "Var hittar man isbj\u00f6rnar?", "rc": 1, "_id": 19996, "ref": 503993, "l": "sv"}, 
 
-{"qpid": 0, "ac": "160617600s", "_class": "com.planeto.quizworm.internal.dao.MongoQuestion", "s": 0, "sv": 0, "v": 101, "dl": 70, "tp": "Evolution", "cat": 4, "a1": "161481600s", "a3": "I 1889", "a2": "162345600s", "t": "N\u00e4r utkom Charles Darwins \"Om arternas uppkomst\" f\u00f6rsta g\u00e5ngen?", "rc": 100, "_id": 19997, "ref": 504043, "l": "sv"}, 
-
-{"qpid": 0, "ac": "Lasso", "_class": "com.planeto.quizworm.internal.dao.MongoQuestion", "s": 0, "sv": 0, "v": 2, "dl": 21, "tp": "Vilda v\u00e4stern", "cat": 2, "a1": "Tjuga ", "a3": "Spjut", "a2": "Bolo", "t": "Vad anv\u00e4ndes av amerikanska cowboys?", "rc": 3, "_id": 19999, "ref": 503797, "l": "sv"}, 
+ {"qpid": 0, "ac": "Lasso", "_class": "com.planeto.quizworm.internal.dao.MongoQuestion", "s": 0, "sv": 0, "v": 2, "dl": 21, "tp": "Vilda v\u00e4stern", "cat": 2, "a1": "Tjuga ", "a3": "Spjut", "a2": "Bolo", "t": "Vad anv\u00e4ndes av amerikanska cowboys?", "rc": 3, "_id": 19999, "ref": 503797, "l": "sv"},
 
 {"qpid": 0, "ac": "Ernest Hemingway", "s": 0, "v": 1, "dl": 30, "tp": "P\u00e5 safari", "cat": 4, "a1": "Mark Twain", "a3": "Herman Melville", "a2": "F. Scott Fitzgerald", "t": "Vilken amerikansk f\u00f6rfattare var ber\u00f6md f\u00f6r att ge sig ut p\u00e5 storviltjakt i Afrika?", "rc": 0, "_id": 20000, "ref": 504753, "l": "sv"}, 
 
