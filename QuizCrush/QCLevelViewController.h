@@ -16,4 +16,8 @@
 
 @interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate, UIAlertViewDelegate>
 
+typedef struct gridPosition {
+    int x, y;
+} gridPosition;
+
 @end

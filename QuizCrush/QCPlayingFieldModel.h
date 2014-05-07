@@ -55,5 +55,6 @@ typedef enum {
 -(void) switchTileToAvatar:(NSNumber *) ID;
 -(NSNumber *) IDOfAvatar;
 -(Direction) enumDirectionFromID:(NSNumber *) IDStart toID:(NSNumber *) IDEnd;
+-(BOOL) tilesAreLinkedID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID;
 
 @end

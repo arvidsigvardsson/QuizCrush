@@ -887,4 +887,20 @@
     _avatar = ID;
 }
 
+-(BOOL) tilesAreLinkedID1:(NSNumber *) tile1ID ID2:(NSNumber *) tile2ID {
+    QCTile *tile1 = _tileDict[tile1ID];
+    QCTile *tile2 = _tileDict[tile2ID];
+    
+    int x1 = [tile1.x intValue];
+    int y1 = [tile1.y intValue];
+    int x2 = [tile2.x intValue];
+    int y2 = [tile2.y intValue];
+    
+    if (x1 <= x2 + 1 && x1 >= x2 - 1 && y1 <= y2 + 1 && y1 >= y2 - 1) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 @end
