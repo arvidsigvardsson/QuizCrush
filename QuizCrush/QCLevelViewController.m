@@ -510,60 +510,11 @@ typedef enum {
     _selectCategoryPopup.hidden = YES;
     [_holderView addSubview:_selectCategoryPopup];
 
-//    // for popup dialogue
-
-//
-//
-//    _popOver = [[UIView alloc] initWithFrame:CGRectMake(15, 25, 300, 300)];
-//    [_popOver setBackgroundColor:[UIColor whiteColor]];
-//    _popOver.layer.cornerRadius = 25;
-//    _popOver.layer.masksToBounds = YES;
-//    _popOver.hidden = YES;
-//
-//    UIButton *button1 = [UIButton buttonWithType:UIButtonTypeSystem];
-//    button1.frame = CGRectMake(70, 70, 150, 40);
-//    [button1 setTitle:@"Answer 1" forState:UIControlStateNormal];
-//    [button1 setTintColor:[UIColor blackColor]];
-//    button1.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor greenColor];
-//    button1.layer.masksToBounds = YES;
-//    button1.layer.cornerRadius = 15;
-//    button1.tag = 1001;
-//
-//    UIButton *buttonX = [UIButton buttonWithType:UIButtonTypeSystem];
-//    buttonX.frame = CGRectMake(70, 140, 150, 40);
-//    [buttonX setTitle:@"Answer 2" forState:UIControlStateNormal];
-//    [buttonX setTintColor:[UIColor blackColor]];
-//    buttonX.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor purpleColor];
-//    buttonX.layer.masksToBounds = YES;
-//    buttonX.layer.cornerRadius = 15;
-//    buttonX.tag = 2002;
-//
-//    UIButton *button2 = [UIButton buttonWithType:UIButtonTypeSystem];
-//    button2.frame = CGRectMake(70, 210, 150, 40);
-//    [button2 setTitle:@"Answer 3" forState:UIControlStateNormal];
-//    [button2 setTintColor:[UIColor blackColor]];
-//    button2.backgroundColor = [UIColor colorWithRed:0.0f green:145.0 / 255.0f blue:178.0 / 255.0 alpha:1.0f]; //[UIColor grayColor]; //[UIColor blueColor];
-//    button2.layer.masksToBounds = YES;
-//    button2.layer.cornerRadius = 15;
-//    button2.tag = 3003;
-//
-//    [_popOver addSubview:button1];
-//    [_popOver addSubview:buttonX];
-//    [_popOver addSubview:button2];
-//
-//    [button1 addTarget:self
-//                action:@selector(answerPopButtonHandler:)
-//      forControlEvents:UIControlEventTouchUpInside];
-//    [buttonX addTarget:self
-//                action:@selector(answerPopButtonHandler:)
-//      forControlEvents:UIControlEventTouchUpInside];
-//    [button2 addTarget:self
-//                action:@selector(answerPopButtonHandler:)
-//      forControlEvents:UIControlEventTouchUpInside];
-//
-//    [_holderView addSubview:_popOver];
-//
-//    [self resetState];
+    // test
+//    UIImageView *connectorView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connector"]];
+//    [_holderView addSubview:connectorView];
+//    [connectorView setCenter:CGPointMake(50, 50)];
+    
 
 }
 
@@ -1503,6 +1454,9 @@ typedef enum {
         }
         
         if (position.x == -1 && position.y == -1) {
+            if (recognizer.state == UIGestureRecognizerStateEnded) {
+                [self unMarkTiles:_tilesTouched];
+            }
             return;
         }
         
@@ -1577,6 +1531,7 @@ typedef enum {
         
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
+//        [self unMarkTiles:_tilesTouched];
         if (!_validSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
@@ -1605,7 +1560,7 @@ typedef enum {
             return;
         }
         //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
-        [self markTiles:_tilesTouched];
+//        [self markTiles:_tilesTouched];
         
         
 //        _currentTileTouched = nil;

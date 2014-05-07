@@ -29,7 +29,7 @@
 	<key>Max number of moves</key>
 	<integer>10</integer>
 	<key>Score required</key>
-	<integer>5000</integer>
+	<integer>10000</integer>
 	<key>Tiles required for fifty fifty</key>
 	<integer>5</integer>
 </dict>
