@@ -456,8 +456,12 @@ typedef enum {
 //    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
 
     // discrete pan Handler, so that player can swipe diagonally
-    UIPanGestureRecognizer *discreteSwipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(discreteSwipeDeletePanHandler:)];
-    [_holderView addGestureRecognizer:discreteSwipeDeletePanRecognizer];
+//    UIPanGestureRecognizer *discreteSwipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(discreteSwipeDeletePanHandler:)];
+//    [_holderView addGestureRecognizer:discreteSwipeDeletePanRecognizer];
+    
+    // even newer pan handler
+    UIPanGestureRecognizer *diagonalSwipePanHandler = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(diagonalSwipeDeletePanHandler:)];
+    [_holderView addGestureRecognizer:diagonalSwipePanHandler];
     
     // test
 //    UIPanGestureRecognizer *testRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(testPanHandler:)];
@@ -1568,6 +1572,146 @@ typedef enum {
     }
 }
 
+-(void) diagonalSwipeDeletePanHandler:(UIPanGestureRecognizer *) recognizer {
+    if (_animating) {
+        return;
+    }
+    if (_popOverIsActive) {
+        return;
+    }
+    
+    _changeCategoryBoosterIsActive = NO;
+    _bombBoosterIsActive = NO;
+    
+    CGPoint point = [recognizer locationInView:_holderView];
+    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+                                            numberOfRows:_numberOfRows
+                                         numberOfColumns:_numberOfColumns
+                                           lengthOfSides:_lengthOfTile];
+    NSNumber *x = touchPoint[@"x"];
+    NSNumber *y = touchPoint[@"y"];
+    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+    //    NSLog(@"Touchpoint: %@", touchPoint);
+    
+    
+    
+    
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        [self unMarkTiles:_tilesTouched];
+        //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
+        [_tilesTouched removeAllObjects];
+        //        [_moveArray removeAllObjects];
+        [_suctionMoveArray removeAllObjects];
+        
+        
+        _validSwipe = YES;
+        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        
+        [_tilesTouched addObject:_currentTileTouched];
+//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+        [self markTiles:_tilesTouched];
+    }
+    
+    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+        if (!_validSwipe) {
+            return;
+        }
+        
+        // make sure booster is not swiped
+        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+            return;
+        }
+        
+        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+            return;
+        }
+//        if (![_matchingTiles member:newTileTouched]) {
+//            _validSwipe = NO;
+//            //            if (_moveArray) {
+//            //                [self abortSwipeWithMoves:_moveArray];
+//            //            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
+//        }
+        
+        if (![_playingFieldModel tilesAreLinkedID1:newTileTouched ID2:_currentTileTouched]) {
+            return;
+        }
+        NSNumber *cat1 = [_playingFieldModel categoryOfTileWithID:_currentTileTouched];
+        NSNumber *cat2 = [_playingFieldModel categoryOfTileWithID:newTileTouched];
+        if (![cat1 isEqualToNumber:cat2]) {
+            //            _validSwipe = NO;
+            return;
+        }
+        
+        // cancel booster action if player wants to swipe instead
+        _bombBoosterIsActive = NO;
+        _messageLabel.hidden = YES;
+        
+        //        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+        //            _validSwipe = NO;
+        //            //            if (_moveArray) {
+        //            //                [self abortSwipeWithMoves:_moveArray];
+        //            //            }
+        //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+        //            return;
+        //        }
+        
+        
+        // prevent player from moving backwards, ie retouch an already touched tile
+//        if ([_tilesTouched member:newTileTouched]) {
+//            //            if (_moveArray) {
+//            //                [self abortSwipeWithMoves:_moveArray];
+//            //            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            _validSwipe = NO;
+//            return;
+//        }
+        _currentTileTouched = newTileTouched;
+        [_tilesTouched addObject:newTileTouched];
+        [self markTiles:_tilesTouched];
+        
+        
+    }
+    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        if (!_validSwipe) {
+            NSLog(@"Invalid swipe");
+            [self unMarkTiles:_tilesTouched];
+            
+            //            NSLog(@"Invalid swipe");
+            [_tilesTouched removeAllObjects];
+            //            [_moveArray removeAllObjects];
+            //            [_suctionMoveArray removeAllObjects];
+            return;
+        }
+        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+            NSLog(@"Invalid swipe, not enough tiles swiped!");
+            [self unMarkTiles:_tilesTouched];
+            
+            //            NSLog(@"Invalid swipe, not enough tiles swiped!");
+            
+            [_tilesTouched removeAllObjects];
+            //            [_moveArray removeAllObjects];
+            //            [_suctionMoveArray removeAllObjects];
+            //            if (_moveArray) {
+            //                [self abortSwipeWithMoves:_moveArray];
+            //            }
+            
+            //            // abort suctionSwipe
+            //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+            return;
+        }
+        //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+        [self markTiles:_tilesTouched];
+        
+        
+        
+        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+    }
+}
 
 -(void) swipeDeletePanHandler:(UIPanGestureRecognizer *) recognizer {
     if (_animating) {
