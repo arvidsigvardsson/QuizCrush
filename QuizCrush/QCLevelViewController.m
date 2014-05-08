@@ -17,7 +17,7 @@ typedef enum {
 } BoosterState;
 @property BoosterState boosterState;
 
-@property (weak, nonatomic) IBOutlet UIView *holderView;
+@property (weak, nonatomic) IBOutlet QCTileHolderView *holderView;
 //@property NSMutableArray *viewArray;
 //@prperty (weak, nonatomic) IBOutlet UIView *popup;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
@@ -196,11 +196,6 @@ typedef enum {
 }
 
 -(void) questionAnimationCompleted {
-//    if (_numberOfFiftyFiftyBoosters >= 1) {
-//        _fiftyFiftyButton.hidden = NO;
-//    }
-    
-    
     NSNumber *booster = nil;
     if (_answerWasCorrect) {
         if ([_tilesTouched count] >= 5) {
@@ -219,6 +214,7 @@ typedef enum {
 //    [self swipeDeleteTiles:_tilesTouched withBooster:booster];
 //    [self swipeFallingDeleteTiles:_tilesTouched withBooster:booster];
     [self deleteFallingTilesWithSpringForSet:_tilesTouched withBooster:booster];
+    
 }
 
 -(NSSet *) answerButtonsToDisableFiftyFifty {
@@ -445,36 +441,10 @@ typedef enum {
 
     // suction action
     _suctionMoveArray = [[NSMutableArray alloc] init];
-
-    // pan action for suction
-//    UIPanGestureRecognizer *suctionPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(suctionPanHandler:)];
-//    suctionPanRecognizer.maximumNumberOfTouches = 1;
-//    [_holderView addGestureRecognizer:suctionPanRecognizer];
-
-    // swipe delete pan handler
-//    UIPanGestureRecognizer *swipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(swipeDeletePanHandler:)];
-//    [_holderView addGestureRecognizer:swipeDeletePanRecognizer];
-
-    // discrete pan Handler, so that player can swipe diagonally
-//    UIPanGestureRecognizer *discreteSwipeDeletePanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(discreteSwipeDeletePanHandler:)];
-//    [_holderView addGestureRecognizer:discreteSwipeDeletePanRecognizer];
     
     // even newer pan handler
     UIPanGestureRecognizer *diagonalSwipePanHandler = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(diagonalSwipeDeletePanHandler:)];
     [_holderView addGestureRecognizer:diagonalSwipePanHandler];
-    
-    // test
-//    UIPanGestureRecognizer *testRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(testPanHandler:)];
-//    [_holderView addGestureRecognizer:testRecognizer];
-    
-    
-    
-    
-    
-    // move avatar pan handler
-//    UIPanGestureRecognizer *avatarPanRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self
-//                                                                                          action:@selector(avatarPanHandler:)];
-//    [_holderView addGestureRecognizer:avatarPanRecognizer];
     
     // tap action for boosters
     UITapGestureRecognizer *boosterTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(boosterTapHandler:)];
@@ -498,10 +468,6 @@ typedef enum {
         [_holderView addSubview:tile];
     }
 
-//    // test
-//    QCPlayingFieldModel *testModel = [[QCPlayingFieldModel alloc] initWithRows:@2 Columns:@3];
-//    NSLog(@"Testmodell: %@", testModel);
-
     // new popups
     _popupFrame = CGRectMake(20, 10, 280, 350);
     _popView = [[QCPopupView alloc] initWithFrame:_popupFrame];
@@ -513,17 +479,18 @@ typedef enum {
     [_selectCategoryPopup setDelegate:self];
     _selectCategoryPopup.hidden = YES;
     [_holderView addSubview:_selectCategoryPopup];
-
+    
     // test
-//    UIImageView *connectorView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"connector"]];
-//    [_holderView addSubview:connectorView];
-//    [connectorView setCenter:CGPointMake(50, 50)];
+//    [_holderView drawLineFromX1:3 Y1:5 X2:8 Y2:13];
+//    [_holderView drawLineFromX1:100 Y1:200 X2:400 Y2:800];
+//    [_holderView drawLineFromX1:_lengthOfTile * 0.5
+//                             Y1:_lengthOfTile * 0.5
+//                             X2:_lengthOfTile * 1.5
+//                             Y2:_lengthOfTile * 0.5];
     
 
+    [self connectTile:@2 toTile:@9];
 }
-
-
-
 
 - (void)deleteTiles:(NSNumber *)IDTileClicked {
     NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
@@ -1670,6 +1637,8 @@ typedef enum {
 //            _validSwipe = NO;
 //            return;
 //        }
+        
+        [self connectTile:_currentTileTouched toTile:newTileTouched];
         _currentTileTouched = newTileTouched;
         [_tilesTouched addObject:newTileTouched];
         [self markTiles:_tilesTouched];
@@ -2559,7 +2528,7 @@ typedef enum {
                              CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
                              [aniView setCenter:newCenter];
                          }
-                     }completion:^(BOOL finished) {
+                     } completion:^(BOOL finished) {
                          _animating = NO;
                      }
      ];
@@ -2591,4 +2560,12 @@ typedef enum {
     [self updateFiftyButtonState];
 }
 
+-(void) connectTile:(NSNumber *) tile1 toTile:(NSNumber *) tile2 {
+    UIView *view1 = _viewDictionary[tile1];
+    UIView *view2 = _viewDictionary[tile2];
+    [_holderView drawLineFromX1:view1.center.x
+                             Y1:view1.center.y
+                             X2:view2.center.x
+                             Y2:view2.center.y];
+}
 @end

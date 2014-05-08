@@ -13,6 +13,7 @@
 #import "QCTileImageProvider.h"
 #import "QCSelectCategoryPopup.h"
 #import "QCSelectCategoryPopup.h"
+#import "QCTileHolderView.h"
 
 @interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate, UIAlertViewDelegate>
 
