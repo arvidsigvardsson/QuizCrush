@@ -50,7 +50,7 @@ typedef enum {
 //    UIImageView *iv = [[UIImageView alloc] initWithImage:image];
 //    [self addSubview:iv];
     
-    self.backgroundColor = /*[UIColor colorWithRed:10/255.0 green:246/255.0 blue:255/255.0 alpha:.9]; //*/ [UIColor colorWithWhite:.99 alpha:.97];
+    self.backgroundColor = /*[UIColor colorWithRed:10/255.0 green:246/255.0 blue:255/255.0 alpha:.9]; //*/ [UIColor colorWithWhite:.99 alpha:.9];//.97];
 //    _popOver.layer.cornerRadius = 25;
 //    _popOver.layer.masksToBounds = YES;
     self.layer.cornerRadius = 25;

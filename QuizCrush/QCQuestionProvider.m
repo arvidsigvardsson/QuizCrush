@@ -33,7 +33,7 @@
     return self;
 }
 
--(QCQuestion *) provideQuestionOfCategory:(NSNumber *) category{
+-(QCQuestion *) provideQuestionOfCategory:(NSNumber *) category {
 
 //    QCQuestion *q = [[QCQuestion alloc] initWithCategory:@5
 //                                                    topic:@"Golf"

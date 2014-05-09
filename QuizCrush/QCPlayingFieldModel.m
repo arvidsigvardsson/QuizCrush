@@ -206,7 +206,16 @@
 }
 
 -(NSNumber *) categoryOfTileWithID:(NSNumber *)ID {
-    return [[_tileDict objectForKey:ID] category];
+    QCTile *tile = _tileDict[ID];
+    if (!tile.category) {
+        NSLog(@"Tile %@ has no category!", ID);
+        return nil;
+    } else {
+        return tile.category;
+    }
+    
+    
+//    return [[_tileDict objectForKey:ID] category];
 }
 
 -(NSNumber *) iDOfTileAtX:(NSNumber *) x Y:(NSNumber *) y {

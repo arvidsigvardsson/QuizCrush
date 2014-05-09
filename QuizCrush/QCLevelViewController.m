@@ -213,6 +213,9 @@ typedef enum {
     
 //    [self swipeDeleteTiles:_tilesTouched withBooster:booster];
 //    [self swipeFallingDeleteTiles:_tilesTouched withBooster:booster];
+    
+    [self removeAllTileConnections];
+    
     [self deleteFallingTilesWithSpringForSet:_tilesTouched withBooster:booster];
     
 }
@@ -241,6 +244,7 @@ typedef enum {
 -(void) deleteFallingTilesWithSpringForSet:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:booster];
     
+    NSLog(@"Från dlete falling.. with spring, borttagna tiles: %@", selectionSet);
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
@@ -268,7 +272,8 @@ typedef enum {
     _animatingCount = (int)[animateDict count];
     
     double delay = 0;
-    double duration = 0.7;
+//    double duration = 4;//0.7;
+    double duration = [_uiSettingsDictionary[@"Duration of one falling spring tile"] doubleValue];
     
     for (NSNumber *animateKey in animateDict) {
         float steps = [animateDict[animateKey] floatValue];
@@ -480,16 +485,6 @@ typedef enum {
     _selectCategoryPopup.hidden = YES;
     [_holderView addSubview:_selectCategoryPopup];
     
-    // test
-//    [_holderView drawLineFromX1:3 Y1:5 X2:8 Y2:13];
-//    [_holderView drawLineFromX1:100 Y1:200 X2:400 Y2:800];
-//    [_holderView drawLineFromX1:_lengthOfTile * 0.5
-//                             Y1:_lengthOfTile * 0.5
-//                             X2:_lengthOfTile * 1.5
-//                             Y2:_lengthOfTile * 0.5];
-    
-
-    [self connectTile:@2 toTile:@9];
 }
 
 - (void)deleteTiles:(NSNumber *)IDTileClicked {
@@ -1566,6 +1561,7 @@ typedef enum {
     
     if (recognizer.state == UIGestureRecognizerStateBegan) {
         [self unMarkTiles:_tilesTouched];
+        [self removeAllTileConnections];
         //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
         [_tilesTouched removeAllObjects];
         //        [_moveArray removeAllObjects];
@@ -1646,9 +1642,12 @@ typedef enum {
         
     }
     else if (recognizer.state == UIGestureRecognizerStateEnded) {
+        NSLog(@"Swipe state ended, current tile touched: %@", _currentTileTouched);
+        
         if (!_validSwipe) {
             NSLog(@"Invalid swipe");
             [self unMarkTiles:_tilesTouched];
+            [self removeAllTileConnections];
             
             //            NSLog(@"Invalid swipe");
             [_tilesTouched removeAllObjects];
@@ -1659,6 +1658,7 @@ typedef enum {
         if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
+            [self removeAllTileConnections];
             
             //            NSLog(@"Invalid swipe, not enough tiles swiped!");
             
@@ -1677,7 +1677,10 @@ typedef enum {
         [self markTiles:_tilesTouched];
         
         
-        
+        // check that current tile touched is a valid non deleted tile
+        if (!_currentTileTouched || ![_playingFieldModel categoryOfTileWithID:_currentTileTouched]) {
+            return;
+        }
         [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
     }
 }
@@ -2119,6 +2122,9 @@ typedef enum {
 }
 
 -(void) markTiles:(NSSet *) set  {
+    // for now
+    return;
+    
     if (!set) {
         return;
     }
@@ -2128,6 +2134,9 @@ typedef enum {
 }
 
 -(void) unMarkTiles:(NSSet *) set {
+    // for now
+    return;
+    
     if (!set) {
         return;
     }
@@ -2281,6 +2290,14 @@ typedef enum {
 }
 
 -(void) launchPopOverFromID:(NSNumber *) ID withColor:(UIColor *) color {
+//    // maybe not the best fix, but let's try
+//    if (!_currentTileTouched) {
+//        return;
+//    }
+//    
+
+    _animating = YES;
+    
     _popOverIsActive = YES;
 //    [_holderView bringSubviewToFront:_popOver];
 
@@ -2302,8 +2319,10 @@ typedef enum {
 //                                                        answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
 //                                             correctAnswerIndex:@0];
 
-    NSNumber *category = [_playingFieldModel categoryOfTileWithID:_currentTileTouched];
+    NSNumber *category = [_playingFieldModel categoryOfTileWithID:ID];  //_currentTileTouched];
 
+    NSLog(@"Från launch popover, current tile touched: %@, category: %@", _currentTileTouched, category);
+    
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
     [_popView resetAndLoadQuestionStrings:question withFiftyFifty:@(_numberOfFiftyFiftyBoosters)];
@@ -2567,5 +2586,9 @@ typedef enum {
                              Y1:view1.center.y
                              X2:view2.center.x
                              Y2:view2.center.y];
+}
+
+-(void) removeAllTileConnections {
+    [_holderView removeAllLines];
 }
 @end
