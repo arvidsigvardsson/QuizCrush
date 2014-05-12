@@ -282,9 +282,9 @@ typedef enum {
         
         [UIView animateWithDuration:duration * steps
                               delay:delay
-             usingSpringWithDamping:0.6
+             usingSpringWithDamping:0.5 //0.6
               initialSpringVelocity:0.1
-                            options:UIViewAnimationOptionCurveEaseIn
+                            options:UIViewAnimationOptionCurveLinear //UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              view.center = newCenter;
                          }
@@ -2434,7 +2434,8 @@ typedef enum {
 //            [_holderView removeGestureRecognizer:rec];
 //        }
         
-        [self launchStartNewGame:@"Good Job! Level accomplished"];
+//        [self launchStartNewGame:@"Good Job! Level accomplished"];
+        [self launchStartNewGameWithTitle:@"Level accomplished!" message:@""];
 
     } else {
 //        string = @"Out of moves...";
@@ -2460,7 +2461,8 @@ typedef enum {
 //            }
 //            _messageLabel.hidden = NO;
 //            _messageLabel.text = @"Game over";
-            [self launchStartNewGame:@"Out of moves"];
+//            [self launchStartNewGame:@"Out of moves"];
+            [self launchStartNewGameWithTitle:@"Game over" message:@"Out of moves"];
             
         } else if (buttonIndex == 1) {
             _numberOfMovesMade -= 5;
@@ -2473,8 +2475,8 @@ typedef enum {
     
 }
 
--(void) launchStartNewGame:(NSString *) message {
-    UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"Game over"
+-(void) launchStartNewGameWithTitle:(NSString *) title message:(NSString *) message {
+    UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:title //@"Game over"
                                                         message:message
                                                        delegate:self
                                               cancelButtonTitle:@"Play again!"

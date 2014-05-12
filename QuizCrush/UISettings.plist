@@ -33,6 +33,6 @@
 	<key>Tiles required for fifty fifty</key>
 	<integer>5</integer>
 	<key>Duration of one falling spring tile</key>
-	<real>0.7</real>
+	<real>0.55</real>
 </dict>
 </plist>

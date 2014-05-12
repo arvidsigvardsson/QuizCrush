@@ -37,7 +37,7 @@
     float width = self.frame.size.width;
     float height = self.frame.size.height;
 
-    self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.97];
+    self.backgroundColor = [UIColor colorWithWhite:1 alpha:0.9]; //0.97];
     
     UIImageView *headerView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, width * 0.2, width * 0.2)];
     headerView.center = CGPointMake(width / 2, height * 0.17);

@@ -59,7 +59,7 @@
     if (!_coordinates) {
         _coordinates = [[NSMutableArray alloc] init];
     }
-    
+
     [_coordinates addObjectsFromArray:@[@(x1), @(y1), @(x2), @(y2)]];
     [self setNeedsDisplay];
 }

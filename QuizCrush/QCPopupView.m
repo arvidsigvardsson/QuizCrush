@@ -307,6 +307,8 @@ typedef enum {
     pointsLabel.center = button.center;
     pointsLabel.text = [NSString stringWithFormat:@"%@p", points];
     pointsLabel.textAlignment = NSTextAlignmentCenter;
+    UIFont *font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:19];
+    pointsLabel.font = font;
     pointsLabel.backgroundColor = [UIColor greenColor];
     pointsLabel.textColor = [UIColor whiteColor];
     pointsLabel.layer.cornerRadius = 15;
@@ -314,12 +316,12 @@ typedef enum {
     
     [self addSubview:pointsLabel];
     
-    [UIView animateWithDuration:1.5
-                          delay:.2
+    [UIView animateWithDuration:.9 //1.5
+                          delay:0.1 //.2
                         options:UIViewAnimationOptionCurveEaseOut
                      animations:^ {
                          pointsLabel.center = CGPointMake(button.center.x, button.center.y - 100);
-                         pointsLabel.alpha = 0;
+                         pointsLabel.alpha = 0.5;
                      }
                      completion:^(BOOL finished) {
                          self.hidden = YES;
@@ -344,7 +346,7 @@ typedef enum {
     correctButton.backgroundColor = [UIColor greenColor];
     
     [UIView animateWithDuration:0.2
-                          delay:1.0
+                          delay:.9 //1.0
                         options:UIViewAnimationOptionCurveLinear
                      animations:^{
                          self.alpha = 0;

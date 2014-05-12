@@ -11,5 +11,6 @@
 @interface QCTileHolderView : UIView
 
 -(void) drawLineFromX1:(float) x1 Y1:(float) y1 X2:(float) x2 Y2:(float) y2;
+
 -(void) removeAllLines;
 @end
