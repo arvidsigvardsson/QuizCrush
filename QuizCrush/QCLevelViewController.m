@@ -197,15 +197,21 @@ typedef enum {
 
 -(void) questionAnimationCompleted {
     NSNumber *booster = nil;
-    if (_answerWasCorrect) {
-        if ([_tilesTouched count] >= 5) {
-            booster = @8;
-        } else if ([_tilesTouched count] == 4) {
-            _numberOfFiftyFiftyBoosters += 1;
-        } else if ([_tilesTouched count] == 3) {
-            booster = @7;
-        }
+//    if (_answerWasCorrect) {
+//        if ([_tilesTouched count] >= 5) {
+//            booster = @8;
+//        } else if ([_tilesTouched count] == 4) {
+//            _numberOfFiftyFiftyBoosters += 1;
+//        } else if ([_tilesTouched count] == 3) {
+//            booster = @7;
+//        }
+//    }
+    
+    // only 50/50
+    if (_answerWasCorrect && [_tilesTouched count] >= 7) {
+        _numberOfFiftyFiftyBoosters += 1;
     }
+    
     
     // not sure if this should be here...
     _fiftyUsed = NO;
@@ -347,7 +353,7 @@ typedef enum {
 {
     int movesLeft = [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade;
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", movesLeft]; //[_uiSettingsDictionary[@"Max number of moves"] intValue]];
-    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points to clear level!", [_uiSettingsDictionary[@"Score required"] intValue]];
+    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points!"/* to clear level!"*/, [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
     _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
 }
@@ -1612,7 +1618,7 @@ typedef enum {
         
         // cancel booster action if player wants to swipe instead
         _bombBoosterIsActive = NO;
-        _messageLabel.hidden = YES;
+//        _messageLabel.hidden = YES;
         
         //        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
         //            _validSwipe = NO;
@@ -2348,7 +2354,8 @@ typedef enum {
 
 - (void)playerAnsweredCorrect {
     _answerWasCorrect = YES;
-    NSUInteger points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
+//    NSUInteger points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
+    NSUInteger points = round(pow(1.45, [_tilesTouched count]) * 17) * 10;
     _score += points;
     _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
     
