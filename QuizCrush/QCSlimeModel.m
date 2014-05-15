@@ -16,13 +16,16 @@
         return self;
     }
     
-    _slimeArray = [[NSMutableArray alloc] initWithCapacity:[rows intValue] * [columns intValue]];
+//    _slimeArray = [[NSMutableArray alloc] initWithCapacity:[rows intValue] * [columns intValue]];
+    _slimeSet = [[NSMutableSet alloc] init];
+    _rows = [rows intValue];
+    _columns = [columns intValue];
+    
+    if (markedArray) {
+        [_slimeSet addObjectsFromArray:markedArray];
+    }
     
     return self;
-}
-
--(int) arrayIndexForX:(int) x Y:(int) y {
-    
 }
 
 @end

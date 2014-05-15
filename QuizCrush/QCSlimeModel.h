@@ -7,12 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "QCCoordinates.m"
+#import "QCCoordinates.h"
 
 @interface QCSlimeModel : NSObject
 
+@property (nonatomic) int rows;
+@property (nonatomic) int columns;
 //@property (nonatomic) NSMutableDictionary *slimeDict;
-@property (nonatomic) NSMutableArray *slimeArray;
+//@property (nonatomic) NSMutableArray *slimeArray;
+@property (nonatomic) NSMutableSet *slimeSet;
 
 -(id) initWithRows:(NSNumber *) rows Columns:(NSNumber *) columns markedPositions:(NSArray *) markedArray;
 
