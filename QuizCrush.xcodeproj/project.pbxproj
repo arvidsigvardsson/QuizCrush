@@ -11,6 +11,8 @@
 		71386C3F18F2904100414357 /* QCPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71386C3E18F2904100414357 /* QCPopupView.m */; };
 		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
 		715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */; };
+		71695F7B19249B6F009FCCBC /* QCSlimeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7A19249B6F009FCCBC /* QCSlimeModel.m */; };
+		71695F7E1924A700009FCCBC /* QCCoordinates.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7D1924A700009FCCBC /* QCCoordinates.m */; };
 		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
 		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
 		71A3CED5191BA362008342D9 /* QCTileHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A3CED4191BA361008342D9 /* QCTileHolderView.m */; };
@@ -55,6 +57,10 @@
 		7147829718E2DF7E00A1A08A /* QCSuctionMove.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSuctionMove.m; sourceTree = "<group>"; };
 		715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCTileImageProvider.h; sourceTree = "<group>"; };
 		715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCTileImageProvider.m; sourceTree = "<group>"; };
+		71695F7919249B6F009FCCBC /* QCSlimeModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSlimeModel.h; sourceTree = "<group>"; };
+		71695F7A19249B6F009FCCBC /* QCSlimeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeModel.m; sourceTree = "<group>"; };
+		71695F7C1924A700009FCCBC /* QCCoordinates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCCoordinates.h; sourceTree = "<group>"; };
+		71695F7D1924A700009FCCBC /* QCCoordinates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCCoordinates.m; sourceTree = "<group>"; };
 		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
 		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
@@ -149,6 +155,8 @@
 			isa = PBXGroup;
 			children = (
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
+				71695F7919249B6F009FCCBC /* QCSlimeModel.h */,
+				71695F7A19249B6F009FCCBC /* QCSlimeModel.m */,
 				71CE961918F810EA003E8D3F /* QCSelectCategoryPopup.h */,
 				71CE961A18F810EA003E8D3F /* QCSelectCategoryPopup.m */,
 				715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */,
@@ -175,6 +183,8 @@
 				719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */,
 				71A3CED3191BA361008342D9 /* QCTileHolderView.h */,
 				71A3CED4191BA361008342D9 /* QCTileHolderView.m */,
+				71695F7C1924A700009FCCBC /* QCCoordinates.h */,
+				71695F7D1924A700009FCCBC /* QCCoordinates.m */,
 				71E0C50018D6E39800B5FFC7 /* Images.xcassets */,
 				71E0C4EF18D6E39800B5FFC7 /* Supporting Files */,
 			);
@@ -318,6 +328,8 @@
 				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
 				71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */,
+				71695F7B19249B6F009FCCBC /* QCSlimeModel.m in Sources */,
+				71695F7E1924A700009FCCBC /* QCCoordinates.m in Sources */,
 				715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */,
 				71F644ED18ED8EB2007090B4 /* QCQuestion.m in Sources */,
 				71E0C52218D6E80400B5FFC7 /* QCTile.m in Sources */,
