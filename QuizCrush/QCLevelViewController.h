@@ -14,6 +14,8 @@
 #import "QCSelectCategoryPopup.h"
 #import "QCSelectCategoryPopup.h"
 #import "QCTileHolderView.h"
+#import "QCCoordinates.h"
+#import "QCSlimeTile.h"
 
 @interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate, UIAlertViewDelegate>
 

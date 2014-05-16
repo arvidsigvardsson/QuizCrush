@@ -10,9 +10,10 @@
 
 @interface QCCoordinates : NSObject
 
-@property (nonatomic) int x;
-@property (nonatomic) int y;
+@property (nonatomic) NSNumber *x;
+@property (nonatomic) NSNumber *y;
 
--(id) initWithX:(int) x Y:(int) y;
+-(id) initWithX:(NSNumber *) x Y:(NSNumber *) y;
+-(BOOL) isEqualToCoordinates:(QCCoordinates *) coordinates;
 
 @end

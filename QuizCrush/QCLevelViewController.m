@@ -68,6 +68,7 @@ typedef enum {
 @property BOOL fiftyUsed;
 //@property NSMutableArray *avatarMovement;
 @property int animatingCount;
+@property (nonatomic) NSMutableSet *slimeSet;
 
 @end
 
@@ -222,6 +223,24 @@ typedef enum {
     
     [self removeAllTileConnections];
     
+    // slime management
+    if (_answerWasCorrect) {
+        for (NSNumber *key in _tilesTouched) {
+            QCTile *tile = [_playingFieldModel tileWithID:key];
+            QCCoordinates *coord = [[QCCoordinates alloc] initWithX:tile.x Y:tile.y];
+            for (QCSlimeTile *slimeTile in _slimeSet) {
+                if ([slimeTile.coordinates isEqualToCoordinates:coord]) {
+                    [slimeTile.view removeFromSuperview];
+                    [_slimeSet removeObject:slimeTile];
+                    break;
+                }
+            }
+        }
+        
+    }
+    
+    
+    
     [self deleteFallingTilesWithSpringForSet:_tilesTouched withBooster:booster];
     
 }
@@ -353,7 +372,8 @@ typedef enum {
 {
     int movesLeft = [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade;
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", movesLeft]; //[_uiSettingsDictionary[@"Max number of moves"] intValue]];
-    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points!"/* to clear level!"*/, [_uiSettingsDictionary[@"Score required"] intValue]];
+//    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points!"/* to clear level!"*/, [_uiSettingsDictionary[@"Score required"] intValue]];
+    _messageLabel.text = @"Clear away all the slime!";
     _messageLabel.hidden = NO;
     _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
 }
@@ -383,6 +403,34 @@ typedef enum {
 //    [_holderView addSubview:avatarView];
 //    [_viewDictionary setObject:avatarView forKey:avatarID];
     
+}
+
+- (void)resetSlime
+{
+    for (QCSlimeTile *tile in _slimeSet) {
+        [tile.view removeFromSuperview];
+    }
+    [_slimeSet removeAllObjects];
+    
+//    NSArray *slimeArr = @[@0, @0, @1, @1, @2, @2, @3, @3, @4, @2, @5, @1, @6, @0];
+    NSArray *slimeArr = @[@1, @2, @5, @2, @2, @3, @4, @3, @3, @4, @2, @5, @4, @5, @1, @6, @5, @6];
+    //    NSMutableArray *interSlime = [[NSMutableArray alloc] init];
+    for (int ind = 0; ind < [slimeArr count]; ind += 2) {
+        QCCoordinates *c = [[QCCoordinates alloc] initWithX:slimeArr[ind] Y:slimeArr[ind + 1]];
+        QCSlimeTile *slimeObj = [[QCSlimeTile alloc] init];
+        slimeObj.coordinates = c;
+        [_slimeSet addObject:slimeObj];
+    }
+    
+    for (QCSlimeTile *slime in _slimeSet) {
+        UIView *slimeView = [[UIView alloc] initWithFrame:CGRectMake([slime.coordinates.x intValue] * _lengthOfTile, [slime.coordinates.y intValue] * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+        slimeView.backgroundColor = [UIColor blackColor];
+        slimeView.alpha = .5;
+        slimeView.layer.masksToBounds = YES;
+        slimeView.layer.cornerRadius = 9;
+        slime.view = slimeView;
+        [_holderView addSubview:slimeView];
+    }
 }
 
 - (void)viewDidLoad
@@ -461,6 +509,12 @@ typedef enum {
     UITapGestureRecognizer *boosterTapRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(boosterTapHandler:)];
     [_holderView addGestureRecognizer:boosterTapRecognizer];
 
+    // slime
+    _slimeSet = [[NSMutableSet alloc] init];
+    [self resetSlime];
+
+    
+    
     int xIndex, yIndex;
     NSNumber *iD;
 
@@ -491,6 +545,24 @@ typedef enum {
     _selectCategoryPopup.hidden = YES;
     [_holderView addSubview:_selectCategoryPopup];
     
+//    // slime
+//    _slimeSet = [[NSMutableSet alloc] init];
+//    NSArray *slimeArr = @[@0, @0, @1, @1, @2, @2];
+////    NSMutableArray *interSlime = [[NSMutableArray alloc] init];
+//    for (int ind = 0; ind < [slimeArr count]; ind += 2) {
+//        QCCoordinates *c = [[QCCoordinates alloc] initWithX:slimeArr[ind] Y:slimeArr[ind + 1]];
+//        QCSlimeTile *slimeObj = [[QCSlimeTile alloc] init];
+//        slimeObj.coordinates = c;
+//        [_slimeSet addObject:slimeObj];
+//    }
+//    
+//    for (QCSlimeTile *slime in _slimeSet) {
+//        UIView *slimeView = [[UIView alloc] initWithFrame:CGRectMake(slime.coordinates.x * _lengthOfTile, slime.coordinates.y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+//        slimeView.backgroundColor = [UIColor blackColor];
+//        slimeView.alpha = .5;
+//        slime.view = slimeView;
+//        [_holderView addSubview:slimeView];
+//    }
 }
 
 - (void)deleteTiles:(NSNumber *)IDTileClicked {
@@ -659,9 +731,14 @@ typedef enum {
 }
 
 - (void)checkIfGameOver {
-    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+//        [self gameOver];
+//    }
+    
+    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || [_slimeSet count] <= 0) {
         [self gameOver];
     }
+    
 }
 
 -(void) swipeDeleteTiles:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
@@ -2432,7 +2509,8 @@ typedef enum {
 
 -(void) gameOver {
 //    NSString *string;
-    if (_score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
+//    if (_score >= [_uiSettingsDictionary[@"Score required"] intValue] || [_slimeSet count] <= 0) {
+    if ([_slimeSet count] <= 0) {
 ////        string = @"Good Job! Level accomplished";
 //        _messageLabel.hidden = NO;
 //        _messageLabel.text = @"Good Job! Level accomplished";
@@ -2497,6 +2575,7 @@ typedef enum {
     [self resetMessages];
     [self resetState];
     [self updateFiftyButtonState];
+    [self resetSlime];
     
     // select all tiles
     NSMutableSet *selectionSet = [[NSMutableSet alloc] init];

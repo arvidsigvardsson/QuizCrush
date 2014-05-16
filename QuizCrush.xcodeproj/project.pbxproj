@@ -13,6 +13,8 @@
 		715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */; };
 		71695F7B19249B6F009FCCBC /* QCSlimeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7A19249B6F009FCCBC /* QCSlimeModel.m */; };
 		71695F7E1924A700009FCCBC /* QCCoordinates.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7D1924A700009FCCBC /* QCCoordinates.m */; };
+		7189624C1924C447007C9D6C /* QCSlimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189624B1924C447007C9D6C /* QCSlimeView.m */; };
+		7189624F1924DCB2007C9D6C /* QCSlimeTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189624E1924DCB2007C9D6C /* QCSlimeTile.m */; };
 		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
 		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
 		71A3CED5191BA362008342D9 /* QCTileHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A3CED4191BA361008342D9 /* QCTileHolderView.m */; };
@@ -61,6 +63,10 @@
 		71695F7A19249B6F009FCCBC /* QCSlimeModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeModel.m; sourceTree = "<group>"; };
 		71695F7C1924A700009FCCBC /* QCCoordinates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCCoordinates.h; sourceTree = "<group>"; };
 		71695F7D1924A700009FCCBC /* QCCoordinates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCCoordinates.m; sourceTree = "<group>"; };
+		7189624A1924C447007C9D6C /* QCSlimeView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSlimeView.h; sourceTree = "<group>"; };
+		7189624B1924C447007C9D6C /* QCSlimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeView.m; sourceTree = "<group>"; };
+		7189624D1924DCB2007C9D6C /* QCSlimeTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSlimeTile.h; sourceTree = "<group>"; };
+		7189624E1924DCB2007C9D6C /* QCSlimeTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeTile.m; sourceTree = "<group>"; };
 		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
 		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
@@ -157,6 +163,10 @@
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
 				71695F7919249B6F009FCCBC /* QCSlimeModel.h */,
 				71695F7A19249B6F009FCCBC /* QCSlimeModel.m */,
+				7189624A1924C447007C9D6C /* QCSlimeView.h */,
+				7189624B1924C447007C9D6C /* QCSlimeView.m */,
+				7189624D1924DCB2007C9D6C /* QCSlimeTile.h */,
+				7189624E1924DCB2007C9D6C /* QCSlimeTile.m */,
 				71CE961918F810EA003E8D3F /* QCSelectCategoryPopup.h */,
 				71CE961A18F810EA003E8D3F /* QCSelectCategoryPopup.m */,
 				715B93F518F3DCF000F5BB7E /* QCTileImageProvider.h */,
@@ -325,6 +335,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */,
+				7189624C1924C447007C9D6C /* QCSlimeView.m in Sources */,
+				7189624F1924DCB2007C9D6C /* QCSlimeTile.m in Sources */,
 				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
 				71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */,
