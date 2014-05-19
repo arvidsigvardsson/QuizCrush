@@ -36,6 +36,7 @@ typedef enum {
 
 @property NSMutableDictionary *viewDictionary;
 @property NSDictionary *uiSettingsDictionary;
+@property (nonatomic) NSDictionary *levelSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
 //@property NSNumber *noRowsAndCols;
@@ -168,7 +169,7 @@ typedef enum {
 }
 
 - (void)updateMovesLeftLabel {
-    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
+    _movesLeftLabel.text = [NSString stringWithFormat:@"%d", [_levelSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade];
 }
 
 -(void) answerButtonHandler:(NSNumber *)index {
@@ -370,12 +371,17 @@ typedef enum {
 
 - (void)resetMessages
 {
-    int movesLeft = [_uiSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade;
+    int movesLeft = [_levelSettingsDictionary[@"Max number of moves"] intValue] - _numberOfMovesMade;
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", movesLeft]; //[_uiSettingsDictionary[@"Max number of moves"] intValue]];
 //    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points!"/* to clear level!"*/, [_uiSettingsDictionary[@"Score required"] intValue]];
-    _messageLabel.text = @"Clear away all the slime!";
     _messageLabel.hidden = NO;
     _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
+//    _messageLabel.text = @"Clear away all the slime!";
+    if ([_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SLIME"]) {
+        _messageLabel.text = _levelSettingsDictionary[@"Header message"];
+    } else if ([_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SCORE"]) {
+        _messageLabel.text = [NSString stringWithFormat:_levelSettingsDictionary[@"Header message"], _levelSettingsDictionary[@"Score required"]];
+    }
 }
 
 - (void)resetState
@@ -405,8 +411,12 @@ typedef enum {
     
 }
 
-- (void)resetSlime
+- (void) resetSlime
 {
+    if (![_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SLIME"]) {
+        return;
+    }
+    
     for (QCSlimeTile *tile in _slimeSet) {
         [tile.view removeFromSuperview];
     }
@@ -458,15 +468,15 @@ typedef enum {
 
 
     // set up holder views dimensions
-    _lengthOfTile = self.view.frame.size.width / [_uiSettingsDictionary[@"Number of columns"] floatValue];
-    float frameHeight = [_uiSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
+    _lengthOfTile = self.view.frame.size.width / [_levelSettingsDictionary[@"Number of columns"] floatValue];
+    float frameHeight = [_levelSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
     CGRect holderFrame = CGRectMake(0, self.view.frame.size.height / 2.0f - frameHeight / 2.0f, self.view.frame.size.width, frameHeight);
     _holderView.frame = holderFrame;
 
 
-    _numberOfRows = _uiSettingsDictionary[@"Number of rows"];
-    _numberOfColumns = _uiSettingsDictionary[@"Number of columns"];
-    _tilesRequiredToMatch = _uiSettingsDictionary[@"Number of tiles required to match"];
+    _numberOfRows = _levelSettingsDictionary[@"Number of rows"];
+    _numberOfColumns = _levelSettingsDictionary[@"Number of columns"];
+    _tilesRequiredToMatch = _levelSettingsDictionary[@"Number of tiles required to match"];
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     
@@ -731,14 +741,23 @@ typedef enum {
 }
 
 - (void)checkIfGameOver {
-//    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || _score >= [_uiSettingsDictionary[@"Score required"] intValue]) {
-//        [self gameOver];
-//    }
-    
-    if (_numberOfMovesMade >= [_uiSettingsDictionary[@"Max number of moves"] intValue] || [_slimeSet count] <= 0) {
-        [self gameOver];
+    if ([_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SLIME"]) {
+        if ([_slimeSet count] <= 0) {
+            [self gameOverLevelAccomplished:YES];
+            return;
+        }
+    } else if ([_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SCORE"]) {
+        if (_score >= [_levelSettingsDictionary[@"Score required"] intValue]) {
+            [self gameOverLevelAccomplished:YES];
+            return;
+        }
     }
     
+    if (_numberOfMovesMade >= [_levelSettingsDictionary[@"Max number of moves"] intValue]) {
+        [self gameOverLevelAccomplished:NO];
+    }
+
+
 }
 
 -(void) swipeDeleteTiles:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
@@ -1110,7 +1129,7 @@ typedef enum {
 //            [_suctionMoveArray removeAllObjects];
             return;
         }
-        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
 
@@ -1591,7 +1610,7 @@ typedef enum {
             //            [_suctionMoveArray removeAllObjects];
             return;
         }
-        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
             
@@ -1671,6 +1690,11 @@ typedef enum {
         }
         
         NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+        // lets see if this fixes bug...
+        if (!newTileTouched) {
+            return;
+        }
+        
         if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
             return;
         }
@@ -1688,6 +1712,7 @@ typedef enum {
         }
         NSNumber *cat1 = [_playingFieldModel categoryOfTileWithID:_currentTileTouched];
         NSNumber *cat2 = [_playingFieldModel categoryOfTileWithID:newTileTouched];
+        
         if (![cat1 isEqualToNumber:cat2]) {
             //            _validSwipe = NO;
             return;
@@ -1738,7 +1763,7 @@ typedef enum {
             //            [_suctionMoveArray removeAllObjects];
             return;
         }
-        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
             [self removeAllTileConnections];
@@ -1873,7 +1898,7 @@ typedef enum {
             //            [_suctionMoveArray removeAllObjects];
             return;
         }
-        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
             
@@ -2150,7 +2175,7 @@ typedef enum {
             [_moveArray removeAllObjects];
             return;
         }
-        if ([_tilesTouched count] < [_uiSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
             NSLog(@"Invalid swipe, not enough tiles swiped!");
             [self unMarkTiles:_tilesTouched];
 
@@ -2507,19 +2532,9 @@ typedef enum {
     tile.backgroundColor = [UIColor blackColor];
 }
 
--(void) gameOver {
-//    NSString *string;
-//    if (_score >= [_uiSettingsDictionary[@"Score required"] intValue] || [_slimeSet count] <= 0) {
-    if ([_slimeSet count] <= 0) {
-////        string = @"Good Job! Level accomplished";
-//        _messageLabel.hidden = NO;
-//        _messageLabel.text = @"Good Job! Level accomplished";
-//
-//        for (UIGestureRecognizer *rec in _holderView.gestureRecognizers) {
-//            [_holderView removeGestureRecognizer:rec];
-//        }
-        
-//        [self launchStartNewGame:@"Good Job! Level accomplished"];
+-(void) gameOverLevelAccomplished:(BOOL) accomplished {
+    if (accomplished) {
+
         [self launchStartNewGameWithTitle:@"Level accomplished!" message:@""];
 
     } else {
@@ -2555,7 +2570,14 @@ typedef enum {
         }
     } else if (alertView.tag == 3003) {
         NSLog(@"Start new game");
-        [self startNewGame];
+        if (buttonIndex == 0) {
+            [self startNewGame];
+        } else if (buttonIndex == 1) {
+            NSLog(@"Go back to level switcher");
+            [self dismissViewControllerAnimated:NO completion:^{
+                
+            }];
+        }
     }
     
 }
@@ -2565,7 +2587,7 @@ typedef enum {
                                                         message:message
                                                        delegate:self
                                               cancelButtonTitle:@"Play again!"
-                                              otherButtonTitles:nil];
+                                              otherButtonTitles:@"Choose level", nil];
     alertview.tag = 3003;
     [alertview show];
 }
@@ -2679,4 +2701,18 @@ typedef enum {
 -(void) removeAllTileConnections {
     [_holderView removeAllLines];
 }
+
+-(void) setLevelDocument:(NSString *) document {
+    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:document
+                                                             ofType:@"plist"];
+    _levelSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+}
+
 @end
+
+
+
+
+
+
+

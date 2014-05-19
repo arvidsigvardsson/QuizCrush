@@ -19,6 +19,8 @@
 
 @interface QCLevelViewController : UIViewController <PopupViewDelegate, QCSelectCategoryDelegate, UIAlertViewDelegate>
 
+-(void) setLevelDocument:(NSString *) document;
+
 typedef struct gridPosition {
     int x, y;
 } gridPosition;

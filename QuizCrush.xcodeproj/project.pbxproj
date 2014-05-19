@@ -15,6 +15,9 @@
 		71695F7E1924A700009FCCBC /* QCCoordinates.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7D1924A700009FCCBC /* QCCoordinates.m */; };
 		7189624C1924C447007C9D6C /* QCSlimeView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189624B1924C447007C9D6C /* QCSlimeView.m */; };
 		7189624F1924DCB2007C9D6C /* QCSlimeTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189624E1924DCB2007C9D6C /* QCSlimeTile.m */; };
+		718962581925FDA5007C9D6C /* QCVLevelChooserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */; };
+		7189625A1926325B007C9D6C /* Slime Level 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 718962591926325B007C9D6C /* Slime Level 1.plist */; };
+		7189625C192632EB007C9D6C /* Score Level 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7189625B192632EB007C9D6C /* Score Level 1.plist */; };
 		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
 		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
 		71A3CED5191BA362008342D9 /* QCTileHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71A3CED4191BA361008342D9 /* QCTileHolderView.m */; };
@@ -67,6 +70,10 @@
 		7189624B1924C447007C9D6C /* QCSlimeView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeView.m; sourceTree = "<group>"; };
 		7189624D1924DCB2007C9D6C /* QCSlimeTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSlimeTile.h; sourceTree = "<group>"; };
 		7189624E1924DCB2007C9D6C /* QCSlimeTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeTile.m; sourceTree = "<group>"; };
+		718962561925FDA5007C9D6C /* QCVLevelChooserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCVLevelChooserVC.h; sourceTree = "<group>"; };
+		718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCVLevelChooserVC.m; sourceTree = "<group>"; };
+		718962591926325B007C9D6C /* Slime Level 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Slime Level 1.plist"; sourceTree = "<group>"; };
+		7189625B192632EB007C9D6C /* Score Level 1.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Score Level 1.plist"; sourceTree = "<group>"; };
 		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
 		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
@@ -161,6 +168,11 @@
 			isa = PBXGroup;
 			children = (
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
+				718962591926325B007C9D6C /* Slime Level 1.plist */,
+				7189625B192632EB007C9D6C /* Score Level 1.plist */,
+				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
+				718962561925FDA5007C9D6C /* QCVLevelChooserVC.h */,
+				718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */,
 				71695F7919249B6F009FCCBC /* QCSlimeModel.h */,
 				71695F7A19249B6F009FCCBC /* QCSlimeModel.m */,
 				7189624A1924C447007C9D6C /* QCSlimeView.h */,
@@ -176,7 +188,6 @@
 				71386C3E18F2904100414357 /* QCPopupView.m */,
 				71E0C4F718D6E39800B5FFC7 /* QCAppDelegate.h */,
 				71E0C4F818D6E39800B5FFC7 /* QCAppDelegate.m */,
-				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
 				71E0C51D18D6E44300B5FFC7 /* QCLevelViewController.h */,
 				71E0C51E18D6E44300B5FFC7 /* QCLevelViewController.m */,
 				71E0C52018D6E80400B5FFC7 /* QCTile.h */,
@@ -311,8 +322,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7189625C192632EB007C9D6C /* Score Level 1.plist in Resources */,
 				71E0C50118D6E39800B5FFC7 /* Images.xcassets in Resources */,
 				719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */,
+				7189625A1926325B007C9D6C /* Slime Level 1.plist in Resources */,
 				71E0C52718D6F3C900B5FFC7 /* UISettings.plist in Resources */,
 				71E0C4F318D6E39800B5FFC7 /* InfoPlist.strings in Resources */,
 				71E0C4FC18D6E39800B5FFC7 /* Main.storyboard in Resources */,
@@ -336,6 +349,7 @@
 			files = (
 				719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */,
 				7189624C1924C447007C9D6C /* QCSlimeView.m in Sources */,
+				718962581925FDA5007C9D6C /* QCVLevelChooserVC.m in Sources */,
 				7189624F1924DCB2007C9D6C /* QCSlimeTile.m in Sources */,
 				7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */,
 				71E0C51F18D6E44300B5FFC7 /* QCLevelViewController.m in Sources */,
