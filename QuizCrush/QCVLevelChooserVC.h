@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "QCLevelViewController.h"
 
-@interface QCVLevelChooserVC : UIViewController
+@interface QCVLevelChooserVC : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 @end
