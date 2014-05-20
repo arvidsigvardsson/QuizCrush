@@ -212,6 +212,7 @@ typedef enum {
     // only 50/50
     if (_answerWasCorrect && [_tilesTouched count] >= 7) {
         _numberOfFiftyFiftyBoosters += 1;
+        [self animateFiftyButton];
     }
     
     
@@ -270,7 +271,6 @@ typedef enum {
 -(void) deleteFallingTilesWithSpringForSet:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
     NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:booster];
     
-    NSLog(@"Från dlete falling.. with spring, borttagna tiles: %@", selectionSet);
     for (NSNumber *addNewKey in newTiles) {
         QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
         int x = [newTile.x intValue];
@@ -2673,6 +2673,25 @@ typedef enum {
     } else {
         _fiftyXLabel.hidden = YES;
     }
+}
+
+-(void) animateFiftyButton {
+//    CGRect largeFrame = 
+    [UIView animateWithDuration:0.2
+                          delay:0
+                        options:UIViewAnimationOptionCurveEaseInOut
+                     animations:^{
+                         _fiftyFiftyButton.transform = CGAffineTransformMakeScale(1.5, 1.5);
+                     } completion:^(BOOL finished) {
+                         [UIView animateWithDuration:0.3
+                                               delay:0.1
+                                             options:UIViewAnimationOptionCurveEaseInOut
+                                          animations:^{
+                                              _fiftyFiftyButton.transform = CGAffineTransformMakeScale(1, 1);
+                                          } completion:^(BOOL finished) {
+                                              
+                                          }];
+                     }];
 }
 
 - (IBAction)fiftyFiftyButtonHandler:(id)sender {

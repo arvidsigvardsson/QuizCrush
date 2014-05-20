@@ -3387,8 +3387,6 @@
 
 {"qpid": 0, "ac": "Patrick Stewart", "s": 0, "v": 1, "dl": 30, "tp": "TV", "cat": 0, "a1": "Ian McKellan", "a3": "Kenneth Branagh", "a2": "Julian Glover", "t": "Vilken medlem av Royal Shakespeare Company har spelat kaptenen i \"Star Trek\"?", "rc": 1, "_id": 8507, "ref": 501904, "l": "sv"}, 
 
-{"qpid": 0, "ac": "Djingis Khan", "s": 0, "sv": 0, "v": 1, "dl": 50, "tp": "Imperier", "cat": 2, "a1": "Alexander den store", "a3": "Stalin", "a2": "Julius Caesar", "t": "Vilket krig ledde till ockuperandet av ett st\u00f6rre territorium \u00e4n n\u00e5got annat i historien?", "rc": 72, "_id": 8511, "ref": 503222, "l": "sv"}, 
-
 {"qpid": 0, "ac": "1859", "s": 0, "v": 1, "dl": 30, "tp": "Biologi", "cat": 4, "a1": "1839", "a3": "1899", "a2": "1879", "t": "N\u00e4r utkom Darwins \"Om arternas uppkomst\" f\u00f6rsta g\u00e5ngen?", "rc": 0, "_id": 8517, "ref": 503860, "l": "sv"}, 
 
 {"qpid": 0, "ac": "Boston", "s": 0, "v": 1, "dl": 70, "tp": "TV-serier", "cat": 0, "a1": "Seattle", "a3": "New York", "a2": "Chicago", "t": "I vilken stad bor Frasier Crane i \"Sk\u00e5l\"?", "rc": 0, "_id": 8520, "ref": 501920, "l": "sv"}, 
