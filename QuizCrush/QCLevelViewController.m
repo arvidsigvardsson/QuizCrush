@@ -18,13 +18,10 @@ typedef enum {
 @property BoosterState boosterState;
 
 @property (weak, nonatomic) IBOutlet QCTileHolderView *holderView;
-//@property NSMutableArray *viewArray;
-//@prperty (weak, nonatomic) IBOutlet UIView *popup;
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
 @property (weak, nonatomic) IBOutlet UILabel *movesLeftLabel;
 
 @property (weak, nonatomic) IBOutlet UILabel *scoreLabel;
-//@property UIView *popOver;
 
 @property QCPopupView *popView;
 @property QCSelectCategoryPopup *selectCategoryPopup;
@@ -39,19 +36,14 @@ typedef enum {
 @property (nonatomic) NSDictionary *levelSettingsDictionary;
 @property QCPlayingFieldModel *playingFieldModel;
 @property float lengthOfTile;
-//@property NSNumber *noRowsAndCols;
 @property NSNumber *numberOfRows;
 @property NSNumber *numberOfColumns;
-@property NSArray *colorArray;
 @property NSNumber *tilesRequiredToMatch;
 @property BOOL animating;
 @property BOOL validSwipe;
 @property NSMutableSet *tilesTouched;
 @property NSSet *matchingTiles;
 @property NSNumber *currentTileTouched;
-@property NSMutableArray *moveArray;
-@property NSString *moveDirection;
-@property NSMutableArray *suctionMoveArray;
 @property BOOL popOverIsActive;
 @property NSNumber *selectedBoosterTile;
 @property NSUInteger score;
@@ -62,12 +54,10 @@ typedef enum {
 @property BOOL bombBoosterIsActive;
 @property BOOL changeCategoryBoosterIsActive;
 @property NSNumber *tileToChangeCategoryOf;
-//@property UIButton *fiftyFiftyButton;
 @property (weak, nonatomic) IBOutlet UIButton *fiftyFiftyButton;
 - (IBAction)fiftyFiftyButtonHandler:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *fiftyXLabel;
 @property BOOL fiftyUsed;
-//@property NSMutableArray *avatarMovement;
 @property int animatingCount;
 @property (nonatomic) NSMutableSet *slimeSet;
 
@@ -451,16 +441,6 @@ typedef enum {
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     _uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
-//    _colorArray = @[[UIColor orangeColor], [UIColor purpleColor], [UIColor greenColor], [UIColor brownColor], [UIColor blueColor], [UIColor yellowColor]];
-
-    _colorArray = @[[UIColor purpleColor],
-                    [UIColor blueColor],
-                    [UIColor yellowColor],
-                    [UIColor brownColor],
-                    [UIColor greenColor],
-                    [UIColor orangeColor]];
-
-
     // background
     UIImage *background = [UIImage imageNamed:@"QC_background"];
     UIImageView *bgView = [[UIImageView alloc] initWithImage:background];
@@ -508,11 +488,11 @@ typedef enum {
     // swipe handling properties
     _animating = NO;
     _tilesTouched = [[NSMutableSet alloc] init];
-    _moveArray = [[NSMutableArray alloc] init];
-    _moveDirection = [[NSString alloc] init];
-
-    // suction action
-    _suctionMoveArray = [[NSMutableArray alloc] init];
+//    _moveArray = [[NSMutableArray alloc] init];
+//    _moveDirection = [[NSString alloc] init];
+//
+//    // suction action
+//    _suctionMoveArray = [[NSMutableArray alloc] init];
     
     // even newer pan handler
     UIPanGestureRecognizer *diagonalSwipePanHandler = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(diagonalSwipeDeletePanHandler:)];
@@ -581,55 +561,55 @@ typedef enum {
 }
 
 - (void)deleteTiles:(NSNumber *)IDTileClicked {
-    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
-    if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
-        return;
-    }
-
-    // identify if new tiles have been created and give them a view etc
-//    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
-    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:NO];
-
-    for (NSNumber *addNewKey in newTiles) {
-        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
-        int x = [newTile.x intValue];
-        int y = [newTile.y intValue];
-        //
-        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
-        newView.layer.cornerRadius = 17.0;
-        newView.layer.masksToBounds = YES;
-        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
-
-        UIColor *color = _colorArray[[category intValue]];
-
-        [newView setBackgroundColor:color];
-        [_viewDictionary setObject:newView
-                            forKey:addNewKey];
-        [_holderView addSubview:newView];
-    }
-
-
-    // dict with ids of tiles to move, with their corresponding moves
-    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
-
-    for (NSNumber *key in selectionSet) {
-        UIView * view = _viewDictionary[key];
-        //        [view setBackgroundColor:[UIColor blackColor]];
-        [view removeFromSuperview];
-        [_viewDictionary removeObjectForKey:key];
-    }
-
-       _animating = YES;
-
-    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue] animations:^{
-        for (NSNumber *aniKey in animateDict) {
-            UIView *aniView = _viewDictionary[aniKey];
-            CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
-            [aniView setCenter:newCenter];
-        }
-    }completion:^(BOOL finished) {
-        _animating = NO;
-    }];
+//    NSSet *selectionSet = [_playingFieldModel matchingAdjacentTilesToTileWithID:IDTileClicked];
+//    if ([selectionSet count] < [_tilesRequiredToMatch intValue]) {
+//        return;
+//    }
+//
+//    // identify if new tiles have been created and give them a view etc
+////    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet];
+//    NSSet *newTiles = [_playingFieldModel getNewTilesReplacing:selectionSet excludingCategory:nil withBooster:NO];
+//
+//    for (NSNumber *addNewKey in newTiles) {
+//        QCTile *newTile = [_playingFieldModel tileWithID:addNewKey];
+//        int x = [newTile.x intValue];
+//        int y = [newTile.y intValue];
+//        //
+//        UIView *newView = [[UIView alloc] initWithFrame:CGRectMake(x * _lengthOfTile, y * _lengthOfTile, _lengthOfTile, _lengthOfTile)];
+//        newView.layer.cornerRadius = 17.0;
+//        newView.layer.masksToBounds = YES;
+//        NSNumber *category = [_playingFieldModel categoryOfTileWithID:addNewKey];
+//
+////        UIColor *color = _colorArray[[category intValue]];
+//
+//        [newView setBackgroundColor:color];
+//        [_viewDictionary setObject:newView
+//                            forKey:addNewKey];
+//        [_holderView addSubview:newView];
+//    }
+//
+//
+//    // dict with ids of tiles to move, with their corresponding moves
+//    NSDictionary *animateDict = [_playingFieldModel removeAndReturnVerticalTranslations:selectionSet];
+//
+//    for (NSNumber *key in selectionSet) {
+//        UIView * view = _viewDictionary[key];
+//        //        [view setBackgroundColor:[UIColor blackColor]];
+//        [view removeFromSuperview];
+//        [_viewDictionary removeObjectForKey:key];
+//    }
+//
+//       _animating = YES;
+//
+//    [UIView animateWithDuration:[_uiSettingsDictionary[@"Falling animation duration"] floatValue] animations:^{
+//        for (NSNumber *aniKey in animateDict) {
+//            UIView *aniView = _viewDictionary[aniKey];
+//            CGPoint newCenter = CGPointMake(aniView.center.x, aniView.center.y + [animateDict[aniKey] intValue] * _lengthOfTile);
+//            [aniView setCenter:newCenter];
+//        }
+//    }completion:^(BOOL finished) {
+//        _animating = NO;
+//    }];
 }
 
 -(void) swipeFallingDeleteTiles:(NSSet *) selectionSet withBooster:(NSNumber *) booster {
@@ -1007,192 +987,192 @@ typedef enum {
 }
 
 -(void) suctionPanHandler:(UIPanGestureRecognizer *) recognizer {
-    if (_animating) {
-        return;
-    }
-    if (_popOverIsActive) {
-        return;
-    }
-
-
-    CGPoint point = [recognizer locationInView:_holderView];
-//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point
-                                            numberOfRows:_numberOfRows
-                                         numberOfColumns:_numberOfColumns
-                                           lengthOfSides:_lengthOfTile];
-    NSNumber *x = touchPoint[@"x"];
-    NSNumber *y = touchPoint[@"y"];
-    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-    //    NSLog(@"Touchpoint: %@", touchPoint);
-
-
-
-
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        [self unMarkTiles:_tilesTouched];
-//        NSLog(@"Unmarking tiles: %@", _tilesTouched);
-        [_tilesTouched removeAllObjects];
-//        [_moveArray removeAllObjects];
-        [_suctionMoveArray removeAllObjects];
-
-
-        _validSwipe = YES;
-        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
-        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-
-        [_tilesTouched addObject:_currentTileTouched];
-        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
-    }
-
-    else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_validSwipe) {
-            return;
-        }
-
-        // make sure booster is not swiped
-            if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
-                return;
-            }
-
-        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
-            return;
-        }
-        if (![_matchingTiles member:newTileTouched]) {
-            _validSwipe = NO;
-//            if (_moveArray) {
-//                [self abortSwipeWithMoves:_moveArray];
-//            }
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-
-        // cancel booster action if player wants to swipe instead
-        _bombBoosterIsActive = NO;
-        _messageLabel.hidden = YES;
-
-        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _validSwipe = NO;
-//            if (_moveArray) {
-//                [self abortSwipeWithMoves:_moveArray];
-//            }
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-        // prevent player from moving backwards, ie retouch an already touched tile
-        if ([_tilesTouched member:newTileTouched]) {
-//            if (_moveArray) {
-//                [self abortSwipeWithMoves:_moveArray];
-//            }
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _validSwipe = NO;
-            return;
-        }
-        // prevent stepping on tail
-        NSNumber *testOnTailID = [_playingFieldModel IDOfTileDuringMotionAtX:x Y:y];
-        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:testOnTailID]) {
-            NSLog(@"Can't hit your own tail!");
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _validSwipe = NO;
-            return;
-        }
-
-        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
-        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
-
-//        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-//        if (move) {
-//            [_moveArray addObject:move];
+//    if (_animating) {
+//        return;
+//    }
+//    if (_popOverIsActive) {
+//        return;
+//    }
+//
+//
+//    CGPoint point = [recognizer locationInView:_holderView];
+////    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+//                                            numberOfRows:_numberOfRows
+//                                         numberOfColumns:_numberOfColumns
+//                                           lengthOfSides:_lengthOfTile];
+//    NSNumber *x = touchPoint[@"x"];
+//    NSNumber *y = touchPoint[@"y"];
+//    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+//    //    NSLog(@"Touchpoint: %@", touchPoint);
+//
+//
+//
+//
+//    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        [self unMarkTiles:_tilesTouched];
+////        NSLog(@"Unmarking tiles: %@", _tilesTouched);
+//        [_tilesTouched removeAllObjects];
+////        [_moveArray removeAllObjects];
+//        [_suctionMoveArray removeAllObjects];
+//
+//
+//        _validSwipe = YES;
+//        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//
+//        [_tilesTouched addObject:_currentTileTouched];
+//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+//    }
+//
+//    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+//        if (!_validSwipe) {
+//            return;
 //        }
-
-        // check if first step has been taken
-        QCSuctionMove *suctionMove;
-        if (![_suctionMoveArray count] > 0) {
-            suctionMove = [_playingFieldModel takeFirstSuctionStepFrom:_currentTileTouched
-                                                                          inDirection:_moveDirection];
-        } else {
-            suctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched WithMove:[_suctionMoveArray lastObject]
-                                                           inDirection:_moveDirection];
-        }
-        [_suctionMoveArray addObject:suctionMove];
-
-        _currentTileTouched = newTileTouched;
-        [_tilesTouched addObject:newTileTouched];
-        [self markTiles:_tilesTouched];
-
-
-    }
-    else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_validSwipe) {
-            NSLog(@"Invalid swipe");
-            [self unMarkTiles:_tilesTouched];
-
-            //            NSLog(@"Invalid swipe");
-            [_tilesTouched removeAllObjects];
-//            [_moveArray removeAllObjects];
-//            [_suctionMoveArray removeAllObjects];
-            return;
-        }
-        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
-            NSLog(@"Invalid swipe, not enough tiles swiped!");
-            [self unMarkTiles:_tilesTouched];
-
-            //            NSLog(@"Invalid swipe, not enough tiles swiped!");
-
-            [_tilesTouched removeAllObjects];
-//            [_moveArray removeAllObjects];
-//            [_suctionMoveArray removeAllObjects];
-//            if (_moveArray) {
-//                [self abortSwipeWithMoves:_moveArray];
+//
+//        // make sure booster is not swiped
+//            if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+//                return;
 //            }
-
-            // abort suctionSwipe
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-        //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
-        [self markTiles:_tilesTouched];
-
-        // make final move
-//        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-//        [_moveArray addObject:finalMove];
-
-        // final suction move
-        QCSuctionMove *finalSuctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched
-                                                                              WithMove:[_suctionMoveArray lastObject]
-                                                                           inDirection:_moveDirection];
-        [_suctionMoveArray addObject:finalSuctionMove];
-
-        //        [_tilesTouched removeAllObjects];
-        //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
-//        for (QCMoveDescription *moveInspect in _moveArray) {
-//            NSLog(@"%@", moveInspect);
+//
+//        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+//            return;
 //        }
-
-        //        NSLog(@"moveArray: %@", _moveArray);
-//        [self performAndAnimateMoves:_moveArray];
-//        [_playingFieldModel updateModelWithMoves:_moveArray];
-
-        // perform animations and update model
-//        for (QCSuctionMove *move in _suctionMoveArray) {
-//            NSLog(@"Suction move: %@", move);
+//        if (![_matchingTiles member:newTileTouched]) {
+//            _validSwipe = NO;
+////            if (_moveArray) {
+////                [self abortSwipeWithMoves:_moveArray];
+////            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
 //        }
-
-        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
-//        _animating = YES;
-//        [self performAndAnimateSuctionMoves:_suctionMoveArray];
-//        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
-
-    }
-    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
-    else if (recognizer.state == UIGestureRecognizerStateFailed) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
-
-    //    NSLog(@"Tiles touched: %@", _tilesTouched);
+//
+//        // cancel booster action if player wants to swipe instead
+//        _bombBoosterIsActive = NO;
+//        _messageLabel.hidden = YES;
+//
+//        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+//            _validSwipe = NO;
+////            if (_moveArray) {
+////                [self abortSwipeWithMoves:_moveArray];
+////            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
+//        }
+//        // prevent player from moving backwards, ie retouch an already touched tile
+//        if ([_tilesTouched member:newTileTouched]) {
+////            if (_moveArray) {
+////                [self abortSwipeWithMoves:_moveArray];
+////            }
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            _validSwipe = NO;
+//            return;
+//        }
+//        // prevent stepping on tail
+//        NSNumber *testOnTailID = [_playingFieldModel IDOfTileDuringMotionAtX:x Y:y];
+//        if ([[[_suctionMoveArray lastObject] tailArray] containsObject:testOnTailID]) {
+//            NSLog(@"Can't hit your own tail!");
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            _validSwipe = NO;
+//            return;
+//        }
+//
+//        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
+//        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
+//
+////        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+////        if (move) {
+////            [_moveArray addObject:move];
+////        }
+//
+//        // check if first step has been taken
+//        QCSuctionMove *suctionMove;
+//        if (![_suctionMoveArray count] > 0) {
+//            suctionMove = [_playingFieldModel takeFirstSuctionStepFrom:_currentTileTouched
+//                                                                          inDirection:_moveDirection];
+//        } else {
+//            suctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched WithMove:[_suctionMoveArray lastObject]
+//                                                           inDirection:_moveDirection];
+//        }
+//        [_suctionMoveArray addObject:suctionMove];
+//
+//        _currentTileTouched = newTileTouched;
+//        [_tilesTouched addObject:newTileTouched];
+//        [self markTiles:_tilesTouched];
+//
+//
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+//        if (!_validSwipe) {
+//            NSLog(@"Invalid swipe");
+//            [self unMarkTiles:_tilesTouched];
+//
+//            //            NSLog(@"Invalid swipe");
+//            [_tilesTouched removeAllObjects];
+////            [_moveArray removeAllObjects];
+////            [_suctionMoveArray removeAllObjects];
+//            return;
+//        }
+//        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+//            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//            [self unMarkTiles:_tilesTouched];
+//
+//            //            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//
+//            [_tilesTouched removeAllObjects];
+////            [_moveArray removeAllObjects];
+////            [_suctionMoveArray removeAllObjects];
+////            if (_moveArray) {
+////                [self abortSwipeWithMoves:_moveArray];
+////            }
+//
+//            // abort suctionSwipe
+//            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
+//        }
+//        //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+//        [self markTiles:_tilesTouched];
+//
+//        // make final move
+////        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+////        [_moveArray addObject:finalMove];
+//
+//        // final suction move
+//        QCSuctionMove *finalSuctionMove = [_playingFieldModel takeNewSuctionStepFromID:_currentTileTouched
+//                                                                              WithMove:[_suctionMoveArray lastObject]
+//                                                                           inDirection:_moveDirection];
+//        [_suctionMoveArray addObject:finalSuctionMove];
+//
+//        //        [_tilesTouched removeAllObjects];
+//        //        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
+////        for (QCMoveDescription *moveInspect in _moveArray) {
+////            NSLog(@"%@", moveInspect);
+////        }
+//
+//        //        NSLog(@"moveArray: %@", _moveArray);
+////        [self performAndAnimateMoves:_moveArray];
+////        [_playingFieldModel updateModelWithMoves:_moveArray];
+//
+//        // perform animations and update model
+////        for (QCSuctionMove *move in _suctionMoveArray) {
+////            NSLog(@"Suction move: %@", move);
+////        }
+//
+//        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+////        _animating = YES;
+////        [self performAndAnimateSuctionMoves:_suctionMoveArray];
+////        [_playingFieldModel updateModelWithSuctionMoves:_suctionMoveArray];
+//
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
+//        [self abortSwipeWithMoves:_moveArray];
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateFailed) {
+//        [self abortSwipeWithMoves:_moveArray];
+//    }
+//
+//    //    NSLog(@"Tiles touched: %@", _tilesTouched);
 
 }
 
@@ -1672,7 +1652,7 @@ typedef enum {
         //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
         [_tilesTouched removeAllObjects];
         //        [_moveArray removeAllObjects];
-        [_suctionMoveArray removeAllObjects];
+//        [_suctionMoveArray removeAllObjects];
         
         
         _validSwipe = YES;
@@ -1799,75 +1779,62 @@ typedef enum {
 }
 
 -(void) swipeDeletePanHandler:(UIPanGestureRecognizer *) recognizer {
-    if (_animating) {
-        return;
-    }
-    if (_popOverIsActive) {
-        return;
-    }
-    
-    _changeCategoryBoosterIsActive = NO;
-    _bombBoosterIsActive = NO;
-    
-    CGPoint point = [recognizer locationInView:_holderView];
-    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point
-                                            numberOfRows:_numberOfRows
-                                         numberOfColumns:_numberOfColumns
-                                           lengthOfSides:_lengthOfTile];
-    NSNumber *x = touchPoint[@"x"];
-    NSNumber *y = touchPoint[@"y"];
-    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-    //    NSLog(@"Touchpoint: %@", touchPoint);
-    
-    
-    
-    
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        [self unMarkTiles:_tilesTouched];
-        //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
-        [_tilesTouched removeAllObjects];
-        //        [_moveArray removeAllObjects];
-        [_suctionMoveArray removeAllObjects];
-        
-        
-        _validSwipe = YES;
-        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
-        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        
-        [_tilesTouched addObject:_currentTileTouched];
-        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
-        [self markTiles:_tilesTouched];
-    }
-    
-    else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_validSwipe) {
-            return;
-        }
-        
-        // make sure booster is not swiped
-        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
-            return;
-        }
-        
-        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
-            return;
-        }
-        if (![_matchingTiles member:newTileTouched]) {
-            _validSwipe = NO;
-            //            if (_moveArray) {
-            //                [self abortSwipeWithMoves:_moveArray];
-            //            }
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-        
-        // cancel booster action if player wants to swipe instead
-        _bombBoosterIsActive = NO;
-        _messageLabel.hidden = YES;
-        
-//        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+//    if (_animating) {
+//        return;
+//    }
+//    if (_popOverIsActive) {
+//        return;
+//    }
+//    
+//    _changeCategoryBoosterIsActive = NO;
+//    _bombBoosterIsActive = NO;
+//    
+//    CGPoint point = [recognizer locationInView:_holderView];
+//    //    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+//                                            numberOfRows:_numberOfRows
+//                                         numberOfColumns:_numberOfColumns
+//                                           lengthOfSides:_lengthOfTile];
+//    NSNumber *x = touchPoint[@"x"];
+//    NSNumber *y = touchPoint[@"y"];
+//    //    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+//    //    NSLog(@"Touchpoint: %@", touchPoint);
+//    
+//    
+//    
+//    
+//    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        [self unMarkTiles:_tilesTouched];
+//        //        NSLog(@"Unmarking tiles: %@", _tilesTouched);
+//        [_tilesTouched removeAllObjects];
+//        //        [_moveArray removeAllObjects];
+//        [_suctionMoveArray removeAllObjects];
+//        
+//        
+//        _validSwipe = YES;
+//        //        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        
+//        [_tilesTouched addObject:_currentTileTouched];
+//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+//        [self markTiles:_tilesTouched];
+//    }
+//    
+//    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+//        if (!_validSwipe) {
+//            return;
+//        }
+//        
+//        // make sure booster is not swiped
+//        if ([[_playingFieldModel categoryOfTileWithID:_currentTileTouched] isEqualToNumber:@7]) {
+//            return;
+//        }
+//        
+//        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+//            return;
+//        }
+//        if (![_matchingTiles member:newTileTouched]) {
 //            _validSwipe = NO;
 //            //            if (_moveArray) {
 //            //                [self abortSwipeWithMoves:_moveArray];
@@ -1875,58 +1842,71 @@ typedef enum {
 //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
 //            return;
 //        }
-        
-        
-        // prevent player from moving backwards, ie retouch an already touched tile
-        if ([_tilesTouched member:newTileTouched]) {
-            //            if (_moveArray) {
-            //                [self abortSwipeWithMoves:_moveArray];
-            //            }
-            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            _validSwipe = NO;
-            return;
-        }
-               _currentTileTouched = newTileTouched;
-        [_tilesTouched addObject:newTileTouched];
-        [self markTiles:_tilesTouched];
-        
-        
-    }
-    else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_validSwipe) {
-            NSLog(@"Invalid swipe");
-            [self unMarkTiles:_tilesTouched];
-            
-            //            NSLog(@"Invalid swipe");
-            [_tilesTouched removeAllObjects];
-            //            [_moveArray removeAllObjects];
-            //            [_suctionMoveArray removeAllObjects];
-            return;
-        }
-        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
-            NSLog(@"Invalid swipe, not enough tiles swiped!");
-            [self unMarkTiles:_tilesTouched];
-            
-            //            NSLog(@"Invalid swipe, not enough tiles swiped!");
-            
-            [_tilesTouched removeAllObjects];
-            //            [_moveArray removeAllObjects];
-            //            [_suctionMoveArray removeAllObjects];
-            //            if (_moveArray) {
-            //                [self abortSwipeWithMoves:_moveArray];
-            //            }
-            
-//            // abort suctionSwipe
+//        
+//        // cancel booster action if player wants to swipe instead
+//        _bombBoosterIsActive = NO;
+//        _messageLabel.hidden = YES;
+//        
+////        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+////            _validSwipe = NO;
+////            //            if (_moveArray) {
+////            //                [self abortSwipeWithMoves:_moveArray];
+////            //            }
+////            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+////            return;
+////        }
+//        
+//        
+//        // prevent player from moving backwards, ie retouch an already touched tile
+//        if ([_tilesTouched member:newTileTouched]) {
+//            //            if (_moveArray) {
+//            //                [self abortSwipeWithMoves:_moveArray];
+//            //            }
 //            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
-            return;
-        }
-        //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
-        [self markTiles:_tilesTouched];
-        
-    
-        
-        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
-    }
+//            _validSwipe = NO;
+//            return;
+//        }
+//               _currentTileTouched = newTileTouched;
+//        [_tilesTouched addObject:newTileTouched];
+//        [self markTiles:_tilesTouched];
+//        
+//        
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+//        if (!_validSwipe) {
+//            NSLog(@"Invalid swipe");
+//            [self unMarkTiles:_tilesTouched];
+//            
+//            //            NSLog(@"Invalid swipe");
+//            [_tilesTouched removeAllObjects];
+//            //            [_moveArray removeAllObjects];
+//            //            [_suctionMoveArray removeAllObjects];
+//            return;
+//        }
+//        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
+//            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//            [self unMarkTiles:_tilesTouched];
+//            
+//            //            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//            
+//            [_tilesTouched removeAllObjects];
+//            //            [_moveArray removeAllObjects];
+//            //            [_suctionMoveArray removeAllObjects];
+//            //            if (_moveArray) {
+//            //                [self abortSwipeWithMoves:_moveArray];
+//            //            }
+//            
+////            // abort suctionSwipe
+////            [self abortSuctionSwipeWithMoves:_suctionMoveArray];
+//            return;
+//        }
+//        //        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+//        [self markTiles:_tilesTouched];
+//        
+//    
+//        
+//        [self launchPopOverFromID:_currentTileTouched withColor:[UIColor redColor]];
+//    }
 }
 
 -(void) boosterTapHandler:(UITapGestureRecognizer *) recognizer {
@@ -2082,144 +2062,144 @@ typedef enum {
 
 
 -(void) panHandler:(UIPanGestureRecognizer *) recognizer {
-//    NSLog(@"Pan handler");
-    CGPoint point = [recognizer locationInView:_holderView];
-//    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
-    NSDictionary *touchPoint = [self gridPositionOfPoint:point
-                                            numberOfRows:_numberOfRows
-                                         numberOfColumns:_numberOfColumns
-                                           lengthOfSides:_lengthOfTile];
-
-    NSNumber *x = touchPoint[@"x"];
-    NSNumber *y = touchPoint[@"y"];
-//    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
-//    NSLog(@"Touchpoint: %@", touchPoint);
-
-
-
-
-    if (recognizer.state == UIGestureRecognizerStateBegan) {
-        [self unMarkTiles:_tilesTouched];
-        NSLog(@"Unmarking tiles: %@", _tilesTouched);
-        [_tilesTouched removeAllObjects];
-        [_moveArray removeAllObjects];
-
-        _validSwipe = YES;
-//        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
-        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-
-        // test, skall nog inte vara så här
-//        if (!_currentTileTouched) {
+////    NSLog(@"Pan handler");
+//    CGPoint point = [recognizer locationInView:_holderView];
+////    NSDictionary *touchPoint = [self gridPositionOfPoint:point numberOfRows:_noRowsAndCols lengthOfSides:_lengthOfTile];
+//    NSDictionary *touchPoint = [self gridPositionOfPoint:point
+//                                            numberOfRows:_numberOfRows
+//                                         numberOfColumns:_numberOfColumns
+//                                           lengthOfSides:_lengthOfTile];
+//
+//    NSNumber *x = touchPoint[@"x"];
+//    NSNumber *y = touchPoint[@"y"];
+////    NSMutableSet *tilesTouched = [[NSMutableSet alloc] init];
+////    NSLog(@"Touchpoint: %@", touchPoint);
+//
+//
+//
+//
+//    if (recognizer.state == UIGestureRecognizerStateBegan) {
+//        [self unMarkTiles:_tilesTouched];
+//        NSLog(@"Unmarking tiles: %@", _tilesTouched);
+//        [_tilesTouched removeAllObjects];
+//        [_moveArray removeAllObjects];
+//
+//        _validSwipe = YES;
+////        NSNumber *firstTile = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        _currentTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//
+//        // test, skall nog inte vara så här
+////        if (!_currentTileTouched) {
+////            return;
+////        }
+//        // debug
+//        NSLog(@"Hela planen: %@", _playingFieldModel);
+//
+//        [_tilesTouched addObject:_currentTileTouched];
+//        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
+////        NSLog(@"State began, possible matches: %@", _matchingTiles);
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateChanged) {
+//        if (!_validSwipe) {
 //            return;
 //        }
-        // debug
-        NSLog(@"Hela planen: %@", _playingFieldModel);
-
-        [_tilesTouched addObject:_currentTileTouched];
-        _matchingTiles = [_playingFieldModel matchingAdjacentTilesToTileWithID:_currentTileTouched];
-//        NSLog(@"State began, possible matches: %@", _matchingTiles);
-    }
-    else if (recognizer.state == UIGestureRecognizerStateChanged) {
-        if (!_validSwipe) {
-            return;
-        }
-        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
-        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
-            return;
-        }
-        if (![_matchingTiles member:newTileTouched]) {
-            _validSwipe = NO;
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
-            return;
-        }
-        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
-            _validSwipe = NO;
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
-            return;
-        }
-        // prevent player from moving backwards, ie retouch an already touched tile
-        if ([_tilesTouched member:newTileTouched]) {
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
-            _validSwipe = NO;
-            return;
-        }
-        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
-
-        // test
-//        NSLog(@"Direction swiped: %@", [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched]);
-//        _vaildSwipe = NO;
-//        return;
-
-        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
-
-        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-        if (move) {
-            [_moveArray addObject:move];
-        }
-
-        _currentTileTouched = newTileTouched;
-        [_tilesTouched addObject:newTileTouched];
-        [self markTiles:_tilesTouched];
-        // TODO store the move, figure out how to deal with if user backtracks on valid tiles
-
-
-    }
-    else if (recognizer.state == UIGestureRecognizerStateEnded) {
-        if (!_validSwipe) {
-            NSLog(@"Invalid swipe");
-            [self unMarkTiles:_tilesTouched];
-
+//        NSNumber *newTileTouched = [_playingFieldModel iDOfTileAtX:x Y:y];
+//        if ([newTileTouched isEqualToNumber:_currentTileTouched]) {
+//            return;
+//        }
+//        if (![_matchingTiles member:newTileTouched]) {
+//            _validSwipe = NO;
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+//            return;
+//        }
+//        if (![_playingFieldModel tilesAreAdjacentID1:_currentTileTouched ID2:newTileTouched]) {
+//            _validSwipe = NO;
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+//            return;
+//        }
+//        // prevent player from moving backwards, ie retouch an already touched tile
+//        if ([_tilesTouched member:newTileTouched]) {
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+//            _validSwipe = NO;
+//            return;
+//        }
+//        // ok, tiles are matching, adjacent, swipe is still valid. Now do stuff!
+//
+//        // test
+////        NSLog(@"Direction swiped: %@", [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched]);
+////        _vaildSwipe = NO;
+////        return;
+//
+//        _moveDirection = [_playingFieldModel directionFromID:_currentTileTouched toID:newTileTouched];
+//
+//        QCMoveDescription *move = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+//        if (move) {
+//            [_moveArray addObject:move];
+//        }
+//
+//        _currentTileTouched = newTileTouched;
+//        [_tilesTouched addObject:newTileTouched];
+//        [self markTiles:_tilesTouched];
+//        // TODO store the move, figure out how to deal with if user backtracks on valid tiles
+//
+//
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateEnded) {
+//        if (!_validSwipe) {
 //            NSLog(@"Invalid swipe");
-            [_tilesTouched removeAllObjects];
-            [_moveArray removeAllObjects];
-            return;
-        }
-        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
-            NSLog(@"Invalid swipe, not enough tiles swiped!");
-            [self unMarkTiles:_tilesTouched];
-
+//            [self unMarkTiles:_tilesTouched];
+//
+////            NSLog(@"Invalid swipe");
+//            [_tilesTouched removeAllObjects];
+//            [_moveArray removeAllObjects];
+//            return;
+//        }
+//        if ([_tilesTouched count] < [_levelSettingsDictionary[@"Number of tiles swiped required"] intValue]) {
 //            NSLog(@"Invalid swipe, not enough tiles swiped!");
-
-            [_tilesTouched removeAllObjects];
-            [_moveArray removeAllObjects];
-            if (_moveArray) {
-                [self abortSwipeWithMoves:_moveArray];
-            }
-            return;
-        }
-//        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
-        [self markTiles:_tilesTouched];
-
-        // make final move
-        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
-        [_moveArray addObject:finalMove];
-
-
-//        [_tilesTouched removeAllObjects];
-//        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
-        for (QCMoveDescription *moveInspect in _moveArray) {
-            NSLog(@"%@", moveInspect);
-        }
-
-//        NSLog(@"moveArray: %@", _moveArray);
-        [self performAndAnimateMoves:_moveArray];
-        [_playingFieldModel updateModelWithMoves:_moveArray];
-
-    }
-    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
-    else if (recognizer.state == UIGestureRecognizerStateFailed) {
-        [self abortSwipeWithMoves:_moveArray];
-    }
-
-//    NSLog(@"Tiles touched: %@", _tilesTouched);
+//            [self unMarkTiles:_tilesTouched];
+//
+////            NSLog(@"Invalid swipe, not enough tiles swiped!");
+//
+//            [_tilesTouched removeAllObjects];
+//            [_moveArray removeAllObjects];
+//            if (_moveArray) {
+//                [self abortSwipeWithMoves:_moveArray];
+//            }
+//            return;
+//        }
+////        NSLog(@"Valid swipe, tiles touched: %@", _tilesTouched);
+//        [self markTiles:_tilesTouched];
+//
+//        // make final move
+//        QCMoveDescription *finalMove = [_playingFieldModel takeOneStepAndReturnMoveForID:_currentTileTouched InDirection:_moveDirection];
+//        [_moveArray addObject:finalMove];
+//
+//
+////        [_tilesTouched removeAllObjects];
+////        NSLog(@"Valid swipes, moveArray: %@", _moveArray);
+//        for (QCMoveDescription *moveInspect in _moveArray) {
+//            NSLog(@"%@", moveInspect);
+//        }
+//
+////        NSLog(@"moveArray: %@", _moveArray);
+//        [self performAndAnimateMoves:_moveArray];
+//        [_playingFieldModel updateModelWithMoves:_moveArray];
+//
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateCancelled) {
+//        [self abortSwipeWithMoves:_moveArray];
+//    }
+//    else if (recognizer.state == UIGestureRecognizerStateFailed) {
+//        [self abortSwipeWithMoves:_moveArray];
+//    }
+//
+////    NSLog(@"Tiles touched: %@", _tilesTouched);
 }
 
 -(void) abortSwipeWithMoves:(NSArray *) arrayOfMoves {
