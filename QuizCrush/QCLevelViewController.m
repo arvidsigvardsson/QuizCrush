@@ -423,7 +423,8 @@ typedef enum {
     [_slimeSet removeAllObjects];
     
 //    NSArray *slimeArr = @[@0, @0, @1, @1, @2, @2, @3, @3, @4, @2, @5, @1, @6, @0];
-    NSArray *slimeArr = @[@1, @2, @5, @2, @2, @3, @4, @3, @3, @4, @2, @5, @4, @5, @1, @6, @5, @6];
+//    NSArray *slimeArr = @[@1, @2, @5, @2, @2, @3, @4, @3, @3, @4, @2, @5, @4, @5, @1, @6, @5, @6];
+    NSArray *slimeArr = _levelSettingsDictionary[@"Slime array"];
     //    NSMutableArray *interSlime = [[NSMutableArray alloc] init];
     for (int ind = 0; ind < [slimeArr count]; ind += 2) {
         QCCoordinates *c = [[QCCoordinates alloc] initWithX:slimeArr[ind] Y:slimeArr[ind + 1]];
@@ -466,17 +467,19 @@ typedef enum {
     [self.view addSubview:bgView];
     [self.view sendSubviewToBack:bgView];
 
-
-    // set up holder views dimensions
-    _lengthOfTile = self.view.frame.size.width / [_levelSettingsDictionary[@"Number of columns"] floatValue];
-    float frameHeight = [_levelSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
-    CGRect holderFrame = CGRectMake(0, self.view.frame.size.height / 2.0f - frameHeight / 2.0f, self.view.frame.size.width, frameHeight);
-    _holderView.frame = holderFrame;
-
-
     _numberOfRows = _levelSettingsDictionary[@"Number of rows"];
     _numberOfColumns = _levelSettingsDictionary[@"Number of columns"];
     _tilesRequiredToMatch = _levelSettingsDictionary[@"Number of tiles required to match"];
+
+    // set up holder views dimensions
+//    _lengthOfTile = self.view.frame.size.width / [_levelSettingsDictionary[@"Number of columns"] floatValue];
+    _lengthOfTile = 45.7142868;
+    float frameHeight = [_levelSettingsDictionary[@"Number of rows"] floatValue] * _lengthOfTile;
+    CGRect holderFrame = CGRectMake(0, self.view.frame.size.height / 2.0f - frameHeight / 2.0f, _lengthOfTile * [_numberOfColumns floatValue], frameHeight);
+    _holderView.frame = holderFrame;
+    _holderView.center = self.view.center;
+
+
 
     _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
     
@@ -544,11 +547,13 @@ typedef enum {
     }
 
     // new popups
-    _popupFrame = CGRectMake(20, 10, 280, 350);
+    _popupFrame = CGRectMake(0, 0, 280, 350);
     _popView = [[QCPopupView alloc] initWithFrame:_popupFrame];
+    _popView.center = _holderView.center;
     [_popView setDelegate:self];
     _popView.hidden = YES;
-    [_holderView addSubview:_popView];
+//    [_holderView addSubview:_popView];
+    [self.view addSubview:_popView];
 
     _selectCategoryPopup = [[QCSelectCategoryPopup alloc] initWithFrame:_popupFrame];
     [_selectCategoryPopup setDelegate:self];
@@ -2398,11 +2403,7 @@ typedef enum {
 }
 
 -(void) launchPopOverFromID:(NSNumber *) ID withColor:(UIColor *) color {
-//    // maybe not the best fix, but let's try
-//    if (!_currentTileTouched) {
-//        return;
-//    }
-//    
+
 
     _animating = YES;
     
@@ -2419,18 +2420,12 @@ typedef enum {
     popOverAnimatingView.layer.masksToBounds = YES;
     [_holderView addSubview:popOverAnimatingView];
 
-
-//    _popView = [[QCPopupView alloc] initWithFrame:CGRectMake(20, 10, 280, 350)];
-//    [_popView setDelegate:self];
-//    QCQuestion *question = [[QCQuestion alloc] initWithCategory:@1 topic:@"Fysik"
-//                                                 questionString:@"Vad f\u00f6rs\u00f6ker man hitta i LIGO-experimentet?"
-//                                                        answers:@[@"Tyngdv\u00e5gor", @"Higgs-bosoner", @"Liv i rymden", @"Gammastr\u00e5lning"]
-//                                             correctAnswerIndex:@0];
-
-    NSNumber *category = [_playingFieldModel categoryOfTileWithID:ID];  //_currentTileTouched];
-
-    NSLog(@"Från launch popover, current tile touched: %@, category: %@", _currentTileTouched, category);
+//    CGPoint center = [self.view convertPoint:self.view.center toView:_holderView];
+    CGPoint center = [_holderView convertPoint:self.view.center fromView:self.view];
+    CGRect frame = CGRectMake(center.x - 0.5 * _popView.frame.size.width, center.y - 0.5 * _popView.frame.size.height, _popView.frame.size.width, _popView.frame.size.height);   //_popView.frame;
     
+    NSNumber *category = [_playingFieldModel categoryOfTileWithID:ID];  //_currentTileTouched];
+  
     QCQuestion *question = [_questionProvider provideQuestionOfCategory:category];
     _currentQuestion = question;
     [_popView resetAndLoadQuestionStrings:question withFiftyFifty:@(_numberOfFiftyFiftyBoosters)];
@@ -2440,7 +2435,9 @@ typedef enum {
                           delay:0.03
                         options:UIViewAnimationOptionCurveEaseInOut
                      animations:^{
-                         popOverAnimatingView.frame = _popView.frame;
+//                         popOverAnimatingView.frame = _popView.frame;
+                         popOverAnimatingView.frame = frame;
+//                         popOverAnimatingView.center = center;
                          [popOverAnimatingView setBackgroundColor:_popView.backgroundColor];
                          [popOverAnimatingView setAlpha:.97];
 

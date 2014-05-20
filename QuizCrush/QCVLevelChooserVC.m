@@ -10,15 +10,8 @@
 
 @interface QCVLevelChooserVC ()
 
-@property (weak, nonatomic) IBOutlet UIButton *scoreLevelButton;
-@property (weak, nonatomic) IBOutlet UIButton *slimeLevelButton;
 @property (weak, nonatomic) IBOutlet UITableView *levelsTableview;
 @property (nonatomic) NSArray *levelsArray;
-
-typedef enum {
-    SCORE_LEVEL_BUTTON,
-    SLIME_LEVEL_BUTTON
-} LevelButtonType;
 
 @end
 
@@ -36,21 +29,7 @@ typedef enum {
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    _scoreLevelButton.tag = SCORE_LEVEL_BUTTON;
-    _slimeLevelButton.tag = SLIME_LEVEL_BUTTON;
-    
-    _scoreLevelButton.backgroundColor = [UIColor whiteColor];
-    _scoreLevelButton.layer.masksToBounds = YES;
-    _scoreLevelButton.layer.cornerRadius = 15;
-    _scoreLevelButton.alpha = .7;
-    
-    _slimeLevelButton.backgroundColor = [UIColor whiteColor];
-    _slimeLevelButton.layer.masksToBounds = YES;
-    _slimeLevelButton.layer.cornerRadius = 15;
-    _slimeLevelButton.alpha = .7;
-
-    
+ 
     UIImage *background = [UIImage imageNamed:@"QC_background"];
     UIImageView *bgView = [[UIImageView alloc] initWithImage:background];
     [self.view addSubview:bgView];
@@ -109,8 +88,15 @@ typedef enum {
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, 50, 50)];
 //    label.text = _levelsArray[indexPath.row];
     cell.textLabel.text = _levelsArray[indexPath.row];
+    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
     return cell;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [_levelsTableview deselectRowAtIndexPath:[_levelsTableview indexPathForSelectedRow] animated:YES];
 }
 
 //-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

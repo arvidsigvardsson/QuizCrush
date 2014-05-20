@@ -13,39 +13,18 @@
 	<key>Number of rows</key>
 	<integer>9</integer>
 	<key>Number of columns</key>
-	<integer>7</integer>
+	<integer>5</integer>
 	<key>Tiles required for bomb booster</key>
 	<integer>3</integer>
 	<key>Max number of moves</key>
 	<integer>10</integer>
 	<key>Score required</key>
-	<integer>10</integer>
+	<integer>10000</integer>
 	<key>Tiles required for fifty fifty</key>
 	<integer>5</integer>
 	<key>Type of level</key>
-	<string>SLIME</string>
+	<string>SCORE</string>
 	<key>Header message</key>
-	<string>Clear away all the slime</string>
-	<key>Slime array</key>
-	<array>
-		<integer>1</integer>
-		<integer>2</integer>
-		<integer>5</integer>
-		<integer>2</integer>
-		<integer>2</integer>
-		<integer>3</integer>
-		<integer>4</integer>
-		<integer>3</integer>
-		<integer>3</integer>
-		<integer>4</integer>
-		<integer>2</integer>
-		<integer>5</integer>
-		<integer>4</integer>
-		<integer>5</integer>
-		<integer>1</integer>
-		<integer>6</integer>
-		<integer>5</integer>
-		<integer>6</integer>
-	</array>
+	<string>Reach %@ points!</string>
 </dict>
 </plist>
