@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <array>
-	<string>Level 1 Score</string>
-	<string>Level 2 Slime</string>
-	<string>Level 3 Score</string>
+	<string>Level 1</string>
+	<string>Level 2</string>
+	<string>Level 3</string>
 </array>
 </plist>

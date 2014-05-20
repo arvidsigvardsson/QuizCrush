@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "QCLevelViewController.h"
+#import "QCLevelTVCell.h"
 
 @interface QCVLevelChooserVC : UIViewController <UITableViewDelegate, UITableViewDataSource>
 

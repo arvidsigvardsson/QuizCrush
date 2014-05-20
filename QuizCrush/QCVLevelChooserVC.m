@@ -42,6 +42,9 @@
     _levelsTableview.delegate = self;
     _levelsTableview.dataSource = self;
     _levelsTableview.backgroundColor =[UIColor clearColor];
+    
+    [_levelsTableview registerNib:[UINib nibWithNibName:@"QCLevelTVCell" bundle:nil]
+           forCellReuseIdentifier:@"Level cell from nib"];
 }
 
 
@@ -69,9 +72,9 @@
 //    [vc setLevelDocument:document];
 //}
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(UITableViewCell *) sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(QCLevelTVCell *) sender {
     QCLevelViewController *vc = [segue destinationViewController];
-    [vc setLevelDocument:sender.textLabel.text];
+    [vc setLevelDocument:sender.levelLabel.text];
 
 }
 
@@ -83,13 +86,16 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
-    
+//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
+    QCLevelTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, 50, 50)];
 //    label.text = _levelsArray[indexPath.row];
-    cell.textLabel.text = _levelsArray[indexPath.row];
-    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
+//    cell.textLabel.text = _levelsArray[indexPath.row];
+//    cell.textLabel.textAlignment = NSTextAlignmentCenter;
+//    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
+    cell.levelLabel.text = _levelsArray[indexPath.row];
+    
     return cell;
 }
 
