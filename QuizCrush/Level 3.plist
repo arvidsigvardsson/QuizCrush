@@ -26,5 +26,11 @@
 	<string>SCORE</string>
 	<key>Header message</key>
 	<string>Reach %@ points!</string>
+	<key>Categories</key>
+	<array>
+		<integer>0</integer>
+		<integer>1</integer>
+		<integer>2</integer>
+	</array>
 </dict>
 </plist>

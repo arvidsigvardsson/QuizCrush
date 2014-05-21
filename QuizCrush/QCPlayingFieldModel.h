@@ -24,6 +24,7 @@ typedef enum {
 -(NSDictionary *) returnPlayingField;
 -(id) initWithNumberOfRowsAndColumns:(NSNumber *) rowsAndCols;
 -(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
+-(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns levelDocument:(NSString *) document;
 -(id) initWithAvatarRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns;
 -(NSSet *) matchingAdjacentTilesToTileWithID:(NSNumber *) iD;
 -(NSNumber *) categoryOfTileWithID:(NSNumber *) ID;

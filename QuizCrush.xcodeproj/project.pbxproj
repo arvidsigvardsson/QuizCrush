@@ -22,6 +22,7 @@
 		7189625C192632EB007C9D6C /* Level 1.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7189625B192632EB007C9D6C /* Level 1.plist */; };
 		719950E418F2C7CD0041DC21 /* QCQuestionProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */; };
 		719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 719950E718F2CAD90041DC21 /* svenskaQuestions.json */; };
+		71B69B84192CA2CA00649463 /* Level 4.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71B69B83192CA2CA00649463 /* Level 4.plist */; };
 		71CE961B18F810EA003E8D3F /* QCSelectCategoryPopup.m in Sources */ = {isa = PBXBuildFile; fileRef = 71CE961A18F810EA003E8D3F /* QCSelectCategoryPopup.m */; };
 		71DD0AF718D859AF00E9247A /* QCModelTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 71DD0AF618D859AF00E9247A /* QCModelTestCase.m */; };
 		71E0C4E918D6E39800B5FFC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0C4E818D6E39800B5FFC7 /* Foundation.framework */; };
@@ -80,6 +81,7 @@
 		719950E218F2C7CD0041DC21 /* QCQuestionProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCQuestionProvider.h; sourceTree = "<group>"; };
 		719950E318F2C7CD0041DC21 /* QCQuestionProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCQuestionProvider.m; sourceTree = "<group>"; };
 		719950E718F2CAD90041DC21 /* svenskaQuestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = svenskaQuestions.json; sourceTree = "<group>"; };
+		71B69B83192CA2CA00649463 /* Level 4.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Level 4.plist"; sourceTree = "<group>"; };
 		71CE961918F810EA003E8D3F /* QCSelectCategoryPopup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSelectCategoryPopup.h; sourceTree = "<group>"; };
 		71CE961A18F810EA003E8D3F /* QCSelectCategoryPopup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSelectCategoryPopup.m; sourceTree = "<group>"; };
 		71DD0AF618D859AF00E9247A /* QCModelTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCModelTestCase.m; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 				718962591926325B007C9D6C /* Level 2.plist */,
 				7189625B192632EB007C9D6C /* Level 1.plist */,
 				71589BB5192A243B00DA1C8E /* Level 3.plist */,
+				71B69B83192CA2CA00649463 /* Level 4.plist */,
 				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
 				718962561925FDA5007C9D6C /* QCVLevelChooserVC.h */,
 				718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */,
@@ -330,6 +333,7 @@
 				719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */,
 				7189625A1926325B007C9D6C /* Level 2.plist in Resources */,
 				71E0C52718D6F3C900B5FFC7 /* UISettings.plist in Resources */,
+				71B69B84192CA2CA00649463 /* Level 4.plist in Resources */,
 				71E0C4F318D6E39800B5FFC7 /* InfoPlist.strings in Resources */,
 				71E0C4FC18D6E39800B5FFC7 /* Main.storyboard in Resources */,
 			);

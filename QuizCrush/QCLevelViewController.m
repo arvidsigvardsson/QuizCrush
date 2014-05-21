@@ -60,6 +60,7 @@ typedef enum {
 @property BOOL fiftyUsed;
 @property int animatingCount;
 @property (nonatomic) NSMutableSet *slimeSet;
+@property (nonatomic) NSString *levelDocument;
 
 @end
 
@@ -441,6 +442,10 @@ typedef enum {
     NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
     _uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
+    NSString *levelPath = [[NSBundle mainBundle] pathForResource:_levelDocument
+                                                             ofType:@"plist"];
+    _levelSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:levelPath];
+
     // background
     UIImage *background = [UIImage imageNamed:@"QC_background"];
     UIImageView *bgView = [[UIImageView alloc] initWithImage:background];
@@ -461,11 +466,10 @@ typedef enum {
 
 
 
-    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
-    
-    // for avatar, now taking it away
-//    [self seedAvatar];
-//    _avatarMovement = [[NSMutableArray alloc] init];
+//    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows Columns:_numberOfColumns];
+    _playingFieldModel = [[QCPlayingFieldModel alloc] initWithRows:_numberOfRows
+                                                           Columns:_numberOfColumns
+                                                     levelDocument:_levelDocument];
     
     _viewDictionary = [[NSMutableDictionary alloc] init];
 
@@ -1433,9 +1437,10 @@ typedef enum {
 }
 
 -(void) setLevelDocument:(NSString *) document {
-    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:document
-                                                             ofType:@"plist"];
-    _levelSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+//    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:document
+//                                                             ofType:@"plist"];
+//    _levelSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+    _levelDocument = document;
 }
 
 @end

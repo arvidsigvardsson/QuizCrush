@@ -16,6 +16,7 @@
 @property NSNumber *numberOfColumns;
 @property int currentID;
 @property NSNumber *avatar;
+@property (nonatomic) NSArray *categoriesArray;
 
 @end
 
@@ -35,10 +36,6 @@
         
     }
     return string;
-    
-    
-    
-//    return [NSString stringWithFormat:@"Size: %lu, Model IDs: %@", (unsigned long)[_tileDict count], _tileDict];
 }
 
 -(NSString *) playingfieldAsString {
@@ -119,6 +116,39 @@
     return self;
 }
 
+-(id) initWithRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns levelDocument:(NSString *) document {
+    if(!(self = [super init])){
+        return self;
+    }
+
+    NSString *path = [[NSBundle mainBundle] pathForResource:document
+                                                     ofType:@"plist"];
+    NSDictionary *levelDict = [NSDictionary dictionaryWithContentsOfFile:path];
+    _categoriesArray = levelDict[@"Categories"];
+    
+    _currentID = 0;
+    _numberOfRows = numberOfRows;
+    _numberOfColumns = numberOfColumns;
+    _tileDict = [[NSMutableDictionary alloc] init];
+    
+    for (int i = 0; i < [numberOfRows intValue] * [numberOfColumns intValue]; i++) {
+        NSNumber *x = [NSNumber numberWithInt:i % [numberOfColumns intValue]];
+        NSNumber *y = [NSNumber numberWithInt:i / [numberOfColumns intValue]];
+        
+        QCTile *tile = [[QCTile alloc] initWithCategory:[self nextCategory]
+                                                     iD:[self nextID]
+                                                      x:x
+                                                      y:y];
+        [_tileDict setObject:tile forKey:tile.iD];
+        
+    }
+    
+    
+    
+    return self;
+
+}
+
 -(id) initWithAvatarRows:(NSNumber *) numberOfRows Columns:(NSNumber *) numberOfColumns{
     if(!(self = [super init])){
         return self;
@@ -166,12 +196,15 @@
 
 -(NSNumber *) nextCategory {
 //    return @3;
-    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
-    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
+//    NSString *plistCatPath = [[NSBundle mainBundle] pathForResource:@"UISettings" ofType:@"plist"];
+//    NSDictionary *uiSettingsDictionary = [[NSDictionary alloc] initWithContentsOfFile:plistCatPath];
 
-    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
+//    int noCategories = [uiSettingsDictionary[@"Number of categories"] intValue];
+//
+//    return [NSNumber numberWithInt:arc4random_uniform(noCategories)];
 
-    return [NSNumber numberWithInt:arc4random_uniform(noCategories)];
+    return _categoriesArray[arc4random_uniform((int)[_categoriesArray count])];
+
 }
 
 -(NSNumber *) nextCategoryExcluding:(NSNumber *) category {
