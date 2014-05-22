@@ -16,6 +16,7 @@
 		71589BBC192B399900DA1C8E /* QCLevelTVCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 71589BBB192B399900DA1C8E /* QCLevelTVCell.m */; };
 		715B93F718F3DCF000F5BB7E /* QCTileImageProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */; };
 		71695F7E1924A700009FCCBC /* QCCoordinates.m in Sources */ = {isa = PBXBuildFile; fileRef = 71695F7D1924A700009FCCBC /* QCCoordinates.m */; };
+		7189496C192DE7A400022799 /* QCSettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189496B192DE7A400022799 /* QCSettingsVC.m */; };
 		7189624F1924DCB2007C9D6C /* QCSlimeTile.m in Sources */ = {isa = PBXBuildFile; fileRef = 7189624E1924DCB2007C9D6C /* QCSlimeTile.m */; };
 		718962581925FDA5007C9D6C /* QCVLevelChooserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */; };
 		7189625A1926325B007C9D6C /* Level 2.plist in Resources */ = {isa = PBXBuildFile; fileRef = 718962591926325B007C9D6C /* Level 2.plist */; };
@@ -72,6 +73,8 @@
 		715B93F618F3DCF000F5BB7E /* QCTileImageProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCTileImageProvider.m; sourceTree = "<group>"; };
 		71695F7C1924A700009FCCBC /* QCCoordinates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCCoordinates.h; sourceTree = "<group>"; };
 		71695F7D1924A700009FCCBC /* QCCoordinates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCCoordinates.m; sourceTree = "<group>"; };
+		7189496A192DE7A400022799 /* QCSettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QCSettingsVC.h; path = ../QCSettingsVC.h; sourceTree = "<group>"; };
+		7189496B192DE7A400022799 /* QCSettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = QCSettingsVC.m; path = ../QCSettingsVC.m; sourceTree = "<group>"; };
 		7189624D1924DCB2007C9D6C /* QCSlimeTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSlimeTile.h; sourceTree = "<group>"; };
 		7189624E1924DCB2007C9D6C /* QCSlimeTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCSlimeTile.m; sourceTree = "<group>"; };
 		718962561925FDA5007C9D6C /* QCVLevelChooserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCVLevelChooserVC.h; sourceTree = "<group>"; };
@@ -177,6 +180,8 @@
 				71589BB5192A243B00DA1C8E /* Level 3.plist */,
 				71B69B83192CA2CA00649463 /* Level 4.plist */,
 				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
+				7189496A192DE7A400022799 /* QCSettingsVC.h */,
+				7189496B192DE7A400022799 /* QCSettingsVC.m */,
 				718962561925FDA5007C9D6C /* QCVLevelChooserVC.h */,
 				718962571925FDA5007C9D6C /* QCVLevelChooserVC.m */,
 				7189624D1924DCB2007C9D6C /* QCSlimeTile.h */,
@@ -371,6 +376,7 @@
 				71589BBC192B399900DA1C8E /* QCLevelTVCell.m in Sources */,
 				71E0C4F918D6E39800B5FFC7 /* QCAppDelegate.m in Sources */,
 				71E0C4F518D6E39800B5FFC7 /* main.m in Sources */,
+				7189496C192DE7A400022799 /* QCSettingsVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

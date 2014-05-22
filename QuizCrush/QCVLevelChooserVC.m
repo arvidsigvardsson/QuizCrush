@@ -13,7 +13,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *levelsTableview;
 @property (nonatomic) NSArray *levelsArray;
 @property (nonatomic) NSNumber *levelsCompleted;
-
+@property (weak, nonatomic) IBOutlet UIButton *settingsButton;
 @end
 
 @implementation QCVLevelChooserVC
@@ -48,17 +48,29 @@
            forCellReuseIdentifier:@"Level cell from nib"];
     
     // test
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:@0 forKey:@"Highest level completed"];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    [defaults setObject:@0 forKey:@"Highest level completed"];
+//
+//    UIImage *gears = [UIImage imageNamed:@"gears"];
+//    _settingsButton.imageView.image = gears;
+    
+    _settingsButton.tag = 11;
 }
 
 
 #pragma mark - Navigation
 
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(QCLevelTVCell *) sender {
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id) sender {
     QCLevelViewController *vc = [segue destinationViewController];
-    [vc setLevelDocument:sender.levelLabel.text];
+//    NSLog(@"Segue identifier: %@", segue.identifier);
+    
+    if ([segue.identifier isEqualToString:@"Level segue"]) {
+        QCLevelTVCell *cell = (QCLevelTVCell *) sender;
+        [vc setLevelDocument:cell.levelLabel.text];
+    }
+    
+    
 
 }
 
@@ -68,8 +80,8 @@
     return [_levelsArray count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    NSLog(@"Cell for row at indexpath, row: %ld, levels completed: %@", indexPath.row, _levelsCompleted);
 //    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
     QCLevelTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, 50, 50)];
@@ -84,6 +96,9 @@
 //        cell.levelLabel.textColor = [UIColor grayColor];
         cell.levelLabel.alpha = .3;
         cell.levelLabel.enabled = NO;
+    } else {
+        cell.levelLabel.alpha = 1;
+        cell.levelLabel.enabled = YES;
     }
     return cell;
 }
@@ -112,6 +127,7 @@
     }
     return indexPath;
 }
+
 @end
 
 
