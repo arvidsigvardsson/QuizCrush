@@ -122,9 +122,9 @@
 
 
 -(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if (indexPath.row > [_levelsCompleted intValue]) {
-//        return nil;
-//    }
+    if (indexPath.row > [_levelsCompleted intValue]) {
+        return nil;
+    }
     return indexPath;
 }
 
