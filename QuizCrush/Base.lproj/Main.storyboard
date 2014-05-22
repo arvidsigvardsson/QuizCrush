@@ -65,7 +65,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="ieI-Gp-fiV" kind="modal" identifier="Settings segue" modalTransitionStyle="crossDissolve" id="Pjv-2Q-Hvd"/>
+                                            <segue destination="ieI-Gp-fiV" kind="modal" identifier="Settings segue" modalTransitionStyle="coverVertical" id="Pjv-2Q-Hvd"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -103,7 +103,7 @@
                                     <action selector="settingsButtonHandler:" destination="ieI-Gp-fiV" eventType="touchUpInside" id="hi3-1s-V6n"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Quiz Crush" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KUA-bt-UA8">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="KUA-bt-UA8">
                                 <rect key="frame" x="46" y="38" width="228" height="61"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="IowanOldStyle-Roman" family="Iowan Old Style" pointSize="44"/>

@@ -366,7 +366,7 @@ typedef enum {
     _movesLeftLabel.text = [NSString stringWithFormat:@"%d", movesLeft]; //[_uiSettingsDictionary[@"Max number of moves"] intValue]];
 //    _messageLabel.text = [NSString stringWithFormat:@"Reach %d points!"/* to clear level!"*/, [_uiSettingsDictionary[@"Score required"] intValue]];
     _messageLabel.hidden = NO;
-    _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
+    _scoreLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)_score];
 //    _messageLabel.text = @"Clear away all the slime!";
     if ([_levelSettingsDictionary[@"Type of level"] isEqualToString:@"SLIME"]) {
         _messageLabel.text = _levelSettingsDictionary[@"Header message"];
@@ -1253,7 +1253,7 @@ typedef enum {
 //    NSUInteger points = round(pow(1.6, [_tilesTouched count]) * 10) * 10;
     NSUInteger points = round(pow(1.45, [_tilesTouched count]) * 17) * 10;
     _score += points;
-    _scoreLabel.text = [NSString stringWithFormat:@"%ld", _score];
+    _scoreLabel.text = [NSString stringWithFormat:@"%ld", (unsigned long)_score];
     
     [_popView rightAnswerChosenWithIndex:_currentQuestion.correctAnswerIndex points:@(points)];
     
@@ -1297,8 +1297,8 @@ typedef enum {
 }
 
 -(void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    NSLog(@"Index of button clicked: %ld", buttonIndex);
-    NSLog(@"Alertview tag: %ld", alertView.tag);
+//    NSLog(@"Index of button clicked: %ld", buttonIndex);
+//    NSLog(@"Alertview tag: %ld", alertView.tag);
     
     if (alertView.tag == 202) {
         if (buttonIndex == 0) {

@@ -43,7 +43,7 @@
 }
 
 -(void) handleEdgeSwipe:(id) sender {
-    [self dismissViewControllerAnimated:NO completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
         
     }];
 }
@@ -62,7 +62,7 @@
 - (IBAction)settingsButtonHandler:(id)sender {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:@0 forKey:@"Highest level completed"];
-    [self dismissViewControllerAnimated:NO completion:^{
+    [self dismissViewControllerAnimated:YES completion:^{
     }];
 
 

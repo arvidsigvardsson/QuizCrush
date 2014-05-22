@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		71107AAE18DC5B83000AEF57 /* QCMoveDescription.m in Sources */ = {isa = PBXBuildFile; fileRef = 71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */; };
 		712699FD192B593A0017C08F /* QCTileHolderView.m in Sources */ = {isa = PBXBuildFile; fileRef = 712699FC192B593A0017C08F /* QCTileHolderView.m */; };
+		712F01CB192E24A70065BE78 /* Level 5.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712F01CA192E24A70065BE78 /* Level 5.plist */; };
+		712F01CE192E26170065BE78 /* Level 6.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712F01CD192E26170065BE78 /* Level 6.plist */; };
+		712F01D0192E27EA0065BE78 /* Level 7.plist in Resources */ = {isa = PBXBuildFile; fileRef = 712F01CF192E27EA0065BE78 /* Level 7.plist */; };
 		71386C3F18F2904100414357 /* QCPopupView.m in Sources */ = {isa = PBXBuildFile; fileRef = 71386C3E18F2904100414357 /* QCPopupView.m */; };
 		7147829818E2DF7E00A1A08A /* QCSuctionMove.m in Sources */ = {isa = PBXBuildFile; fileRef = 7147829718E2DF7E00A1A08A /* QCSuctionMove.m */; };
 		71589BB11929F57C00DA1C8E /* Levels.plist in Resources */ = {isa = PBXBuildFile; fileRef = 71589BB01929F57C00DA1C8E /* Levels.plist */; };
@@ -61,6 +64,9 @@
 		71107AAD18DC5B83000AEF57 /* QCMoveDescription.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCMoveDescription.m; sourceTree = "<group>"; };
 		712699FB192B593A0017C08F /* QCTileHolderView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCTileHolderView.h; sourceTree = "<group>"; };
 		712699FC192B593A0017C08F /* QCTileHolderView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCTileHolderView.m; sourceTree = "<group>"; };
+		712F01CA192E24A70065BE78 /* Level 5.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Level 5.plist"; sourceTree = "<group>"; };
+		712F01CD192E26170065BE78 /* Level 6.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Level 6.plist"; sourceTree = "<group>"; };
+		712F01CF192E27EA0065BE78 /* Level 7.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Level 7.plist"; sourceTree = "<group>"; };
 		71386C3D18F2904100414357 /* QCPopupView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCPopupView.h; sourceTree = "<group>"; };
 		71386C3E18F2904100414357 /* QCPopupView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QCPopupView.m; sourceTree = "<group>"; };
 		7147829618E2DF7E00A1A08A /* QCSuctionMove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QCSuctionMove.h; sourceTree = "<group>"; };
@@ -140,6 +146,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		712F01CC192E24C40065BE78 /* Levels */ = {
+			isa = PBXGroup;
+			children = (
+				71589BB01929F57C00DA1C8E /* Levels.plist */,
+				718962591926325B007C9D6C /* Level 2.plist */,
+				7189625B192632EB007C9D6C /* Level 1.plist */,
+				71589BB5192A243B00DA1C8E /* Level 3.plist */,
+				71B69B83192CA2CA00649463 /* Level 4.plist */,
+				712F01CA192E24A70065BE78 /* Level 5.plist */,
+				712F01CD192E26170065BE78 /* Level 6.plist */,
+				712F01CF192E27EA0065BE78 /* Level 7.plist */,
+			);
+			name = Levels;
+			sourceTree = "<group>";
+		};
 		71E0C4DC18D6E39800B5FFC7 = {
 			isa = PBXGroup;
 			children = (
@@ -174,11 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				71E0C52618D6F3C900B5FFC7 /* UISettings.plist */,
-				71589BB01929F57C00DA1C8E /* Levels.plist */,
-				718962591926325B007C9D6C /* Level 2.plist */,
-				7189625B192632EB007C9D6C /* Level 1.plist */,
-				71589BB5192A243B00DA1C8E /* Level 3.plist */,
-				71B69B83192CA2CA00649463 /* Level 4.plist */,
+				712F01CC192E24C40065BE78 /* Levels */,
 				71E0C4FA18D6E39800B5FFC7 /* Main.storyboard */,
 				7189496A192DE7A400022799 /* QCSettingsVC.h */,
 				7189496B192DE7A400022799 /* QCSettingsVC.m */,
@@ -332,14 +349,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				7189625C192632EB007C9D6C /* Level 1.plist in Resources */,
+				712F01CE192E26170065BE78 /* Level 6.plist in Resources */,
 				71589BB11929F57C00DA1C8E /* Levels.plist in Resources */,
 				71E0C50118D6E39800B5FFC7 /* Images.xcassets in Resources */,
 				71589BB6192A243B00DA1C8E /* Level 3.plist in Resources */,
+				712F01CB192E24A70065BE78 /* Level 5.plist in Resources */,
 				719950E818F2CAD90041DC21 /* svenskaQuestions.json in Resources */,
 				7189625A1926325B007C9D6C /* Level 2.plist in Resources */,
 				71E0C52718D6F3C900B5FFC7 /* UISettings.plist in Resources */,
 				71B69B84192CA2CA00649463 /* Level 4.plist in Resources */,
 				71E0C4F318D6E39800B5FFC7 /* InfoPlist.strings in Resources */,
+				712F01D0192E27EA0065BE78 /* Level 7.plist in Resources */,
 				71E0C4FC18D6E39800B5FFC7 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

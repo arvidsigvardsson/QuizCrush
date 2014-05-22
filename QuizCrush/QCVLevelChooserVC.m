@@ -81,7 +81,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"Cell for row at indexpath, row: %ld, levels completed: %@", indexPath.row, _levelsCompleted);
+//    NSLog(@"Cell for row at indexpath, row: %ld, levels completed: %@", indexPath.row, _levelsCompleted);
 //    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
     QCLevelTVCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Level cell" forIndexPath:indexPath];
 //    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(50, 50, 50, 50)];
@@ -122,9 +122,9 @@
 
 
 -(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row > [_levelsCompleted intValue]) {
-        return nil;
-    }
+//    if (indexPath.row > [_levelsCompleted intValue]) {
+//        return nil;
+//    }
     return indexPath;
 }
 
