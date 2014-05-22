@@ -30,6 +30,7 @@
 	<array>
 		<integer>1</integer>
 		<integer>2</integer>
+		<!--
 		<integer>5</integer>
 		<integer>2</integer>
 		<integer>2</integer>
@@ -46,6 +47,7 @@
 		<integer>6</integer>
 		<integer>5</integer>
 		<integer>6</integer>
+	-->
 	</array>
 	<key>Categories</key>
 	<array>
@@ -56,5 +58,7 @@
 		<integer>4</integer>
 		<integer>5</integer>
 	</array>
+	<key>Level number</key>
+	<integer>2</integer>
 </dict>
 </plist>

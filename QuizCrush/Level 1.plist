@@ -19,13 +19,15 @@
 	<key>Max number of moves</key>
 	<integer>10</integer>
 	<key>Score required</key>
-	<integer>10000</integer>
+	<integer>1</integer>
 	<key>Tiles required for fifty fifty</key>
 	<integer>5</integer>
 	<key>Type of level</key>
 	<string>SCORE</string>
 	<key>Header message</key>
 	<string>Reach %@ points!</string>
+	<key>Level number</key>
+	<integer>1</integer>
 	<key>Categories</key>
 	<array>
 		<integer>0</integer>

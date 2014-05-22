@@ -12,6 +12,7 @@
 
 @property (weak, nonatomic) IBOutlet UITableView *levelsTableview;
 @property (nonatomic) NSArray *levelsArray;
+@property (nonatomic) NSNumber *levelsCompleted;
 
 @end
 
@@ -45,32 +46,15 @@
     
     [_levelsTableview registerNib:[UINib nibWithNibName:@"QCLevelTVCell" bundle:nil]
            forCellReuseIdentifier:@"Level cell from nib"];
+    
+    // test
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:@0 forKey:@"Highest level completed"];
 }
 
 
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(UIButton *)sender
-//{
-//    // Get the new view controller using [segue destinationViewController].
-//    // Pass the selected object to the new view controller.
-//    
-//    QCLevelViewController *vc = [segue destinationViewController];
-//    NSInteger tag = sender.tag;
-//    NSString *document;
-//    switch (tag) {
-//        case SLIME_LEVEL_BUTTON: {
-//            document = @"Level 2 Slime";
-//            break;
-//        }
-//        case SCORE_LEVEL_BUTTON: {
-//            document = @"Level 1 Score";
-//            break;
-//        }
-//    }
-//    [vc setLevelDocument:document];
-//}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(QCLevelTVCell *) sender {
     QCLevelViewController *vc = [segue destinationViewController];
@@ -95,7 +79,12 @@
 //    cell.selectionStyle = UITableViewCellSelectionStyleBlue;
 
     cell.levelLabel.text = _levelsArray[indexPath.row];
-    
+    if (indexPath.row > [_levelsCompleted intValue]) {
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//        cell.levelLabel.textColor = [UIColor grayColor];
+        cell.levelLabel.alpha = .3;
+        cell.levelLabel.enabled = NO;
+    }
     return cell;
 }
 
@@ -103,15 +92,26 @@
 {
     [super viewWillAppear:animated];
     [_levelsTableview deselectRowAtIndexPath:[_levelsTableview indexPathForSelectedRow] animated:YES];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    _levelsCompleted = [defaults objectForKey:@"Highest level completed"];
+    if (!_levelsCompleted) {
+        _levelsCompleted = @0;
+        [defaults setObject:_levelsCompleted forKey:@"Highest level completed"];
+    }
+    
+    [_levelsTableview reloadData];
+    
+    NSLog(@"Defaults: %@", [defaults dictionaryRepresentation]);
 }
 
-//-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-////    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-////    cell.backgroundColor = [UIColor blackColor];
-////    NSLog(@"Index: %d", indexPath.row);
-//    
-//    [self performSegueWithIdentifier:@"tableview segue" sender:@(indexPath.row)];
-//}
+
+-(NSIndexPath *) tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (indexPath.row > [_levelsCompleted intValue]) {
+        return nil;
+    }
+    return indexPath;
+}
 @end
 
 

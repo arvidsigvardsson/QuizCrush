@@ -201,7 +201,7 @@ typedef enum {
 //    }
     
     // only 50/50
-    if (_answerWasCorrect && [_tilesTouched count] >= 7) {
+    if (_answerWasCorrect && [_tilesTouched count] >= [_levelSettingsDictionary[@"Tiles required for fifty fifty"] integerValue]) {
         _numberOfFiftyFiftyBoosters += 1;
         [self animateFiftyButton];
     }
@@ -1273,7 +1273,14 @@ typedef enum {
 
 -(void) gameOverLevelAccomplished:(BOOL) accomplished {
     if (accomplished) {
-
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger highestLevel = [[defaults objectForKey:@"Highest level completed"] integerValue];
+        NSInteger thisLevel = [_levelSettingsDictionary[@"Level number"] integerValue];
+        if (thisLevel > highestLevel) {
+            [defaults setObject:@(thisLevel) forKey:@"Highest level completed"];
+        }
+//        [defaults setObject:@(levels + 1) forKey:@"Levels completed"];
+        
         [self launchStartNewGameWithTitle:@"Level accomplished!" message:@""];
 
     } else {
